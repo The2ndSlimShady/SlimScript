@@ -23,6 +23,8 @@ internal struct Token
                 Type = TokenType.Keyword;
             else if (Text == "EOL")
                 Type = TokenType.EOL;
+            else if (Text == "null")
+                Type = TokenType.Null;
             else if (!Text.Any(ch => Grammar._operators.Contains($"{ch}")) && !string.IsNullOrEmpty(Text))
                 Type = TokenType.Identifier;
             else
@@ -57,5 +59,6 @@ internal enum TokenType
     EOL,
     Keyword,
     Function,
-    Unidentified
+    Unidentified,
+    Null
 }

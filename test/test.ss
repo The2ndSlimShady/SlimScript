@@ -2,7 +2,7 @@
 -- this is a SlimScript file
 
 begin
-    set num as 32 + 5
+    set nil as null
     write num "selam"
 
     function test begin

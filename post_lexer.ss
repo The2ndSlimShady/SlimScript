@@ -1,5 +1,5 @@
 [<Keyword>: begin]
-[<Keyword>: set][<Identifier>: num][<Keyword>: as][<Number>: 32][<Operator>: +][<Number>: 5]
+[<Keyword>: set][<Identifier>: nil][<Keyword>: as][<Null>: null]
 [<Identifier>: write][<Identifier>: num][<Identifier>: "selam"]
 [<Keyword>: function][<Identifier>: test][<Keyword>: begin]
 [<Identifier>: write][<Identifier>: "another"]

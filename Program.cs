@@ -28,13 +28,12 @@ internal class Program
                 Console.ResetColor();
                 string? source = Console.ReadLine();
 
-                List<Token> tokenList = new();
+                var processedSource = PreProcessor.Process(new[] {source});
+                SourceChunk main = new(processedSource);
 
-                foreach (string expression in source?.Split(" "))
-                    tokenList.Add(new Token(expression));
+                var output = main.Run();
 
-                foreach (Token token in tokenList)
-                    Console.Write($" [{token}: {token.Text}]");
+                Console.WriteLine(output.ToString());
             }
         }
         else
