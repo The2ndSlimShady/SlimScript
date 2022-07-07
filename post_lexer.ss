@@ -1,0 +1,7 @@
+[<Keyword>: begin]
+[<Keyword>: set][<Identifier>: num][<Keyword>: as][<Number>: 32][<Operator>: +][<Number>: 5]
+[<Identifier>: write][<Identifier>: num][<Identifier>: "selam"]
+[<Keyword>: function][<Identifier>: test][<Keyword>: begin]
+[<Identifier>: write][<Identifier>: "another"]
+[<Keyword>: end]
+[<Keyword>: end]
