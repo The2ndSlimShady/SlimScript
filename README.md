@@ -47,16 +47,16 @@ Run your script!
 - [x] Number Type
 - [x] String Type
 - [ ] Operators
-  - [ ] Logical Operations
+  - [x] Logical Operations
     - [x] Both
     - [x] Not
-    - [ ] Any
-    - [ ] Equals        (=)
-    - [ ] Not Equals    (!=)
-    - [ ] Lesser Than   (<)
-    - [ ] Greater Than  (>)
-    - [ ] Lesser Equal  (<=)
-    - [ ] Greater Equal (>=)
+    - [x] Any
+    - [x] Equals        (=)
+    - [x] Not Equals    (!=)
+    - [x] Lesser Than   (<)
+    - [x] Greater Than  (>)
+    - [x] Lesser Equal  (<=)
+    - [x] Greater Equal (>=)
   - [ ] Numeric Operators
     - [x] Plus
     - [x] Minus
@@ -67,7 +67,9 @@ Run your script!
   - [x] Set
   - [x] Write
   - [ ] Do
-- [ ] Other Features
+- [ ] Blocks
   - [ ] Custom Functions
+  - [ ] If-Else Blocks
+- [ ] Other Features
   - [ ] Callback To C#
   - [ ] Using .Net Libraries

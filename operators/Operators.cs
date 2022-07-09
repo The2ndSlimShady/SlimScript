@@ -8,6 +8,8 @@ internal abstract class Operator
     {
         List<Token> realParams;
 
+        bool infinite = capacity == 0;
+
         if (capacity != 0)
             realParams = new(capacity);
         else
@@ -15,7 +17,7 @@ internal abstract class Operator
 
         for (int i = 1; i < parameters.Length; i++)
         {
-            if (realParams.Capacity != 0 && realParams.Count == realParams.Capacity)
+            if (!infinite && realParams.Count == realParams.Capacity)
                 break;
 
             Token param = parameters[i];
@@ -62,21 +64,5 @@ internal abstract class Operator
         }
 
         return realParams;
-    }
-
-    public static bool IsTheSame(List<Token> realParams)
-    {
-        if (realParams[0].Type != realParams[1].Type)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Cannot sum up types '{realParams[0]}' with '{realParams[1]}'. line {Parser.lineNumber}"
-            );
-
-            Program.Exit(ExitCode.DisordantTokenError);
-            return false;
-        }
-
-        return true;
     }
 }

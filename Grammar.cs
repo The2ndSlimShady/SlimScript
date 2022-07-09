@@ -13,11 +13,12 @@ internal class Grammar
             { "!=", "NotEquals" },
             { "<", "LesserThan" },
             { ">", "GreaterThan" },
-            { ">=", "GreatEqual" },
-            { "<=", "LessEqual" },
+            { ">=", "GreaterEqual" },
+            { "<=", "LesserEqual" },
             { "%", "Modulus" },
             { "not", "Not" },
-            { "both", "Both" }
+            { "both", "Both" },
+            { "any", "Any" }
         };
 
     public static string[] keywords = { "as", "begin", "end", "to" };

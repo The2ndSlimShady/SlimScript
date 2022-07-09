@@ -8,7 +8,17 @@ internal class Minus : Operator
     {
         List<Token> realParams = ReadyParams(parameters, chunk);
 
-        IsTheSame(realParams);
+        if (realParams[0].Type != realParams[1].Type)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(
+                $"Cannot use minus operator on types '{realParams[0]}' and '{realParams[1]}'. line {Parser.lineNumber}"
+            );
+
+            Program.Exit(ExitCode.DisordantTokenError);
+            return null;
+        }
+
 
         if (realParams[0].Type == TokenType.Number)
             return MinusNumbers(realParams[0], realParams[1]);

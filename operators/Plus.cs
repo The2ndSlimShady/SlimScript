@@ -8,7 +8,16 @@ internal class Plus : Operator
     {
         List<Token> realParams = ReadyParams(parameters, chunk);
 
-        IsTheSame(realParams);
+        if (realParams[0].Type != realParams[1].Type)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(
+                $"Cannot sum up types '{realParams[0]}' with '{realParams[1]}'. line {Parser.lineNumber}"
+            );
+
+            Program.Exit(ExitCode.DisordantTokenError);
+            return null;
+        }
 
         if (realParams[0].Type == TokenType.Number)
             return SumNumbers(realParams[0], realParams[1]);
