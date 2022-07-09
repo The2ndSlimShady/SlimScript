@@ -2,7 +2,7 @@ namespace SlimScript;
 
 internal class Define : Standart
 {
-    public override IVariable Run(List<Token> line, SourceChunk chunk, string rule)
+    public override IVariable Run(List<Token> line, SourceChunk chunk)
     {
         var name = line[1];
         var keyword = line[2];

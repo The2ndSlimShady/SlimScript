@@ -1,20 +1,18 @@
+using System.Text;
+
 namespace SlimScript;
 
 internal class Write : Standart
 {
-    public override IVariable Run(List<Token> line, SourceChunk chunk, string rule)
+    public override IVariable Run(List<Token> line, SourceChunk chunk)
     {
-        var value = line[1];
+        var args = Operator.ReadyParams(line.ToArray(), chunk, 0);
 
-        IVariable variable = null;
 
-        if (value.Type != TokenType.Standart)
-            variable = Variable.Create(line.ToArray()[1..], chunk);
-        // else
-        //     Variable.Create();
+        string writeStr = string.Join("", args.Select(t => Variable.Create(new[] { t }, chunk).Value));
 
-        Console.WriteLine(variable.Value);
+        Console.WriteLine(writeStr);
 
-        return variable;
+        return new Word();
     }
 }

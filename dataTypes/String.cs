@@ -11,7 +11,7 @@ internal struct Word : IVariable
     public object Value
     {
         get => Val;
-        set => Val = (string)value;
+        set { Val = (string)value; }
     }
 
     public Word(Token[] tokens, SourceChunk chunk)
@@ -74,15 +74,5 @@ internal struct Word : IVariable
         str.Token = token;
 
         return str;
-    }
-
-    public IVariable Copy()
-    {
-        var copy = new Word();
-        copy.Value = Value;
-        copy.Name = Name;
-        copy.Token = Token;
-
-        return copy;
     }
 }

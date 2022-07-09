@@ -11,12 +11,12 @@ internal struct Number : IVariable
     public object Value
     {
         get => Val;
-        set => Val = (double)value;
+        set { Val = (double)value; }
     }
 
     public Number(Token[] tokens, SourceChunk chunk)
     {
-        if (tokens[0].Type == TokenType.Number || tokens[0].Type == TokenType.Null)
+        if (tokens[0].Type == TokenType.Number)
         {
             Val = Convert.ToDouble(tokens[0].Text);
             Token = tokens[0];
@@ -44,12 +44,11 @@ internal struct Number : IVariable
             }
             else if (obj.GetType().BaseType == typeof(Standart))
             {
-                value = (Number)(obj as Standart).Run(tokens.ToList(), chunk, " ");
+                value = (Number)(obj as Standart).Run(tokens.ToList(), chunk);
 
                 Val = value.Val;
                 Token = value.Token;
             }
-
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -70,7 +69,7 @@ internal struct Number : IVariable
         Token = token;
     }
 
-    public static Number operator+(Number left, Number Right)
+    public static Number operator +(Number left, Number Right)
     {
         var num = new Number();
         var token = new Token();
@@ -85,7 +84,7 @@ internal struct Number : IVariable
         return num;
     }
 
-    public static Number operator-(Number left, Number right)
+    public static Number operator -(Number left, Number right)
     {
         var num = new Number();
         var token = new Token();
@@ -98,15 +97,5 @@ internal struct Number : IVariable
         num.Token = token;
 
         return num;
-    }
-
-    public IVariable Copy()
-    {
-        var copy = new Number();
-        copy.Value = Value;
-        copy.Name = Name;
-        copy.Token = Token;
-
-        return copy;
     }
 }

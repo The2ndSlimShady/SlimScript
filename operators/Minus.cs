@@ -8,6 +8,8 @@ internal class Minus : Operator
     {
         List<Token> realParams = ReadyParams(parameters, chunk);
 
+        IsTheSame(realParams);
+
         if (realParams[0].Type == TokenType.Number)
             return MinusNumbers(realParams[0], realParams[1]);
         else

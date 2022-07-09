@@ -7,6 +7,4 @@ internal interface IVariable
     string Name { get; set; }
 
     object Value { get; set; }
-
-    IVariable Copy();
 }

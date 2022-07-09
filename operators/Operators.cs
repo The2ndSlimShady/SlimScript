@@ -4,13 +4,18 @@ internal abstract class Operator
 {
     public abstract IVariable Apply(Token[] parameters, SourceChunk chunk);
 
-    public static List<Token> ReadyParams(Token[] parameters, SourceChunk chunk)
+    public static List<Token> ReadyParams(Token[] parameters, SourceChunk chunk, int capacity = 2)
     {
-        List<Token> realParams = new(2);
+        List<Token> realParams;
+
+        if (capacity != 0)
+            realParams = new(capacity);
+        else
+            realParams = new();
 
         for (int i = 1; i < parameters.Length; i++)
         {
-            if (realParams.Count == 2)
+            if (realParams.Capacity != 0 && realParams.Count == realParams.Capacity)
                 break;
 
             Token param = parameters[i];
@@ -20,19 +25,20 @@ internal abstract class Operator
             else if (param.Type == TokenType.Identifier)
                 realParams.Add(Identifier.Identify(parameters[i..], chunk).Token);
             else if (param.Type == TokenType.Standart)
+            {
                 realParams.Add(
                     (
                         Variable.CreateType(Parser.IdentifyAndGet(parameters[i..].ToList()))
                         as Standart
                     )
-                        .Run(
-                            parameters[i..].ToList(),
-                            chunk,
-                            Parser.IdentifyRules(parameters[i..].ToList())
-                        )
+                        .Run(parameters[i..].ToList(), chunk)
                         .Token
                 );
+
+                i = parameters.Length;
+            }
             else if (param.Type == TokenType.Operator)
+            {
                 realParams.Add(
                     (
                         Variable.CreateType(Parser.IdentifyAndGet(parameters[i..].ToList()))
@@ -41,6 +47,9 @@ internal abstract class Operator
                         .Apply(parameters[i..], chunk)
                         .Token
                 );
+
+                i = parameters.Length;
+            }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -52,6 +61,11 @@ internal abstract class Operator
             }
         }
 
+        return realParams;
+    }
+
+    public static bool IsTheSame(List<Token> realParams)
+    {
         if (realParams[0].Type != realParams[1].Type)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -60,9 +74,9 @@ internal abstract class Operator
             );
 
             Program.Exit(ExitCode.DisordantTokenError);
-            return null;
+            return false;
         }
-    
-        return realParams;
+
+        return true;
     }
 }

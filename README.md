@@ -40,4 +40,34 @@ Run your script!
 ```bash
   ./bin/<Debug/Release>/net6.0/SlimScript path/to/script/file
 ```
-  
+
+### TODO
+
+- [x] Bool Type
+- [x] Number Type
+- [x] String Type
+- [ ] Operators
+  - [ ] Logical Operations
+    - [x] Both
+    - [x] Not
+    - [ ] Any
+    - [ ] Equals        (=)
+    - [ ] Not Equals    (!=)
+    - [ ] Lesser Than   (<)
+    - [ ] Greater Than  (>)
+    - [ ] Lesser Equal  (<=)
+    - [ ] Greater Equal (>=)
+  - [ ] Numeric Operators
+    - [x] Plus
+    - [x] Minus
+    - [ ] Multiply
+    - [ ] Divide
+- [ ] Standart Library Functions
+  - [x] Define
+  - [x] Set
+  - [x] Write
+  - [ ] Do
+- [ ] Other Features
+  - [ ] Custom Functions
+  - [ ] Callback To C#
+  - [ ] Using .Net Libraries

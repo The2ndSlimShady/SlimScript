@@ -7,7 +7,7 @@ internal class Grammar
         {
             { "+", "Plus" },
             { "-", "Minus" },
-            { "*", "Times" },
+            { "*", "Multiply" },
             { "/", "Divide" },
             { "=", "Equals" },
             { "!=", "NotEquals" },
@@ -15,29 +15,12 @@ internal class Grammar
             { ">", "GreaterThan" },
             { ">=", "GreatEqual" },
             { "<=", "LessEqual" },
-            { "%", "Modulus" }
+            { "%", "Modulus" },
+            { "not", "Not" },
+            { "both", "Both" }
         };
 
-    public static string[] keywords = { "as", "number", "begin", "end", "to" };
+    public static string[] keywords = { "as", "begin", "end", "to" };
 
-    public static string[] standarts = { "define", "function", "set", "not", "do", "write" };
-
-    public static string[] rules =
-    {
-        "define <Identifier> <Keyword>",
-
-        "function <Identifier> <Keyword>",
-
-        "set <Identifier> <Keyword>",
-
-        "write <String>",
-        "write <Number>",
-        "write <Identifier>",
-        "write <Operator>",
-        "write <Standart>",
-
-        "+",
-        "*",
-        "-"
-    };
+    public static string[] standarts = { "define", "function", "set", "do", "write" };
 }

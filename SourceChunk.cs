@@ -22,7 +22,10 @@ internal class SourceChunk
         try
         {
             if (Stack.Any(obj => obj.Name == name))
-                return Stack.Single(obj => obj.Name == name).Copy();
+            {
+                var variable = Stack.Single(obj => obj.Name == name);
+                return Variable.Copy(variable);
+            }
             else
                 return Parent?.GetVar(name);
         }

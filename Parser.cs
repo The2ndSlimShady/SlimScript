@@ -19,7 +19,7 @@ internal class Parser
             var obj = Variable.CreateType(rule);
 
             if (obj.GetType().IsSubclassOf(typeof(Standart)))
-                (obj as Standart).Run(line, chunk, IdentifyRules(line));
+                (obj as Standart).Run(line, chunk);
             else if (obj.GetType() == typeof(Identifier))
                 (obj as Identifier)
                     .GetType()
@@ -37,37 +37,9 @@ internal class Parser
         }
     }
 
-    public static string IdentifyRules(List<Token> line)
-    {
-        StringBuilder sb = new();
-        sb.Append(line[0].Text);
-
-        for (int i = 1; i < line.Count; i++)
-        {
-            Token token = line[i];
-            sb.Append($" {token}");
-        }
-
-        var matching = Grammar.rules.SingleOrDefault(rule => sb.ToString().Contains(rule));
-
-        if (string.IsNullOrEmpty(matching))
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Grammar error at line: {lineNumber}. Cannot find grammar rule of expression '{string.Join(" ", line.Select(t => t.Text))}'."
-            );
-            Program.Exit(ExitCode.GrammarError);
-            return null;
-        }
-        else
-            return matching;
-    }
-
     public static string IdentifyAndGet(List<Token> line)
     {
-        var matching = IdentifyRules(line);
-
-        var rule = matching.Split(" ")[0];
+        var rule = line[0].Text;
 
         if (Grammar.standarts.Contains(rule))
             return rule.Replace(rule[0].ToString(), rule[0].ToString().ToUpper());

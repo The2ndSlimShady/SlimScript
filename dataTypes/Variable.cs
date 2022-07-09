@@ -16,18 +16,17 @@ internal class Variable
 
             Token param = parameters[i];
 
-            if (param.Type == TokenType.Number || param.Type == TokenType.String)
+            if (param.Type == TokenType.Number || param.Type == TokenType.String || param.Type == TokenType.Boolean)
                 realParam = param;
             else if (param.Type == TokenType.Identifier)
-                realParam = Identifier.Identify(parameters[i..], chunk).Token;
+                realParam = Identifier.Identify(parameters[i..], chunk);
             else if (param.Type == TokenType.Standart)
                 realParam = (
                     CreateType(Parser.IdentifyAndGet(parameters[i..].ToList())) as Standart
                 )
                     .Run(
                         parameters[i..].ToList(),
-                        chunk,
-                        Parser.IdentifyRules(parameters[i..].ToList())
+                        chunk
                     );
             else if (param.Type == TokenType.Operator)
                 realParam = (
@@ -42,6 +41,8 @@ internal class Variable
                 );
 
                 Program.Exit(ExitCode.DisordantTokenError);
+
+                return null;
             }
         }
 
@@ -54,7 +55,7 @@ internal class Variable
             return null;
         }
 
-        if (parameters.Length == 1)
+        if (parameters.Length == 1 && realParam.GetType() == typeof(Token))
             parameters = new[] { realParam }.Cast<Token>().ToArray();
 
         if (realParam.GetType().IsAssignableTo(typeof(IVariable)))
@@ -69,6 +70,8 @@ internal class Variable
                     return new Word(parameters, chunk);
                 case TokenType.Identifier:
                     return Identifier.Identify(parameters, chunk);
+                case TokenType.Boolean:
+                    return new Bool(parameters, chunk);
                 default:
                     return null;
             }
@@ -85,5 +88,16 @@ internal class Variable
                 )
                 .Unwrap()
         );
+    }
+
+    public static IVariable Copy(IVariable variable)
+    {
+        var returnVar = (IVariable)Activator.CreateInstance(variable.GetType());
+
+        returnVar.Value = variable.Value;
+        returnVar.Name = variable.Name;
+        returnVar.Token = variable.Token;
+
+        return returnVar;
     }
 }

@@ -8,6 +8,8 @@ internal class Plus : Operator
     {
         List<Token> realParams = ReadyParams(parameters, chunk);
 
+        IsTheSame(realParams);
+
         if (realParams[0].Type == TokenType.Number)
             return SumNumbers(realParams[0], realParams[1]);
         else if (realParams[0].Type == TokenType.String)
