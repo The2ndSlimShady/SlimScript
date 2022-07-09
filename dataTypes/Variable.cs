@@ -7,7 +7,7 @@ internal class Variable
 {
     public static IVariable Create(Token[] parameters, SourceChunk chunk)
     {
-        Token? realParam = null;
+        object realParam = null;
 
         for (int i = 0; i < parameters.Length; i++)
         {
@@ -28,14 +28,12 @@ internal class Variable
                         parameters[i..].ToList(),
                         chunk,
                         Parser.IdentifyRules(parameters[i..].ToList())
-                    )
-                    .Token;
+                    );
             else if (param.Type == TokenType.Operator)
                 realParam = (
                     CreateType(Parser.IdentifyAndGet(parameters[i..].ToList())) as Operator
                 )
-                    .Apply(parameters[i..], chunk)
-                    .Token;
+                    .Apply(parameters[i..], chunk);
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -59,16 +57,21 @@ internal class Variable
         if (parameters.Length == 1)
             parameters = new[] { realParam }.Cast<Token>().ToArray();
 
-        switch (realParam?.Type)
+        if (realParam.GetType().IsAssignableTo(typeof(IVariable)))
+            return (IVariable)realParam;
+        else
         {
-            case TokenType.Number:
-                return new Number(parameters, chunk);
-            case TokenType.String:
-                return new Word(parameters, chunk);
-            case TokenType.Identifier:
-                return Identifier.Identify(parameters, chunk);
-            default:
-                return null;
+            switch ((realParam as Token?)?.Type)
+            {
+                case TokenType.Number:
+                    return new Number(parameters, chunk);
+                case TokenType.String:
+                    return new Word(parameters, chunk);
+                case TokenType.Identifier:
+                    return Identifier.Identify(parameters, chunk);
+                default:
+                    return null;
+            }
         }
     }
 

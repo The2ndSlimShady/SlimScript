@@ -11,7 +11,7 @@ internal struct Token
     {
         try
         {
-            Text = source.Replace(" ", "");
+            Text = source;
 
             if (double.TryParse(Text, out _))
                 Type = TokenType.Number;
@@ -36,7 +36,7 @@ internal struct Token
                 Type = TokenType.Unidentified;
 
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\nUnidentified Token: {Text}");
+                Console.WriteLine($"\nUnidentified Token: {Text}. line {Parser.lineNumber}");
                 Program.Exit(ExitCode.UnidentifiedToken);
             }
         }

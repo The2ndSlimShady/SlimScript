@@ -18,7 +18,7 @@ internal struct Word : IVariable
     {
         if (tokens[0].Type == TokenType.String)
         {
-            Val = tokens[0].Text.Replace("/b/", " ").Replace("\"", "");
+            Val = tokens[0].Text.Replace("\"", "");
             Token = tokens[0];
         }
         else
@@ -57,7 +57,7 @@ internal struct Word : IVariable
 
     public Word(Token token)
     {
-        Val = token.Text.Replace("/b/", " ").Replace("\"", "");
+        Val = token.Text.Replace("\"", "");
         Token = token;
     }
 
@@ -74,5 +74,15 @@ internal struct Word : IVariable
         str.Token = token;
 
         return str;
+    }
+
+    public IVariable Copy()
+    {
+        var copy = new Word();
+        copy.Value = Value;
+        copy.Name = Name;
+        copy.Token = Token;
+
+        return copy;
     }
 }

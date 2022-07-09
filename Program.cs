@@ -18,30 +18,8 @@ internal class Program
 
             Exit(ExitCode.NoInputFile);
         }
-        string[] source = File.ReadAllLines(args[0]);
-        string[] processedSource = PreProcessor.Process(source);
 
-#if DEBUG
-        StringBuilder b = new();
-        bool isIndent = true;
-        foreach (var item in processedSource)
-        {
-            if (item != "EOL")
-            {
-                b.Append($" {item}");
-                isIndent = false;
-            }
-            else
-            {
-                b.Append(Environment.NewLine);
-                isIndent = true;
-            }
-        }
-
-        File.WriteAllText("post_process.ss", b.ToString());
-#endif
-
-        MainChunk = new SourceChunk(processedSource);
+        MainChunk = new SourceChunk(File.ReadAllLines(args[0]));
 
         MainChunk.Run();
 

@@ -36,12 +36,8 @@ internal class Grammar
         "write <Operator>",
         "write <Standart>",
 
-        "+ <Number>",
-        "+ <String>",
-        "+ <Operator>",
-        "+ <Standart>",
-        "* <Number>",
-        "* <Number>",
-        "* <String>"
+        "+",
+        "*",
+        "-"
     };
 }

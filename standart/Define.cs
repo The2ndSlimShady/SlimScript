@@ -11,7 +11,7 @@ internal class Define : Standart
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(
-                $"Unexpected keyword at line {Parser.lineNumber}. Expected 'at' got '{keyword.Text}'"
+                $"Unexpected keyword at line {Parser.lineNumber}. Expected 'as' got '{keyword.Text}'"
             );
             Program.Exit(ExitCode.GrammarError);
         }

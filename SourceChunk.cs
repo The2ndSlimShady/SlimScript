@@ -13,7 +13,8 @@ internal class SourceChunk
     {
         Stack = new();
         Parent = parent;
-        Lines = Lexer.Lex(source);
+        var processedSource = PreProcessor.Process(source);
+        Lines = Lexer.Lex(processedSource);
     }
 
     public IVariable? GetVar(string name)
@@ -21,7 +22,7 @@ internal class SourceChunk
         try
         {
             if (Stack.Any(obj => obj.Name == name))
-                return Stack.Single(obj => obj.Name == name);
+                return Stack.Single(obj => obj.Name == name).Copy();
             else
                 return Parent?.GetVar(name);
         }
@@ -42,7 +43,7 @@ internal class SourceChunk
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(
-                $"Cannot create variable named '{variable.Token.Text}'. A variable with same name already exists. line {Parser.lineNumber}"
+                $"Cannot create variable named '{name}'. A variable with same name already exists. line {Parser.lineNumber}"
             );
 
             Program.Exit(ExitCode.MultipleDeclarationError);                                                                            
@@ -53,13 +54,11 @@ internal class SourceChunk
 
     public void SetVar(string name, IVariable variable)
     {
-        variable.Name = name;
-
         if (!VarExists(name))
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(
-                $"Cannot set value of unexistent variable named '{variable.Token.Text}'. line {Parser.lineNumber}"
+                $"Cannot set value of unexistent variable named '{name}'. line {Parser.lineNumber}"
             );
 
             Program.Exit(ExitCode.NullReferenceError);
@@ -67,6 +66,7 @@ internal class SourceChunk
         else
         {
             var tmp = Stack.Where(v => v.Name != name).ToList();
+            variable.Name = name;
             tmp.Add(variable);
 
             Stack = tmp;

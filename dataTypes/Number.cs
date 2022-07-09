@@ -21,6 +21,12 @@ internal struct Number : IVariable
             Val = Convert.ToDouble(tokens[0].Text);
             Token = tokens[0];
         }
+        else if (tokens[0].Type == TokenType.Identifier)
+        {
+            Token = new Token();
+            Val = 0;
+            Name = "";
+        }
         else
         {
             var rule = Parser.IdentifyAndGet(tokens.ToList());
@@ -43,10 +49,6 @@ internal struct Number : IVariable
                 Val = value.Val;
                 Token = value.Token;
             }
-            // TODO: Identifier Return
-            // else if (obj.GetType() == typeof(Identifier))
-            // {
-            // }
 
             else
             {
@@ -68,7 +70,7 @@ internal struct Number : IVariable
         Token = token;
     }
 
-    public static Number operator +(Number left, Number Right)
+    public static Number operator+(Number left, Number Right)
     {
         var num = new Number();
         var token = new Token();
@@ -81,5 +83,30 @@ internal struct Number : IVariable
         num.Token = token;
 
         return num;
+    }
+
+    public static Number operator-(Number left, Number right)
+    {
+        var num = new Number();
+        var token = new Token();
+
+        num.Val = left.Val - right.Val;
+
+        token.Type = TokenType.Number;
+        token.Text = num.Val.ToString();
+
+        num.Token = token;
+
+        return num;
+    }
+
+    public IVariable Copy()
+    {
+        var copy = new Number();
+        copy.Value = Value;
+        copy.Name = Name;
+        copy.Token = Token;
+
+        return copy;
     }
 }

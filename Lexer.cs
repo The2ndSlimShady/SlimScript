@@ -48,6 +48,7 @@ internal class Lexer
 
 #if DEBUG
             StringBuilder sb = new();
+#endif
             StringBuilder humanized = new();
             bool after = false;
 
@@ -55,19 +56,24 @@ internal class Lexer
             {
                 foreach (var token in tokens)
                 {
+#if DEBUG
                     sb.Append($"[{token}: {token.Text}]");
+#endif
                     humanized.Append($"{(after ? " " : "")}{token.Text}");
                     after = true;
                 }
 
+#if DEBUG
                 sb.AppendLine();
+#endif
                 humanized.AppendLine();
                 after = false;
             }
 
+#if DEBUG
             File.WriteAllText("post_lexer.ss", sb.ToString());
-            File.WriteAllText("post_lexer_humanized.ss", humanized.ToString());
 #endif
+            File.WriteAllText("post_lexer_humanized.ss", humanized.ToString());
 
             return Lines;
         }

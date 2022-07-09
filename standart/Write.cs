@@ -9,7 +9,7 @@ internal class Write : Standart
         IVariable variable = null;
 
         if (value.Type != TokenType.Standart)
-            variable = Variable.Create(line.ToArray(), chunk);
+            variable = Variable.Create(line.ToArray()[1..], chunk);
         // else
         //     Variable.Create();
 
