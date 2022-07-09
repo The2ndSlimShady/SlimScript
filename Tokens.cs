@@ -15,17 +15,21 @@ internal struct Token
 
             if (double.TryParse(Text, out _))
                 Type = TokenType.Number;
+            else if (Text.StartsWith("\"") && Text.EndsWith("\""))
+                Type = TokenType.String;
             else if (Text == "true" || Text == "false")
                 Type = TokenType.Boolean;
-            else if (Grammar._operators.Contains(Text))
+            else if (Grammar.operators.Keys.Contains(Text))
                 Type = TokenType.Operator;
-            else if (Grammar._keywords.Contains(Text))
+            else if (Grammar.standarts.Contains(Text))
+                Type = TokenType.Standart;
+            else if (Grammar.keywords.Contains(Text))
                 Type = TokenType.Keyword;
             else if (Text == "EOL")
                 Type = TokenType.EOL;
             else if (Text == "null")
                 Type = TokenType.Null;
-            else if (!Text.Any(ch => Grammar._operators.Contains($"{ch}")) && !string.IsNullOrEmpty(Text))
+            else if (!Text.Any(ch => Grammar.operators.Keys.Contains($"{ch}")) && !string.IsNullOrEmpty(Text))
                 Type = TokenType.Identifier;
             else
             {
@@ -58,7 +62,8 @@ internal enum TokenType
     Identifier,
     EOL,
     Keyword,
-    Function,
     Unidentified,
-    Null
+    String,
+    Null,
+    Standart
 }

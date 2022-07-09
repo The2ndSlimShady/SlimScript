@@ -4,60 +4,77 @@ namespace SlimScript;
 
 internal class Lexer
 {
-
-
     public static List<List<Token>> Lex(string[] source)
     {
-        int _line = 0;
-        List<List<Token>> Lines = new();
-
-        void addLine()
+        try
         {
-            _line++;
-            Lines.Add(new());
-        }
+            int _line = 0;
+            List<List<Token>> Lines = new();
 
-        Lines = new();
-
-        for (int i = 0; i < source.Length; )
-        {
-            string element = source[i];
-
-            if (element == "EOL")
-                addLine();
-
-            while (true)
+            void addLine()
             {
-                element = source[i];
-
-                Token token = new(element);
-
-                if (token.Type == TokenType.EOL)
-                {
-                    i++;
-                    addLine();
-                    break;
-                }
-
-                Lines[_line - 1].Add(token);
-                i++;
+                _line++;
+                Lines.Add(new());
             }
-        }
 
-        Lines = Lines.Where(line => line.Count != 0).ToList();
+            addLine();
+
+            for (int i = 0; i < source.Length; )
+            {
+                string element = source[i];
+
+                if (element == "EOL")
+                    addLine();
+
+                while (true)
+                {
+                    element = source[i];
+
+                    Token token = new(element);
+
+                    if (token.Type == TokenType.EOL)
+                    {
+                        i++;
+                        addLine();
+                        break;
+                    }
+
+                    Lines[_line - 1].Add(token);
+                    i++;
+                }
+            }
+
+            Lines = Lines.Where(line => line.Count != 0).ToList();
 
 #if DEBUG
-        StringBuilder sb = new();
-        foreach (var tokens in Lines)
-        {
-            foreach (var token in tokens)
-                sb.Append($"[{token}: {token.Text}]");
-            sb.AppendLine();
-        }
+            StringBuilder sb = new();
+            StringBuilder humanized = new();
+            bool after = false;
 
-        File.WriteAllText("post_lexer.ss", sb.ToString());
+            foreach (var tokens in Lines)
+            {
+                foreach (var token in tokens)
+                {
+                    sb.Append($"[{token}: {token.Text}]");
+                    humanized.Append($"{(after ? " " : "")}{token.Text}");
+                    after = true;
+                }
+
+                sb.AppendLine();
+                humanized.AppendLine();
+                after = false;
+            }
+
+            File.WriteAllText("post_lexer.ss", sb.ToString());
+            File.WriteAllText("post_lexer_humanized.ss", humanized.ToString());
 #endif
 
-        return Lines;
+            return Lines;
+        }
+        catch (Exception)
+        {
+            Program.Exit(ExitCode.LexerError);
+            return null;
+        }
     }
 }

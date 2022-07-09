@@ -2,9 +2,13 @@ namespace SlimScript;
 
 internal enum ExitCode
 {
-	NoInputFile = 0b0001,
-	Normal = 0b0000,
-	UnidentifiedToken = GrammarError | LexerError,
-	LexerError = 0b0100,
-	GrammarError = 0b1000
+    Normal = 0b0000_0000,
+    NoInputFile = 0b0000_0001,
+    UnidentifiedToken = 0b0000_1100,
+    LexerError = 0b0000_0100,
+    GrammarError = 0b0000_1000,
+    NullReferenceError = 0b0000_1110,
+    MultipleDeclarationError = 0b0001_1000,
+    DisordantTokenError = 0b0000_1010,
+    RuntimeError = 0b0000_0010
 }

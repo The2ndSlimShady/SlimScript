@@ -8,8 +8,10 @@ internal class PreProcessor
     {
         List<string> processedSource = new();
 
-        foreach (string element in source)
+        for (int i = 0; i < source.Length; i++)
         {
+            string element = source[i];
+
             if (element.StartsWith("--"))
                 continue;
             else
@@ -26,6 +28,6 @@ internal class PreProcessor
             }
         }
 
-        return processedSource.ToArray();
+        return processedSource.Where(s => !string.IsNullOrEmpty(s)).ToArray();
     }
 }
