@@ -8,10 +8,13 @@ interact with .Net ecosystem.
 Slim Script has many flaws in its design and it may lack some features
 but it is a good place to start teaching someone programming because of 
 its easy design.
-## Yazarlar ve Teşekkür
+
+## Contributors and Special Thanks 
 
 - [@The2ndSlimShady](https://www.github.com/The2ndSlimShady) coding and design.
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
+
+
 ## How To Work With SlimScript
 
 Clone the project
