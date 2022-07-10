@@ -10,11 +10,7 @@ internal class Any : Operator
     
         if (arg.Any(t => t.Type != TokenType.Boolean))
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-
-            Console.WriteLine($"Not function does not exists on type '{arg}'. line {Parser.lineNumber}");
-
-            Program.Exit(ExitCode.DisordantTokenError);
+            chunk.Error($"Not function does not exists on type '{arg}'.", ExitCode.DisordantTokenError);
 
             return null;
         }

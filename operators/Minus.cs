@@ -10,12 +10,7 @@ internal class Minus : Operator
 
         if (realParams[0].Type != realParams[1].Type)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Cannot use minus operator on types '{realParams[0]}' and '{realParams[1]}'. line {Parser.lineNumber}"
-            );
-
-            Program.Exit(ExitCode.DisordantTokenError);
+            chunk.Error($"Cannot use minus operator on types '{realParams[0]}' and '{realParams[1]}'.", ExitCode.DisordantTokenError);
             return null;
         }
 
@@ -24,12 +19,7 @@ internal class Minus : Operator
             return MinusNumbers(realParams[0], realParams[1]);
         else
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Minus operator does not exist on type '{realParams[0]}'. line {Parser.lineNumber}"
-            );
-
-            Program.Exit(ExitCode.DisordantTokenError);
+            chunk.Error($"Minus Operator Does Not Exists on type '{realParams[0]}'", ExitCode.DisordantTokenError);
             return null;
         }
     }

@@ -34,7 +34,7 @@ internal struct Token
                 Type = TokenType.Unidentified;
 
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\nUnidentified Token: {Text}. line {Parser.lineNumber}");
+                Console.WriteLine($"\nUnidentified Token: {Text}.");
                 Program.Exit(ExitCode.UnidentifiedToken);
             }
         }
@@ -62,5 +62,6 @@ internal enum TokenType
     Keyword,
     Unidentified,
     String,
-    Standart
+    Standart,
+    Function
 }

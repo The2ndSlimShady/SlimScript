@@ -7,14 +7,13 @@ internal class Equals : Operator
     public override IVariable Apply(Token[] line, SourceChunk chunk)
     {
         var arg = ReadyParams(line, chunk);
-    
+
         if (arg[0].Type != arg[1].Type)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-
-            Console.WriteLine($"Cannot apply Equals operation on types '{arg[0]}' and '{arg[1]}. line {Parser.lineNumber}'");
-
-            Program.Exit(ExitCode.DisordantTokenError);
+            chunk.Error(
+                $"Cannot apply Equals operation on types '{arg[0]}' and '{arg[1]}'.",
+                ExitCode.DisordantTokenError
+            );
 
             return null;
         }

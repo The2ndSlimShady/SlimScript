@@ -8,13 +8,15 @@ internal class SourceChunk
     public List<IVariable> Stack { get; set; }
     public SourceChunk? Parent { get; set; }
     private List<List<Token>> Lines { get; set; }
+    public Parser Parser { get; set; }
 
-    public SourceChunk(string[] source, SourceChunk? parent = null)
+    public SourceChunk(string[] source)
     {
         Stack = new();
-        Parent = parent;
+        Parent = null;
         var processedSource = PreProcessor.Process(source);
         Lines = Lexer.Lex(processedSource);
+        Parser = new(this);
     }
 
     public SourceChunk()
@@ -22,21 +24,36 @@ internal class SourceChunk
         Stack = new();
         Parent = null;
         Lines = new();
+        Parser = new(this);
     }
-    
-    public void Run()
+
+    public SourceChunk(List<List<Token>> lines, SourceChunk chunk)
     {
-        Parser.Parse(this, Lines);
+        Stack = new();
+        Parent = chunk;
+        Lines = lines;
+        Parser = new(this);
+    }
+
+    public IVariable Run()
+    {
+        var result = Parser.Parse(Lines);
 
         Destructor();
+
+        return result;
     }
 
-    public void RunInteractive(string source, int line)
+    public void Return() => Parser.turn = true;
+
+    public IVariable RunInteractive(string source, int line)
     {
         var processed = PreProcessor.ProcessLine(source);
         Lines.Add(Lexer.LexLine(processed));
 
-        Parser.ParseLine(this, Lines[line]);
+        var result = Parser.ParseLine(Lines[line]);
+
+        return result;
     }
 
     private void Destructor() => Stack.Clear();
@@ -56,7 +73,9 @@ internal class SourceChunk
         catch (Exception)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Variable named '{name}' does not exists. line {Parser.lineNumber}");
+            Console.WriteLine(
+                $"Variable named '{name}' does not exists. line {Parser.lineNumber}"
+            );
             Program.Exit(ExitCode.NullReferenceError);
             return null;
         }
@@ -73,7 +92,7 @@ internal class SourceChunk
                 $"Cannot create variable named '{name}'. A variable with same name already exists. line {Parser.lineNumber}"
             );
 
-            Program.Exit(ExitCode.MultipleDeclarationError);                                                                            
+            Program.Exit(ExitCode.MultipleDeclarationError);
         }
         else
             Stack.Add(variable);
@@ -129,5 +148,15 @@ internal class SourceChunk
         second = Stack.Any(key => key.Name == variable);
 
         return second && first;
+    }
+
+    public void Error(string message, ExitCode code)
+    {
+        message += $" line {Parser.lineNumber}";
+
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(message);
+
+        Program.Exit(code);
     }
 }

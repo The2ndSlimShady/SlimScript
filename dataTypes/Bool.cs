@@ -29,7 +29,7 @@ internal struct Bool : IVariable
         }
         else
         {
-            var rule = Parser.IdentifyAndGet(tokens.ToList());
+            var rule = Parser.IdentifyAndGet(tokens.ToList(), chunk);
 
             var obj = Variable.CreateType(rule);
 
@@ -51,12 +51,7 @@ internal struct Bool : IVariable
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(
-                    $"Cannot create Bool from return of {tokens[0].Type}. Line: {Parser.lineNumber}"
-                );
-
-                Program.Exit(ExitCode.DisordantTokenError);
+                chunk.Error($"Cannot create Bool from return of {tokens[0].Type}.", ExitCode.DisordantTokenError);
 
                 Token = new Token();
             }

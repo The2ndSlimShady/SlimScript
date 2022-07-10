@@ -35,12 +35,22 @@ internal class Program
         }
         catch (Exception e)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"An Excepton Occured During Runtime.\nMessage: {e.Message}\nline {Parser.lineNumber}"
-            );
-
-            Exit(ExitCode.RuntimeError);
+            if (e.GetType() == typeof(StackOverflowException))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(
+                    $"An Error [StakcOverFlowError] Occured due to inifinite recursion. \nMessage: {e.Message}"
+                );
+                Exit(ExitCode.RuntimeError);
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(
+                    $"An Excepton Occured During Runtime.\nMessage: {e.Message}\nline {MainChunk.Parser.lineNumber}"
+                );
+                Exit(ExitCode.RuntimeError);
+            }
         }
     }
 
