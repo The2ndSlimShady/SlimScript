@@ -19,61 +19,54 @@ internal class Lexer
 
             addLine();
 
-            for (int i = 0; i < source.Length; )
+            for (int i = 0; i < source.Length; i++)
             {
                 string element = source[i];
 
-                if (element == "EOL")
-                    addLine();
+                Token token = new(element);
 
-                while (true)
+                if (token.Type == TokenType.EOL)
                 {
-                    element = source[i];
-
-                    Token token = new(element);
-
-                    if (token.Type == TokenType.EOL)
-                    {
-                        i++;
-                        addLine();
-                        break;
-                    }
-
-                    Lines[_line - 1].Add(token);
-                    i++;
+                    addLine();
+                    continue;
                 }
+
+                Lines[_line - 1].Add(token);
             }
 
             Lines = Lines.Where(line => line.Count != 0).ToList();
 
-#if DEBUG
-            StringBuilder sb = new();
-#endif
-            StringBuilder humanized = new();
-            bool after = false;
-
-            foreach (var tokens in Lines)
+            if (!Program.interactive)
             {
-                foreach (var token in tokens)
-                {
 #if DEBUG
-                    sb.Append($"[{token}: {token.Text}]");
+                StringBuilder sb = new();
 #endif
-                    humanized.Append($"{(after ? " " : "")}{token.Text}");
-                    after = true;
+                StringBuilder humanized = new();
+                bool after = false;
+
+                foreach (var tokens in Lines)
+                {
+                    foreach (var token in tokens)
+                    {
+#if DEBUG
+                        sb.Append($"[{token}: {token.Text}]");
+#endif
+                        humanized.Append($"{(after ? " " : "")}{token.Text}");
+                        after = true;
+                    }
+
+#if DEBUG
+                    sb.AppendLine();
+#endif
+                    humanized.AppendLine();
+                    after = false;
                 }
 
 #if DEBUG
-                sb.AppendLine();
+                File.WriteAllText("post_lexer.ss", sb.ToString());
 #endif
-                humanized.AppendLine();
-                after = false;
+                File.WriteAllText("post_lexer_humanized.ss", humanized.ToString());
             }
-
-#if DEBUG
-            File.WriteAllText("post_lexer.ss", sb.ToString());
-#endif
-            File.WriteAllText("post_lexer_humanized.ss", humanized.ToString());
 
             return Lines;
         }
@@ -82,5 +75,22 @@ internal class Lexer
             Program.Exit(ExitCode.LexerError);
             return null;
         }
+    }
+
+    public static List<Token> LexLine(string[] line)
+    {
+        List<Token> result = new();
+
+        foreach (var item in line)
+        {
+            Token token = new(item);
+
+            if (token.Type == TokenType.EOL)
+                break;
+            
+            result.Add(token);
+        }
+
+        return result;
     }
 }

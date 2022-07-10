@@ -17,6 +17,30 @@ internal class SourceChunk
         Lines = Lexer.Lex(processedSource);
     }
 
+    public SourceChunk()
+    {
+        Stack = new();
+        Parent = null;
+        Lines = new();
+    }
+    
+    public void Run()
+    {
+        Parser.Parse(this, Lines);
+
+        Destructor();
+    }
+
+    public void RunInteractive(string source, int line)
+    {
+        var processed = PreProcessor.ProcessLine(source);
+        Lines.Add(Lexer.LexLine(processed));
+
+        Parser.ParseLine(this, Lines[line]);
+    }
+
+    private void Destructor() => Stack.Clear();
+
     public IVariable? GetVar(string name)
     {
         try
@@ -76,6 +100,24 @@ internal class SourceChunk
         }
     }
 
+    public void DeleteVar(string name)
+    {
+        if (!VarExists(name))
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(
+                $"Cannot delete value of unexistent variable named '{name}'. line {Parser.lineNumber}"
+            );
+
+            Program.Exit(ExitCode.NullReferenceError);
+        }
+        else
+        {
+            var tmp = Stack.Where(v => v.Name != name).ToList();
+            Stack = tmp;
+        }
+    }
+
     public bool VarExists(string variable)
     {
         bool first = true;
@@ -87,17 +129,5 @@ internal class SourceChunk
         second = Stack.Any(key => key.Name == variable);
 
         return second && first;
-    }
-
-    public void Run()
-    {
-        Parser.Parse(this, Lines);
-
-        Destructor();
-    }
-
-    private void Destructor()
-    {
-        Stack.Clear();
     }
 }

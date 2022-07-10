@@ -59,25 +59,75 @@ internal class PreProcessor
             token = new();
         }
 
-#if DEBUG
-        StringBuilder b = new();
-        bool isIndent = true;
-        foreach (var item in processedSource)
+        if (!Program.interactive)
         {
-            if (item != "EOL")
+#if DEBUG
+            StringBuilder b = new();
+            bool isIndent = true;
+            foreach (var item in processedSource)
             {
-                b.Append($" {item}");
-                isIndent = false;
+                if (item != "EOL")
+                {
+                    b.Append($" {item}");
+                    isIndent = false;
+                }
+                else
+                {
+                    b.Append(Environment.NewLine);
+                    isIndent = true;
+                }
+            }
+
+            File.WriteAllText("post_process.ss", b.ToString());
+#endif
+        }
+
+        return processedSource.ToArray();
+    }
+
+    public static string[] ProcessLine(string line)
+    {
+        List<string> processedSource = new();
+
+        bool isString = false;
+        StringBuilder token = new();
+
+        for (int j = 0; j < line.Length; j++)
+        {
+            char item = line[j];
+
+            if (isString)
+            {
+                token.Append(item);
+
+                if (item == '"')
+                    isString = false;
+            }
+            else if (item == ' ')
+            {
+                string val = token.ToString();
+
+                if (!string.IsNullOrEmpty(val))
+                {
+                    processedSource.Add(val);
+                    token = new();
+                }
             }
             else
             {
-                b.Append(Environment.NewLine);
-                isIndent = true;
+                if (item == '-' && line[j + 1] == '-')
+                    break;
+                if (item == '"')
+                    isString = true;
+
+                token.Append(item);
             }
         }
 
-        File.WriteAllText("post_process.ss", b.ToString());
-#endif
+        if (token.Length != 0)
+            processedSource.Add(token.ToString());
+
+        processedSource.Add("EOL");
 
         return processedSource.ToArray();
     }

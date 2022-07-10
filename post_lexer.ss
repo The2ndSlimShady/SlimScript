@@ -22,3 +22,8 @@
 [<Standart>: write][<String>: "point2 : "][<Identifier>: point2]
 [<Standart>: write][<String>: "is point lesser equal to point2? : "][<Operator>: <=][<Identifier>: point][<Identifier>: point2]
 [<Standart>: write][<String>: "is num greater equal to point? : "][<Operator>: >=][<Identifier>: num][<Identifier>: point]
+[<Standart>: write][<String>: "2 * 15 = "][<Operator>: *][<Number>: 2][<Number>: 15]
+[<Standart>: write][<String>: "2 * "Kamil" = "][<Operator>: *][<Number>: 2][<String>: "Kamil"]
+[<Standart>: write][<String>: "point2 : "][<Identifier>: point2]
+[<Standart>: write][<String>: "point : "][<Identifier>: point]
+[<Standart>: write][<String>: "point2 / point = "][<Operator>: /][<Identifier>: point2][<Identifier>: point]

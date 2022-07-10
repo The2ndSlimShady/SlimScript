@@ -46,7 +46,7 @@ Run your script!
 - [x] Bool Type
 - [x] Number Type
 - [x] String Type
-- [ ] Operators
+- [x] Operators
   - [x] Logical Operations
     - [x] Both
     - [x] Not
@@ -57,19 +57,21 @@ Run your script!
     - [x] Greater Than  (>)
     - [x] Lesser Equal  (<=)
     - [x] Greater Equal (>=)
-  - [ ] Numeric Operators
+  - [x] Numeric Operators
     - [x] Plus
     - [x] Minus
-    - [ ] Multiply
-    - [ ] Divide
+    - [x] Multiply
+    - [x] Divide
 - [ ] Standart Library Functions
   - [x] Define
   - [x] Set
   - [x] Write
   - [ ] Do
+  - [x] Delete
 - [ ] Blocks
   - [ ] Custom Functions
   - [ ] If-Else Blocks
 - [ ] Other Features
   - [ ] Callback To C#
   - [ ] Using .Net Libraries
+  - [x] Interactive Mode

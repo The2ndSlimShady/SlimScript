@@ -22,3 +22,8 @@ define point2 as point
 write "point2 : " point2
 write "is point lesser equal to point2? : " <= point point2
 write "is num greater equal to point? : " >= num point
+write "2 * 15 = " * 2 15
+write "2 * "Kamil" = " * 2 "Kamil"
+write "point2 : " point2
+write "point : " point
+write "point2 / point = " / point2 point
