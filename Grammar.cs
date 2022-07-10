@@ -23,5 +23,5 @@ internal class Grammar
 
     public static string[] keywords = { "as", "begin", "end", "to" };
 
-    public static string[] standarts = { "define", "function", "set", "do", "write", "delete" };
+    public static string[] standarts = { "define", "func", "set", "do", "write", "delete", "return" };
 }

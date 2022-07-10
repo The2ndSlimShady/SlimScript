@@ -8,12 +8,10 @@ internal class Divide : Operator
 
         if (realParams[0].Type != realParams[1].Type)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Cannot multiply types '{realParams[0]}' with '{realParams[1]}'. line {Parser.lineNumber}"
+            chunk.Error(
+                $"Cannot multiply types '{realParams[0]}' with '{realParams[1]}'.",
+                ExitCode.DisordantTokenError
             );
-
-            Program.Exit(ExitCode.DisordantTokenError);
             return null;
         }
 
@@ -23,7 +21,7 @@ internal class Divide : Operator
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(
-                $"Plus operator does not exist on type '{realParams[0]}'. line {Parser.lineNumber}"
+                $"Plus operator does not exist on type '{realParams[0]}'. line {chunk.Parser.lineNumber}"
             );
 
             Program.Exit(ExitCode.DisordantTokenError);

@@ -62,16 +62,20 @@ Run your script!
     - [x] Minus
     - [x] Multiply
     - [x] Divide
-- [ ] Standart Library Functions
+- [x] Standart Library Functions
   - [x] Define
   - [x] Set
   - [x] Write
-  - [ ] Do
+  - [x] Do
   - [x] Delete
+  - [x] Return 
 - [ ] Blocks
   - [ ] Custom Functions
+    - [x] Parameterless Functions
+    - [ ] Functions With Parameters
   - [ ] If-Else Blocks
 - [ ] Other Features
   - [ ] Callback To C#
   - [ ] Using .Net Libraries
   - [x] Interactive Mode
+  - [x] Recursion

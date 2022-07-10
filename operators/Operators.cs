@@ -30,7 +30,7 @@ internal abstract class Operator
             {
                 realParams.Add(
                     (
-                        Variable.CreateType(Parser.IdentifyAndGet(parameters[i..].ToList()))
+                        Variable.CreateType(Parser.IdentifyAndGet(parameters[i..].ToList(), chunk))
                         as Standart
                     )
                         .Run(parameters[i..].ToList(), chunk)
@@ -43,7 +43,7 @@ internal abstract class Operator
             {
                 realParams.Add(
                     (
-                        Variable.CreateType(Parser.IdentifyAndGet(parameters[i..].ToList()))
+                        Variable.CreateType(Parser.IdentifyAndGet(parameters[i..].ToList(), chunk))
                         as Operator
                     )
                         .Apply(parameters[i..], chunk)
@@ -54,12 +54,7 @@ internal abstract class Operator
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(
-                    $"Cannot use token '{param.Text}' as operator parameter. line {Parser.lineNumber}"
-                );
-
-                Program.Exit(ExitCode.DisordantTokenError);
+                chunk.Error($"Cannot use token '{param.Text}' as operator parameter.", ExitCode.DisordantTokenError);
             }
         }
 

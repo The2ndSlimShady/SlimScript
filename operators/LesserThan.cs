@@ -10,11 +10,10 @@ internal class LesserThan : Operator
 
         if (arg[0].Type != arg[1].Type || arg.Any(t => t.Type != TokenType.Number))
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-
-            Console.WriteLine($"Cannot compare non-numeric types '{arg[0]}' and '{arg[1]}. line {Parser.lineNumber}'");
-
-            Program.Exit(ExitCode.DisordantTokenError);
+            chunk.Error(
+                $"Cannot compare non-numeric types '{arg[0]}' and '{arg[1]}'.",
+                ExitCode.DisordantTokenError
+            );
 
             return null;
         }

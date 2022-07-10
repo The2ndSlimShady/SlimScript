@@ -1,0 +1,16 @@
+namespace SlimScript;
+
+internal class Do : Standart
+{
+    public override IVariable Run(List<Token> line, SourceChunk chunk)
+    {
+        var name = line[1];
+
+        if (name.Type != TokenType.Identifier)
+            chunk.Error($"Cannot execute non-function variable '{name.Text}'. Given token is not an identifier.", ExitCode.GrammarError);
+
+        var variable = (Function)chunk.GetVar(name.Text);
+
+        return variable.Run();
+    }
+}

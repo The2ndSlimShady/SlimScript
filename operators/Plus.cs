@@ -10,12 +10,10 @@ internal class Plus : Operator
 
         if (realParams[0].Type != realParams[1].Type)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Cannot sum up types '{realParams[0]}' with '{realParams[1]}'. line {Parser.lineNumber}"
+            chunk.Error(
+                $"Cannot use minus operator on types '{realParams[0]}' and '{realParams[1]}'.",
+                ExitCode.DisordantTokenError
             );
-
-            Program.Exit(ExitCode.DisordantTokenError);
             return null;
         }
 
@@ -25,12 +23,10 @@ internal class Plus : Operator
             return SumStrings(realParams[0], realParams[1]);
         else
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Plus operator does not exist on type '{realParams[0]}'. line {Parser.lineNumber}"
+            chunk.Error(
+                $"Minus Operator Does Not Exists on type '{realParams[0]}'",
+                ExitCode.DisordantTokenError
             );
-
-            Program.Exit(ExitCode.DisordantTokenError);
             return null;
         }
     }

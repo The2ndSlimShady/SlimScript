@@ -16,43 +16,42 @@ internal class Variable
 
             Token param = parameters[i];
 
-            if (param.Type == TokenType.Number || param.Type == TokenType.String || param.Type == TokenType.Boolean)
+            if (
+                param.Type == TokenType.Number
+                || param.Type == TokenType.String
+                || param.Type == TokenType.Boolean
+            )
                 realParam = param;
             else if (param.Type == TokenType.Identifier)
                 realParam = Identifier.Identify(parameters[i..], chunk);
             else if (param.Type == TokenType.Standart)
                 realParam = (
-                    CreateType(Parser.IdentifyAndGet(parameters[i..].ToList())) as Standart
-                )
-                    .Run(
-                        parameters[i..].ToList(),
-                        chunk
-                    );
+                    CreateType(Parser.IdentifyAndGet(parameters[i..].ToList(), chunk)) as Standart
+                ).Run(parameters[i..].ToList(), chunk);
             else if (param.Type == TokenType.Operator)
                 realParam = (
-                    CreateType(Parser.IdentifyAndGet(parameters[i..].ToList())) as Operator
-                )
-                    .Apply(parameters[i..], chunk);
+                    CreateType(Parser.IdentifyAndGet(parameters[i..].ToList(), chunk)) as Operator
+                ).Apply(parameters[i..], chunk);
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(
-                    $"Cannot use token '{param.Text}' as operator parameter. line {Parser.lineNumber}"
+                chunk.Error(
+                    $"Cannot use token '{param.Text}' as operator parameter.",
+                    ExitCode.DisordantTokenError
                 );
 
-                Program.Exit(ExitCode.DisordantTokenError);
-
-                return null;
+                return new Number(new Token("-1"));
             }
         }
 
         if (realParam == null)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Cannot define variable from null value. line {Parser.lineNumber}");
+            Console.WriteLine(
+                $"Cannot define variable from null value. line {chunk.Parser.lineNumber}"
+            );
 
             Program.Exit(ExitCode.NullReferenceError);
-            return null;
+            return new Number(new Token("-1"));
         }
 
         if (parameters.Length == 1 && realParam.GetType() == typeof(Token))
@@ -73,7 +72,7 @@ internal class Variable
                 case TokenType.Boolean:
                     return new Bool(parameters, chunk);
                 default:
-                    return null;
+                    return new Number(new Token("-1"));
             }
         }
     }

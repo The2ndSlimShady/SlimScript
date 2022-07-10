@@ -11,12 +11,10 @@ internal class Multiply : Operator
 
         if (realParams.Any(t => t.Type != TokenType.Number && t.Type != TokenType.String))
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Cannot multiply types '{realParams[0]}' with '{realParams[1]}'. line {Parser.lineNumber}"
+            chunk.Error(
+                $"Cannot multiply types '{realParams[0]}' with '{realParams[1]}'",
+                ExitCode.DisordantTokenError
             );
-
-            Program.Exit(ExitCode.DisordantTokenError);
             return null;
         }
 
@@ -33,12 +31,10 @@ internal class Multiply : Operator
                 return MultiplyStrings(realParams[0], realParams[1]);
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(
-                    $"Plus operator does not exist on type '{realParams[0]}'. line {Parser.lineNumber}"
+                chunk.Error(
+                    $"Multiply Operator Does Not Exists on type '{realParams[0]}'",
+                    ExitCode.DisordantTokenError
                 );
-
-                Program.Exit(ExitCode.DisordantTokenError);
                 return null;
             }
         }
@@ -62,7 +58,8 @@ internal class Multiply : Operator
         Number num = new(times);
 
         Word val = new();
-        Token token = new($"\"{string.Concat(Enumerable.Repeat(word.Value, (int)Math.Floor(num.Val)))}\"");
+        Token token =
+            new($"\"{string.Concat(Enumerable.Repeat(word.Value, (int)Math.Floor(num.Val)))}\"");
         val.Val = token.Text;
         val.Token = token;
 
