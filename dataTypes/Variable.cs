@@ -20,6 +20,10 @@ internal class Variable
                 param.Type == TokenType.Number
                 || param.Type == TokenType.String
                 || param.Type == TokenType.Boolean
+<<<<<<< HEAD
+=======
+                || param.Type == TokenType.Function
+>>>>>>> dev
             )
                 realParam = param;
             else if (param.Type == TokenType.Identifier)
@@ -67,6 +71,7 @@ internal class Variable
                     return new Number(parameters, chunk);
                 case TokenType.String:
                     return new Word(parameters, chunk);
+                case TokenType.Function:
                 case TokenType.Identifier:
                     return Identifier.Identify(parameters, chunk);
                 case TokenType.Boolean:

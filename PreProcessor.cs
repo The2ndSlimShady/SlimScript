@@ -101,7 +101,12 @@ internal class PreProcessor
                 token.Append(item);
 
                 if (item == '"')
+                {
                     isString = false;
+
+                    processedSource.Add(token.ToString());
+                    token = new();
+                }
             }
             else if (item == ' ')
             {

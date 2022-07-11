@@ -1,9 +1,10 @@
-func ret begin
-    define sayı as 5
-    write * sayı "Fatih"
+func execute_func function param begin
+    do function param
 end
 
-do ret
-do ret
-do ret
-do ret
+func func_to_execute param begin
+    write param
+end
+
+-- Passing function as parameter and then executing it
+do execute_func func_to_execute "Yusuf"
