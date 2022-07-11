@@ -2,7 +2,7 @@
 
 Slim script is an interpreted scripting language for embedding into your
 projects. The interpreter is written in C# so it can (at least to a certain level)
-interact with .Net ecosystem.
+interact with .Net echosystem.
 
 ## Notes
 
@@ -17,7 +17,6 @@ finding it, it should be placed at the same directory as input file.
 ## Contributors and Special Thanks 
 
 - [@The2ndSlimShady](https://www.github.com/The2ndSlimShady) coding and design.
-
 
 ## How To Work With SlimScript
 
