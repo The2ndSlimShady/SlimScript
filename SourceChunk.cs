@@ -7,7 +7,7 @@ internal class SourceChunk
 {
     public List<IVariable> Stack { get; set; }
     public SourceChunk? Parent { get; set; }
-    private List<List<Token>> Lines { get; set; }
+    public List<List<Token>> Lines { get; set; }
     public Parser Parser { get; set; }
 
     public SourceChunk(string[] source)
@@ -35,9 +35,9 @@ internal class SourceChunk
         Parser = new(this);
     }
 
-    public IVariable Run()
+    public IVariable Run(int lineNum = 0)
     {
-        var result = Parser.Parse(Lines);
+        var result = Parser.Parse(Lines, lineNum);
 
         Destructor();
 
@@ -58,7 +58,7 @@ internal class SourceChunk
 
     private void Destructor() => Stack.Clear();
 
-    public IVariable? GetVar(string name)
+    public IVariable? GetVar(string name, SourceChunk child = null)
     {
         try
         {
@@ -68,13 +68,13 @@ internal class SourceChunk
                 return Variable.Copy(variable);
             }
             else
-                return Parent?.GetVar(name);
+                return Parent.GetVar(name, this);
         }
-        catch (Exception)
+        catch (Exception e)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(
-                $"Variable named '{name}' does not exists. line {Parser.lineNumber}"
+                $"Variable named '{name}' does not exists. line {(child == null ? Parser.lineNumber : child.Parser.lineNumber)}"
             );
             Program.Exit(ExitCode.NullReferenceError);
             return null;

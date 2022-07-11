@@ -1,8 +1,0 @@
-[<Standart>: func][<Identifier>: ret][<Keyword>: begin]
-[<Standart>: define][<Identifier>: sayı][<Keyword>: as][<Number>: 5]
-[<Standart>: write][<Operator>: *][<Identifier>: sayı][<String>: "Fatih"]
-[<Keyword>: end]
-[<Standart>: do][<Identifier>: ret]
-[<Standart>: do][<Identifier>: ret]
-[<Standart>: do][<Identifier>: ret]
-[<Standart>: do][<Identifier>: ret]

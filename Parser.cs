@@ -1,20 +1,24 @@
+using System.Runtime.Serialization;
+
 namespace SlimScript;
 
 internal class Parser
 {
-    public int lineNumber = 0;
+    public int lineNumber;
 
     public bool turn = false;
 
-    public bool function = false;
+    public (int level, string block) block = (0, "");
 
     public SourceChunk Chunk { get; set; }
 
     public Parser(SourceChunk chunk) => Chunk = chunk;
 
-    public IVariable Parse(List<List<Token>> lines)
+    public IVariable Parse(List<List<Token>> lines, int lineNum = 0)
     {
         turn = false;
+        lineNumber = lineNum;
+        block = (0, "");
         IVariable result = new Number();
 
         for (int i = 0; i < lines.Count; i++)
@@ -33,8 +37,19 @@ internal class Parser
     {
         lineNumber++;
 
-        if (function)
-            return new Func().Run(line, Chunk);
+        if (block.level != 0)
+        {
+            var exprBlock = Variable.CreateType(block.block);
+
+            if (!exprBlock.GetType().IsSubclassOf(typeof(Standart)))
+            {
+                Chunk.Error($"Error at line '{lineNumber}'.", ExitCode.GrammarError);
+
+                return new Number(new Token("-1"));
+            }
+
+            return (exprBlock as Standart).Run(line, Chunk);
+        }
 
         string? rule = null;
         object? obj;
@@ -46,12 +61,7 @@ internal class Parser
         }
         catch (Exception)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Cannot execute command '{rule?.ToLower()}'. Specified command not found. line {lineNumber}"
-            );
-
-            Program.Exit(ExitCode.RuntimeError);
+            Chunk.Error($"Cannot execute command '{rule?.ToLower()}'.", ExitCode.RuntimeError);
 
             return new Number(new Token("-1"));
         }
@@ -60,12 +70,7 @@ internal class Parser
             return (obj as Standart).Run(line, Chunk);
         else
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Error at line '{lineNumber}'. Cant parse expression '{string.Join(" ", line)}'"
-            );
-
-            Program.Exit(ExitCode.GrammarError);
+            Chunk.Error($"Given expression '{rule}' is not a Standart function.", ExitCode.GrammarError);
 
             return new Number(new Token("-1"));
         }
@@ -73,23 +78,26 @@ internal class Parser
 
     public static string IdentifyAndGet(List<Token> line, SourceChunk chunk)
     {
+        var rule = line[0].Text;
+
+        return IdentifyAndGet(rule, chunk);
+    }
+
+    public static string IdentifyAndGet(string expression, SourceChunk chunk)
+    {
         try
         {
-            var rule = line[0].Text;
-
-            if (Grammar.standarts.Contains(rule))
-                return $"{rule[0].ToString().ToUpper()}{rule[1..]}";
+            if (Grammar.standarts.Contains(expression))
+                return $"{expression[0].ToString().ToUpper()}{expression[1..]}";
             else
-                return Grammar.operators[rule];
+                return Grammar.operators[expression];
         }
         catch (Exception)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Cannot find grammar rule of expression '{string.Join(' ', line)}'. line {chunk.Parser.lineNumber}"
+            chunk.Error(
+                $"Cannot find grammar rule of expression '{expression}'.",
+                ExitCode.GrammarError
             );
-
-            Program.Exit(ExitCode.GrammarError);
 
             return "";
         }
