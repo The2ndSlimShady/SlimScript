@@ -7,11 +7,7 @@ internal class SourceChunk
 {
     public List<IVariable> Stack { get; set; }
     public SourceChunk? Parent { get; set; }
-<<<<<<< HEAD
-    private List<List<Token>> Lines { get; set; }
-=======
     public List<List<Token>> Lines { get; set; }
->>>>>>> dev
     public Parser Parser { get; set; }
 
     public SourceChunk(string[] source)
@@ -39,15 +35,9 @@ internal class SourceChunk
         Parser = new(this);
     }
 
-<<<<<<< HEAD
-    public IVariable Run()
-    {
-        var result = Parser.Parse(Lines);
-=======
     public IVariable Run(int lineNum = 0)
     {
         var result = Parser.Parse(Lines, lineNum);
->>>>>>> dev
 
         Destructor();
 
@@ -84,11 +74,7 @@ internal class SourceChunk
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(
-<<<<<<< HEAD
-                $"Variable named '{name}' does not exists. line {Parser.lineNumber}"
-=======
                 $"Variable named '{name}' does not exists. line {(child == null ? Parser.lineNumber : child.Parser.lineNumber)}"
->>>>>>> dev
             );
             Program.Exit(ExitCode.NullReferenceError);
             return null;
@@ -153,20 +139,17 @@ internal class SourceChunk
 
     public bool VarExists(string variable)
     {
-        bool first = true;
-        bool second = true;
-
-        if (Parent != null)
-            first = Parent.VarExists(variable);
-
-        second = Stack.Any(key => key.Name == variable);
-
-        return second && first;
+        if (Stack.Any(v => v.Name == variable))
+            return true;
+        else
+            return Parent?.VarExists(variable) ?? false;
     }
 
     public void Error(string message, ExitCode code)
     {
-        message += $" line {Parser.lineNumber}";
+        var line = Lines[Parser.lineNumber - 1];
+        message =
+            $"{message}\nLine: {Parser.lineNumber}\nExpression: {string.Join(' ', line.Select(t => t.Text))}";
 
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine(message);

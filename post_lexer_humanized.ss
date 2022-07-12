@@ -1,8 +1,7 @@
-func ret begin
-define sayı as 5
-write * sayı "Fatih"
+func factorial num begin
+if = num 1 then
+return 1
 end
-do ret
-do ret
-do ret
-do ret
+return * num do factorial - num 1
+end
+write do factorial 5

@@ -1,10 +1,9 @@
-func execute_func function param begin
-    do function param
+func factorial num begin
+    if = num 1 then
+        return 1
+    end
+
+    return * num do factorial - num 1
 end
 
-func func_to_execute param begin
-    write param
-end
-
--- Passing function as parameter and then executing it
-do execute_func func_to_execute "Yusuf"
+write do factorial 5

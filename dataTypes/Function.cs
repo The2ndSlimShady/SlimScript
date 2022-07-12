@@ -4,35 +4,13 @@ internal struct Function : IVariable
 {
     public Token Token { get; set; }
 
-<<<<<<< HEAD
-    public SourceChunk Val;
-=======
     public (SourceChunk Val, int begin, int count, string[] param) Val;
->>>>>>> dev
 
     public string Name { get; set; } = "";
 
     public object Value
     {
         get => Val;
-<<<<<<< HEAD
-        set => Val = (SourceChunk)value;
-    }
-
-    public Function(SourceChunk code)
-    {
-        Val = code;
-
-        Token token = new()
-        {
-            Type = TokenType.Function
-        };
-
-        Token = token;
-    }
-
-    public IVariable Run() => Val.Run();
-=======
         set => Val = (ValueTuple<SourceChunk, int, int, string[]>)value;
     }
 
@@ -58,16 +36,17 @@ internal struct Function : IVariable
     {
         List<IVariable> parameters = new(Val.count);
 
+        SourceChunk tempChunk = new(Val.Val.Lines, Val.Val.Parent);
+
         for (int i = 0; i < Val.count; i++)
             parameters.Add(Variable.Create(paramTokens[i..(i+1)], Val.Val.Parent));
 
         for (int i = 0; i < parameters.Count; i++)
         {
             IVariable param = parameters[i];
-            Val.Val.CreateVar(Val.param[i], param);
+            tempChunk.CreateVar(Val.param[i], param);
         }
 
-        return Val.Val.Run(Val.begin);
+        return tempChunk.Run(Val.begin);
     }
->>>>>>> dev
 }

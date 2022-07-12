@@ -14,6 +14,6 @@ internal class Set : Standart
 
         chunk.SetVar(name.Text, variable);
 
-        return chunk.GetVar(variable.Token.Text);
+        return chunk.GetVar(name.Text);
     }
 }

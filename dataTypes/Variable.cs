@@ -20,10 +20,7 @@ internal class Variable
                 param.Type == TokenType.Number
                 || param.Type == TokenType.String
                 || param.Type == TokenType.Boolean
-<<<<<<< HEAD
-=======
                 || param.Type == TokenType.Function
->>>>>>> dev
             )
                 realParam = param;
             else if (param.Type == TokenType.Identifier)

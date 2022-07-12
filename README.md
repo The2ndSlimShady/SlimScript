@@ -79,11 +79,16 @@ Or try the interactive mode!
   - [x] Delete
   - [x] Return 
 - [ ] Blocks
-  - [ ] Custom Functions
+  - [x] Custom Functions
     - [x] Parameterless Functions
     - [x] Functions With Parameters
     - [x] Nested Functions 
   - [ ] If-Else Blocks
+    - [x] If Blocks
+    - [x] Elif Blocks
+    - [ ] Else Blocks
+    - [x] Nested If-Else Blocks
+- [ ] Standart Libraries
 - [ ] Other Features
   - [ ] Callback To C#
   - [ ] Using .Net Libraries

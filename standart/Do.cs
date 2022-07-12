@@ -10,13 +10,8 @@ internal class Do : Standart
             chunk.Error($"Cannot execute non-function variable '{name.Text}'. Given token is not an identifier.", ExitCode.GrammarError);
 
         var variable = (Function)chunk.GetVar(name.Text);
-<<<<<<< HEAD
-
-        return variable.Run();
-=======
         var parameters = Operator.ReadyParams(line.ToArray()[1..], chunk, 0).ToArray();
 
         return variable.Run(parameters);
->>>>>>> dev
     }
 }

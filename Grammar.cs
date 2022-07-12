@@ -21,7 +21,19 @@ internal class Grammar
             { "any", "Any" }
         };
 
-    public static string[] keywords = { "as", "begin", "end", "to" };
+    public static string[] keywords = { "as", "begin", "end", "to", "then" };
 
-    public static string[] standarts = { "define", "func", "set", "do", "write", "delete", "return" };
+    public static string[] standarts =
+    {
+        "define",
+        "func",
+        "set",
+        "do",
+        "write",
+        "delete",
+        "return",
+        "if",
+        "elif",
+        "else"
+    };
 }

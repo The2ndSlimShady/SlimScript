@@ -4,33 +4,17 @@ internal class Func : Standart
 {
     private static List<List<Token>>? _line;
     private static string _name = "";
-<<<<<<< HEAD
-
-    public override IVariable Run(List<Token> line, SourceChunk chunk)
-    {
-
-=======
     private static int _currentLevel = 0;
     private static string[] _params = { };
 
     public override IVariable Run(List<Token> line, SourceChunk chunk)
     {
->>>>>>> dev
         if (_line == null)
         {
             _line = new();
             _line.Add(new());
         }
 
-<<<<<<< HEAD
-        var variable = new Token(" ");
-
-        if (!chunk.Parser.function)
-        {
-            variable = line[1];
-            _name = variable.Text;
-            chunk.Parser.function = true;
-=======
         var variable = new Token("someRandomToken");
         int i = 0;
 
@@ -38,7 +22,7 @@ internal class Func : Standart
         {
             if (line.IndexOf(new("begin")) == -1)
                 chunk.Error(
-                    $"Cannot find keyword 'begin' to start block in line '{string.Join(' ', line)}'.",
+                    $"Cannot find keyword 'begin' to start block in line.",
                     ExitCode.GrammarError
                 );
 
@@ -50,7 +34,6 @@ internal class Func : Standart
             _params = line.ToArray()[2..line.IndexOf(new("begin"))].Select(t => t.Text).ToArray();
 
             i = line.IndexOf(new("begin")) + 1;
->>>>>>> dev
         }
 
         if (variable.Type != TokenType.Identifier)
@@ -59,27 +42,11 @@ internal class Func : Standart
                 ExitCode.DisordantTokenError
             );
 
-<<<<<<< HEAD
-        int i = line[0].Text == "func" ? 3 : 0;
-
-=======
->>>>>>> dev
         for (; i < line.Count; i++)
         {
             Token token = line[i];
 
-<<<<<<< HEAD
-            if (token.Text == "end")
-            {
-                chunk.Parser.function = false;
-                return Create(chunk);
-=======
-            if (
-                token.Text == "func"
-                || token.Text == "if"
-                || token.Text == "elif"
-                || token.Text == "else"
-            )
+            if (token.Text == "begin" || token.Text == "if")
                 chunk.Parser.block.level++;
 
             if (token.Text == "end")
@@ -88,7 +55,6 @@ internal class Func : Standart
 
                 if (chunk.Parser.block.level == _currentLevel - 1)
                     return Create(chunk);
->>>>>>> dev
             }
 
             _line.Last().Add(token);
@@ -103,22 +69,15 @@ internal class Func : Standart
         _line = _line.Where(l => l.Count != 0).ToList();
 
         SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
-<<<<<<< HEAD
-        Function func = new(chunk) { Name = _name };
-=======
         Function func = new(chunk, parentChunk, _params, _params.Length, _name);
->>>>>>> dev
 
         parentChunk.CreateVar(_name, func);
 
         _line.Clear();
         _line = null;
         _name = "";
-<<<<<<< HEAD
-=======
         _currentLevel = 0;
         _params = Array.Empty<string>();
->>>>>>> dev
 
         return parentChunk.GetVar(func.Name);
     }
