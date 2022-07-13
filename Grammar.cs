@@ -15,7 +15,6 @@ internal class Grammar
             { ">", "GreaterThan" },
             { ">=", "GreaterEqual" },
             { "<=", "LesserEqual" },
-            { "%", "Modulus" },
             { "not", "Not" },
             { "both", "Both" },
             { "any", "Any" }

@@ -1,7 +1,10 @@
- define a as 5
+ define i as 8900
+ define fact as 1
 
- while > a 0 begin
- write a
+ while != i 1 begin
+ set fact to * fact i
 
- set a to - a 1
+ set i to - i 1
  end
+
+ write fact

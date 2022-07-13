@@ -1,5 +1,7 @@
-define a as 5
-while > a 0 begin
-write a
-set a to - a 1
+define i as 8900
+define fact as 1
+while != i 1 begin
+set fact to * fact i
+set i to - i 1
 end
+write fact
