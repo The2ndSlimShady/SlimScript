@@ -83,11 +83,13 @@ Or try the interactive mode!
     - [x] Parameterless Functions
     - [x] Functions With Parameters
     - [x] Nested Functions 
-  - [ ] If-Else Blocks
+  - [x] If-Else Blocks
     - [x] If Blocks
     - [x] Elif Blocks
-    - [ ] Else Blocks
+    - [x] Else Blocks
     - [x] Nested If-Else Blocks
+  - [ ] Loops
+    - [x] While Loops
 - [ ] Standart Libraries
 - [ ] Other Features
   - [ ] Callback To C#

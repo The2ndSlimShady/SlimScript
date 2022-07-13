@@ -1,9 +1,7 @@
-func factorial num begin
-    if = num 1 then
-        return 1
-    end
+define a as 5
 
-    return * num do factorial - num 1
+while > a 0 begin
+    write a
+
+    set a to - a 1
 end
-
-write do factorial 5

@@ -34,6 +34,7 @@ internal class Grammar
         "return",
         "if",
         "elif",
-        "else"
+        "else",
+        "while"
     };
 }

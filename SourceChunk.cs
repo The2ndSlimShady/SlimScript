@@ -60,7 +60,7 @@ internal class SourceChunk
 
     public IVariable? GetVar(string name, SourceChunk child = null)
     {
-        try
+        if (VarExists(name))
         {
             if (Stack.Any(obj => obj.Name == name))
             {
@@ -70,7 +70,7 @@ internal class SourceChunk
             else
                 return Parent.GetVar(name, this);
         }
-        catch (Exception e)
+        else
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(
@@ -111,11 +111,16 @@ internal class SourceChunk
         }
         else
         {
-            var tmp = Stack.Where(v => v.Name != name).ToList();
-            variable.Name = name;
-            tmp.Add(variable);
+            if (Stack.Any(v => v.Name == name))
+            {
+                var tmp = Stack.Where(v => v.Name != name).ToList();
+                variable.Name = name;
+                tmp.Add(variable);
 
-            Stack = tmp;
+                Stack = tmp;
+            }
+            else
+                Parent.SetVar(name, variable);
         }
     }
 

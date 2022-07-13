@@ -81,8 +81,8 @@ internal class If : Standart
                     }
                     else if (token.Text == "else")
                     {
-                        // chunk.Parser.block = (chunk.Parser.block.level, "Else");
-                        // return new Elif().Run(line, chunk);
+                        chunk.Parser.block = (chunk.Parser.block.level, "Else");
+                        return new Else().Run(line, chunk);
                     }
                 }
             }

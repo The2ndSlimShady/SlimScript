@@ -12,6 +12,6 @@ internal class Write : Standart
 
         Console.WriteLine(writeStr);
 
-        return new Word();
+        return new Word(new($"\"{writeStr}\""));
     }
 }

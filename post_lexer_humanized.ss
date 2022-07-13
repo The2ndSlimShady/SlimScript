@@ -1,7 +1,5 @@
-func factorial num begin
-if = num 1 then
-return 1
+define a as 5
+while > a 0 begin
+write a
+set a to - a 1
 end
-return * num do factorial - num 1
-end
-write do factorial 5
