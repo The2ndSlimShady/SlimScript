@@ -9,9 +9,7 @@ interact with .Net echosystem.
 
 ## Docs
 - [Docs](docs/BASICS.md)
-
----------------------------------------------------
-<br/>
+- 
 
 ## Notes
 
@@ -73,6 +71,11 @@ Or try the interactive mode!
 - [x] Bool Type
 - [x] Number Type
 - [x] String Type
+- [ ] Arrays
+  - [x] Basic Arrays
+  - [ ] Indexers
+  - [ ] Changing Values of Indexes
+  - [ ] Adding Values 
 - [x] Operators
   - [x] Logical Operations
     - [x] Both
@@ -108,6 +111,8 @@ Or try the interactive mode!
     - [x] Nested If-Else Blocks
   - [ ] Loops
     - [x] While Loops
+    - [x] Foreach Loops
+    - [ ] For Loops
 - [ ] Standart Libraries
 - [ ] Other Features
   - [ ] Callback To C#
