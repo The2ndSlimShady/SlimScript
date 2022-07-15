@@ -9,7 +9,6 @@ interact with .Net echosystem.
 
 ## Docs
 - [Docs](docs/BASICS.md)
-- 
 
 ## Notes
 
