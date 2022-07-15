@@ -1,7 +1,7 @@
-define i as 8900
-define fact as 1
-while != i 1 begin
-set fact to * fact i
-set i to - i 1
+func hello begin write "Hello" end
+func work begin write "Doing some work..." end
+func bye begin write "Work Done. Bye!" end
+define funcs as [ hello, work, bye ]
+foreach operation in funcs begin
+do operation
 end
-write fact

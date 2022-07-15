@@ -7,4 +7,6 @@ internal interface IVariable
     string Name { get; set; }
 
     object Value { get; set; }
+
+    string GetString() => Value.ToString() ?? "";
 }

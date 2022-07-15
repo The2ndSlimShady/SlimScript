@@ -77,7 +77,7 @@ internal class Func : Standart
         _line = null;
         _name = "";
         _currentLevel = 0;
-        _params = Array.Empty<string>();
+        _params = System.Array.Empty<string>();
 
         return parentChunk.GetVar(func.Name);
     }

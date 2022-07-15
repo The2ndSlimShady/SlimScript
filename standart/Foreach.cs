@@ -1,10 +1,10 @@
 namespace SlimScript;
 
-internal class While : Standart
+internal class Foreach : Standart
 {
     private static List<List<Token>>? _line;
     private static int _currentLevel = 0;
-    private static Token[] _conditionTokens = System.Array.Empty<Token>();
+    private static (string name, Array array) _loopData = ("", new Array());
 
     public override IVariable Run(List<Token> line, SourceChunk chunk)
     {
@@ -18,22 +18,25 @@ internal class While : Standart
             if (line.IndexOf(new("begin")) == -1)
                 chunk.Error($"Cannot find keyword 'begin' to start block.", ExitCode.GrammarError);
 
-            chunk.Parser.block = (chunk.Parser.block.level + 1, "While");
+            chunk.Parser.block = (chunk.Parser.block.level + 1, "Foreach");
             _currentLevel = chunk.Parser.block.level;
 
-            _conditionTokens =
-                line.ToArray()[1..line.IndexOf(new("begin"))] ?? System.Array.Empty<Token>();
+            Token[] nameTokens = line.ToArray()[1..line.IndexOf(new("in"))];
 
-            var condition = Variable.Create(_conditionTokens, chunk);
+            if (nameTokens.Length != 1)
+                chunk.Error($"Cannot create multiple loop variables.", ExitCode.GrammarError);
 
-            if (condition.Token.Type != TokenType.Boolean)
+            _loopData.name = nameTokens[0].Text;
+
+            var arr = Variable.Create(line.ToArray()[3..], chunk);
+
+            if (arr.GetType() != typeof(Array))
                 chunk.Error(
-                    $"Cannot evaluate boolean comprasion on type '{condition}'.",
+                    $"Cannot use type '{arr.Token}' for foreach loop.",
                     ExitCode.DisordantTokenError
                 );
 
-            if (!(condition as Bool?)?.Val ?? false)
-                return new Bool(new("false"));
+            _loopData.array = (Array)arr;
 
             i = line.IndexOf(new("begin")) + 1;
         }
@@ -66,14 +69,12 @@ internal class While : Standart
         IVariable result = new Word(new("\"null\""));
         bool ret = false;
 
-        while (true)
+        foreach (IVariable var in _loopData.array.Val)
         {
-            var condition = (Bool)Variable.Create(_conditionTokens, parentChunk);
-
-            if (!condition.Val)
-                break;
-
             SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
+
+            chunk.CreateVar(_loopData.name, var);
+
             var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
             result = chunk.Run(lineNum);
 
@@ -87,7 +88,7 @@ internal class While : Standart
         _line.Clear();
         _line = null;
         _currentLevel = 0;
-        _conditionTokens = System.Array.Empty<Token>();
+        _loopData = ("", new());
 
         if (ret)
             parentChunk.Return();

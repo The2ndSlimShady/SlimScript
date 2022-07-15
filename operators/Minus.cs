@@ -8,20 +8,25 @@ internal class Minus : Operator
     {
         List<Token> realParams = ReadyParams(parameters, chunk);
 
-        if (realParams[0].Type != realParams[1].Type)
-        {
-            chunk.Error($"Cannot use minus operator on types '{realParams[0]}' and '{realParams[1]}'.", ExitCode.DisordantTokenError);
-            return null;
-        }
+        Token param1;
+        Token param2;
 
+        if (realParams.Count == 0)
+            chunk.Error($"Minus operator cannot take 0 operands.", ExitCode.GrammarError);
 
-        if (realParams[0].Type == TokenType.Number)
-            return MinusNumbers(realParams[0], realParams[1]);
+        if (realParams.Count == 1)
+            (param1, param2) = (new("0"), realParams[0]);
         else
-        {
+            (param1, param2) = (realParams[0], realParams[1]);
+        
+        if (param1.Type != param2.Type)
+            chunk.Error($"Cannot use minus operator on types '{param1}' and '{param2}'.", ExitCode.DisordantTokenError);
+
+
+        if (param1.Type != TokenType.Number)
             chunk.Error($"Minus Operator Does Not Exists on type '{realParams[0]}'", ExitCode.DisordantTokenError);
-            return null;
-        }
+
+        return MinusNumbers(param1, param2);
     }
 
     private static Number MinusNumbers(Token left, Token right)

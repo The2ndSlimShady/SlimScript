@@ -8,7 +8,7 @@ internal class Write : Standart
     {
         var args = Operator.ReadyParams(line.ToArray(), chunk, 0);
 
-        string writeStr = string.Join("", args.Select(t => Variable.Create(new[] { t }, chunk).Value));
+        string writeStr = string.Join("", args.Select(t => Variable.Create(new[] { t }, chunk).GetString()));
 
         Console.WriteLine(writeStr);
 

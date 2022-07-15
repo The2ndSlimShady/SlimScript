@@ -9,6 +9,9 @@ internal class Variable
     {
         object realParam = null;
 
+        if (parameters[0].Text == "[")
+            return new Array(parameters, chunk);
+
         for (int i = 0; i < parameters.Length; i++)
         {
             if (realParam != null)
@@ -87,13 +90,21 @@ internal class Variable
                     Assembly.GetExecutingAssembly().GetName().Name,
                     $"SlimScript.{type}"
                 )
-                .Unwrap()
+                ?.Unwrap()
         );
     }
 
-    public static IVariable Copy(IVariable variable)
+    public static IVariable Copy(IVariable variable, SourceChunk chunk)
     {
-        var returnVar = (IVariable)Activator.CreateInstance(variable.GetType());
+        if (variable.GetType() == typeof(Array))
+        {
+            Array arr = new((Array)variable);
+
+            return arr;
+        }
+
+        var returnVar =
+            (IVariable?)Activator.CreateInstance(variable.GetType()) ?? new Word(new("null"));
 
         returnVar.Value = variable.Value;
         returnVar.Name = variable.Name;

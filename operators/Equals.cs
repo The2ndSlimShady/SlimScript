@@ -9,14 +9,7 @@ internal class Equals : Operator
         var arg = ReadyParams(line, chunk);
 
         if (arg[0].Type != arg[1].Type)
-        {
-            chunk.Error(
-                $"Cannot apply Equals operation on types '{arg[0]}' and '{arg[1]}'.",
-                ExitCode.DisordantTokenError
-            );
-
-            return null;
-        }
+            return new Bool(new("false"));
 
         Token first = arg[0];
         Token second = arg[1];

@@ -63,5 +63,6 @@ internal enum TokenType
     Unidentified,
     String,
     Standart,
-    Function
+    Function,
+    Array
 }

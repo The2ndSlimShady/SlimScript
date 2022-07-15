@@ -8,26 +8,41 @@ internal class Plus : Operator
     {
         List<Token> realParams = ReadyParams(parameters, chunk);
 
-        if (realParams[0].Type != realParams[1].Type)
-        {
+        Token param1;
+        Token param2;
+
+        if (realParams.Count == 0)
+            chunk.Error($"Plus operator cannot take 0 operands.", ExitCode.GrammarError);
+
+        if (realParams.Count == 1)
+            (param1, param2) = (
+                realParams[0],
+                new()
+                {
+                    Type = realParams[0].Type,
+                    Text = realParams[0].Type == TokenType.Number ? "0" : ""
+                }
+            );
+        else
+            (param1, param2) = (realParams[0], realParams[1]);
+
+        if (param1.Type != param2.Type)
             chunk.Error(
-                $"Cannot use minus operator on types '{realParams[0]}' and '{realParams[1]}'.",
+                $"Cannot use plus operator on types '{realParams[0]}' and '{realParams[1]}'.",
                 ExitCode.DisordantTokenError
             );
-            return null;
-        }
 
-        if (realParams[0].Type == TokenType.Number)
-            return SumNumbers(realParams[0], realParams[1]);
+        if (param1.Type == TokenType.Number)
+            return SumNumbers(param1, param2);
         else if (realParams[0].Type == TokenType.String)
-            return SumStrings(realParams[0], realParams[1]);
+            return SumStrings(param1, param2);
         else
         {
             chunk.Error(
                 $"Minus Operator Does Not Exists on type '{realParams[0]}'",
                 ExitCode.DisordantTokenError
             );
-            return null;
+            return new Word(new("null"));
         }
     }
 

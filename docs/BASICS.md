@@ -2,7 +2,7 @@
 
 ## Sample Program
 
-The program belov uses recursion to mimic a for loop and find factorials of numbers.
+The program below uses recursion to mimic a for loop and find factorials of numbers.
 
 ```
 -- This is a comment
@@ -66,7 +66,7 @@ write "Value of Some Num is " someNum
 set <variable_name> to <new_value>
 ```
 
-As mentioned before SlimScript is not strong typed so variable types are dynamic. Check the program belov
+As mentioned before SlimScript is not strong typed so variable types are dynamic. Check the program below
 
 ```
 define var as 2
@@ -128,7 +128,7 @@ write someVal
 
 Operators in SlimScript are a bit different than other languages. (It's a bit like Elisp arithmetic operators)
 
-Check the sample code belov
+Check the sample code below
 
 ```
 define num as 15
@@ -176,11 +176,95 @@ We can write the final expression that interpreter sees like this:
 
 `define someNum as + 6`.
 
-And since there is only one operand, program will throw a <RuntimeError\>.
-
 ### Another Note About Numeric Operators:
 
 Actually there is no operator precedence in SlimScript. Everything will be executed the way you write it. You want the addition to be executed before multiplication, go on, you have the right to do whatever you want.
+
+```
+-- Expression (2 * 2 + 1)'s result will be '5' in other --  -- languages.
+
+
+-- But in SlimScript (* 2 + 2 1) will be '6'
+
+write * 2 + 2 1
+
+-- Output
+--      6
+```
+
+---------------------------------------------------
+<br/>
+
+## Arrays
+
+Arrays in SlimScript are non-generic and can hold any value type including functions and arrays. To create array you can use `define` standart method but with a little difference and restriction.
+
+Let's create an array holding a number, a bool, a string and a function.
+
+```
+func someFunc begin
+    write "Hello"
+end
+
+define arr as [ 12, false, "Test String", someFunc ]      
+-- There should be at least one  space between braces and -- arguments
+```
+
+The space between arguments are optional whereas the space between arguments and braces are a must.
+
+Now lets loop through our array and write the elements to console.
+
+```
+func someFunc begin
+    write "Hello"
+end
+
+define arr as [ 12, false, "Test String", someFunc ]      
+-- There should be at least one  space between braces and -- arguments
+
+--You'll learn foreach loop at loops section
+foraech element in arr begin
+    if = element someFunc then
+        do element
+    else
+        write element
+    end
+end
+
+-- Output
+--      12
+--      False
+--      Test String
+--      Hello
+```
+
+### Important Note
+
+All the variables in SlimScript except arrays are value types. So if you write something like this:
+
+```
+define arr as [ 1, 2, 3, 4, 5 ]
+
+foreach var in arr begin
+    delete var
+end
+
+foreach var in arr begin
+    write var
+end
+```
+
+The output will still be
+
+```
+1
+2
+3
+4
+5
+```
+
+Because when `delete var` executes, it will delete the local copy of the item in array. So array will not be affected nor the elements.
 
 ---------------------------------------------------
 <br/>
@@ -232,7 +316,7 @@ Generally in other languages you would probably write something like this;
 
 `greet "Hi" "Quandale"`
 
-and expect some output like this;
+and expect an output like this;
 
 `Hi Quandale!`
 
@@ -270,3 +354,61 @@ Prefer loops over recursion when possible because loops wont craete a new CallSt
 ## Loops
 
 ### While
+
+Well there's not much to explain. Basically the structure of a while loop is:
+
+```
+while <condition> begin
+    -- Do something here
+end
+```
+
+For the sake of giving an example, let's recreate the factorial finder function with a while loop.
+
+```
+func factorial num begin
+    define fact as 1
+
+    while != num 1 begin
+        set fact to * fact num
+
+        set num to - num 1
+    end
+
+    return fact
+end
+
+write do factorial 5
+
+-- Output 
+--      120
+```
+
+## Foreach
+
+`Foreach` loop is the same as other languages foreach loops just like `for` and `while` loops. The structure is simple:
+
+```
+forach <local_element_name> in <array> begin
+    -- Code
+end
+```
+
+Let's assume that you have an array of functions that's gonna be executed with an order. The code of that operation will be:
+
+```
+func hello begin write "Hello" end
+func work begin write "Doing some work..." end     -- One-liner functions
+func bye begin write "Work Done. Bye!" end
+
+define funcs as [ hello, work, bye ]
+
+foreach operation in funcs begin
+    do operation
+end
+
+-- Output
+--      Hello
+--      Doing some work...
+--      Work Done. Bye!
+```

@@ -65,7 +65,7 @@ internal class SourceChunk
             if (Stack.Any(obj => obj.Name == name))
             {
                 var variable = Stack.Single(obj => obj.Name == name);
-                return Variable.Copy(variable);
+                return Variable.Copy(variable, this);
             }
             else
                 return Parent.GetVar(name, this);
