@@ -114,9 +114,8 @@ Or try the interactive mode!
     - [ ] For Loops
 - [ ] Standart Libraries
 - [ ] Other Features
-  - [ ] Callback To C#
-  - [ ] Using .Net Libraries
-  - [ ] Splitting Code Into Files
+  - [ ] Using C#/.NET
+  - [x] Splitting Code Into Files
   - [x] Interactive Mode
   - [x] Recursion
 

@@ -66,7 +66,7 @@ internal class SourceChunk
 
     private void Destructor() => Stack.Clear();
 
-    public IVariable? GetVar(string name, SourceChunk child = null)
+    public IVariable? GetVar(string name)
     {
         if (VarExists(name))
         {
@@ -76,15 +76,11 @@ internal class SourceChunk
                 return Variable.Copy(variable, this);
             }
             else
-                return Parent.GetVar(name, this);
+                return Parent.GetVar(name);
         }
         else
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Variable named '{name}' does not exists. line {(child == null ? Parser.lineNumber : child.Parser.lineNumber)}"
-            );
-            Program.Exit(ExitCode.NullReferenceError);
+            Error($"Variable named '{name}' does not exists.", ExitCode.NullReferenceError);
             return null;
         }
     }
@@ -95,12 +91,10 @@ internal class SourceChunk
 
         if (VarExists(name))
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Cannot create variable named '{name}'. A variable with same name already exists. line {Parser.lineNumber}"
+            Error(
+                $"Cannot create variable named '{name}'. A variable with same name already exists.",
+                ExitCode.MultipleDeclarationError
             );
-
-            Program.Exit(ExitCode.MultipleDeclarationError);
         }
         else
             Stack.Add(variable);
@@ -110,12 +104,10 @@ internal class SourceChunk
     {
         if (!VarExists(name))
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Cannot set value of unexistent variable named '{name}'. line {Parser.lineNumber}"
+            Error(
+                $"Cannot set value of unexistent variable named '{name}'.",
+                ExitCode.NullReferenceError
             );
-
-            Program.Exit(ExitCode.NullReferenceError);
         }
         else
         {
@@ -128,7 +120,7 @@ internal class SourceChunk
                 Stack = tmp;
             }
             else
-                Parent.SetVar(name, variable);
+                Parent?.SetVar(name, variable);
         }
     }
 
@@ -136,12 +128,10 @@ internal class SourceChunk
     {
         if (!VarExists(name))
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Cannot delete value of unexistent variable named '{name}'. line {Parser.lineNumber}"
+            Error(
+                $"Cannot delete value of unexistent variable named '{name}'.",
+                ExitCode.NullReferenceError
             );
-
-            Program.Exit(ExitCode.NullReferenceError);
         }
         else
         {
