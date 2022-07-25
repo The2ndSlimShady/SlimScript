@@ -10,8 +10,16 @@ internal class SourceChunk
     public List<List<Token>> Lines { get; set; }
     public Parser Parser { get; set; }
 
-    public SourceChunk(string[] source)
+    private string _file;
+
+    public SourceChunk(string sourceFile)
     {
+        _file = sourceFile;
+        var dirName = new FileInfo(sourceFile).DirectoryName;
+        Directory.SetCurrentDirectory(dirName);
+
+        var source = File.ReadAllLines(new FileInfo(sourceFile).Name);
+
         Stack = new();
         Parent = null;
         var processedSource = PreProcessor.Process(source);
@@ -154,7 +162,7 @@ internal class SourceChunk
     {
         var line = Lines[Parser.lineNumber - 1];
         message =
-            $"{message}\nLine: {Parser.lineNumber}\nExpression: {string.Join(' ', line.Select(t => t.Text))}";
+            $"{message}\nFile: {_file}\nLine: {Parser.lineNumber}\nExpression: {string.Join(' ', line.Select(t => t.Text))}";
 
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine(message);

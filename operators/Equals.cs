@@ -8,16 +8,12 @@ internal class Equals : Operator
     {
         var arg = ReadyParams(line, chunk);
 
-        if (arg[0].Type != arg[1].Type)
-            return new Bool(new("false"));
+        var first = Variable.Create(new[]{arg[0]}, chunk).Value;
+        var second = Variable.Create(new[]{arg[1]}, chunk).Value;
 
-        Token first = arg[0];
-        Token second = arg[1];
+        var val = Equals(first, second) || second == first;
 
-        Bool result = new();
-        result.Val = first.Text == second.Text;
-
-        result.Token = new Token(result.Val.ToString().ToLower());
+        Bool result = new(new(val.ToString().ToLower()));
 
         return result;
     }

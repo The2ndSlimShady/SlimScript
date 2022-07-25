@@ -7,6 +7,8 @@ internal class PreProcessor
 {
     public static string[] Process(string[] source)
     {
+        source = PrePreProcess(source);
+
         List<string> processedSource = new();
 
         bool isString = false;
@@ -59,9 +61,9 @@ internal class PreProcessor
             token = new();
         }
 
+#if DEBUG
         if (!Program.interactive)
         {
-#if DEBUG
             StringBuilder b = new();
             bool isIndent = true;
             foreach (var item in processedSource)
@@ -79,10 +81,48 @@ internal class PreProcessor
             }
 
             File.WriteAllText("post_process.ss", b.ToString());
+        }
 #endif
+        return processedSource.ToArray();
+    }
+
+    private static string[] PrePreProcess(string[] source)
+    {
+        List<string> prepreprocessed = new();
+
+        for (int i = 0; i < source.Length; i++)
+        {
+            string? item = source[i];
+
+            if (!item.StartsWith('#'))
+            {
+                prepreprocessed.Add(item);
+                continue;
+            }
+
+            var realItem = item.Replace("#", "# ");
+            var line = ProcessLine(realItem).Where(s => s != "EOL").ToArray();
+
+            switch (line[1])
+            {
+                case "include":
+                    string file = $"{Directory.GetCurrentDirectory()}\\{line[2].Replace("\"", "")}.ss";
+                    if (!File.Exists(file))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(
+                            $"Cannot find file on path '{file}'.\nExpression: #{string.Join(' ', line.Where(s => s != "#"))}\nLine {i + 1}"
+                        );
+                        Program.Exit(ExitCode.PreProcessorError);
+                    }
+
+                    var range = File.ReadAllLines(file);
+                    prepreprocessed.Add(string.Join(" ", Process(range)));
+                    break;
+            }
         }
 
-        return processedSource.ToArray();
+        return prepreprocessed.ToArray();
     }
 
     public static string[] ProcessLine(string line)

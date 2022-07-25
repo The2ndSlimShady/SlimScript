@@ -26,7 +26,11 @@ internal class Program
                     Exit(ExitCode.NoInputFile);
                 }
 
-                MainChunk = new SourceChunk(File.ReadAllLines(args[0]));
+                var startupDir = Directory.GetCurrentDirectory();
+
+                MainChunk = new SourceChunk(args[0]);
+
+                Directory.SetCurrentDirectory(startupDir);
 
                 MainChunk.Run();
 

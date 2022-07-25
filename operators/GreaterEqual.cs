@@ -6,14 +6,10 @@ internal class GreaterEqual : Operator
 {
     public override IVariable Apply(Token[] line, SourceChunk chunk)
     {
-        Bool val = new();
+       var lesser = new LesserThan().Apply(line, chunk);
 
-        var first = (Bool)new Equals().Apply(line, chunk);
-        var second = (Bool)new GreaterThan().Apply(line, chunk);
+       lesser = new Not().Apply(new[] {lesser.Token, lesser.Token}, chunk);
 
-        val.Val = first.Val || second.Val;
-        val.Token = new Token(val.Val.ToString().ToLower());
-
-        return val;
+        return lesser;
     }
 }

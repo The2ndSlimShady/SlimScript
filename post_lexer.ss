@@ -1,7 +1,0 @@
-[<Standart>: func][<Identifier>: hello][<Keyword>: begin][<Standart>: write][<String>: "Hello"][<Keyword>: end]
-[<Standart>: func][<Identifier>: work][<Keyword>: begin][<Standart>: write][<String>: "Doing some work..."][<Keyword>: end]
-[<Standart>: func][<Identifier>: bye][<Keyword>: begin][<Standart>: write][<String>: "Work Done. Bye!"][<Keyword>: end]
-[<Standart>: define][<Identifier>: funcs][<Keyword>: as][<Identifier>: [][<Identifier>: hello,][<Identifier>: work,][<Identifier>: bye][<Identifier>: ]]
-[<Standart>: foreach][<Identifier>: operation][<Keyword>: in][<Identifier>: funcs][<Keyword>: begin]
-[<Standart>: do][<Identifier>: operation]
-[<Keyword>: end]

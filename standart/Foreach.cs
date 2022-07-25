@@ -15,6 +15,8 @@ internal class Foreach : Standart
 
         if (chunk.Parser.block.level == 0)
         {
+            chunk.Parser.turn = false;
+
             if (line.IndexOf(new("begin")) == -1)
                 chunk.Error($"Cannot find keyword 'begin' to start block.", ExitCode.GrammarError);
 
