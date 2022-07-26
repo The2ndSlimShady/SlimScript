@@ -1,0 +1,152 @@
+namespace SlimScript;
+
+internal class For : Standart
+{
+    private static List<List<Token>>? _line;
+    private static int _currentLevel = 0;
+    private static (Token[] name, Token[] condition, Token[] action) _loopData = (
+        name: System.Array.Empty<Token>(),
+        condition: System.Array.Empty<Token>(),
+        action: System.Array.Empty<Token>()
+    );
+
+    public override IVariable Run(List<Token> line, SourceChunk chunk)
+    {
+        if (_line == null)
+            _line = new() { new() };
+
+        int i = 0;
+
+        if (chunk.Parser.block.level == 0)
+        {
+            chunk.Parser.turn = false;
+
+            if (line.IndexOf(new("begin")) == -1)
+                chunk.Error($"Cannot find keyword 'begin' to start block.", ExitCode.GrammarError);
+
+            chunk.Parser.block = (chunk.Parser.block.level + 1, "For");
+            _currentLevel = chunk.Parser.block.level;
+
+            List<List<Token>> tokens = new() { new() };
+
+            foreach (var item in line.ToArray()[1..line.IndexOf(new("begin"))])
+            {
+                if (item.Text == "||")
+                {
+                    tokens.Add(new());
+                    continue;
+                }
+
+                if (item.Text.Contains("||"))
+                {
+                    tokens.Last().Add(new(item.Text.Replace(",", string.Empty)));
+                    tokens.Add(new());
+                    continue;
+                }
+
+                tokens.Last().Add(item);
+            }
+
+            if (tokens.Count < 3)
+                chunk.Error(
+                    $"Cannot create multiple for loop from given arguments.",
+                    ExitCode.GrammarError
+                );
+
+            _loopData.name = tokens[0].ToArray();
+
+            _loopData.condition = tokens[1].ToArray();
+            _loopData.action = tokens[2].ToArray();
+
+            i = line.IndexOf(new("begin")) + 1;
+        }
+
+        for (; i < line.Count; i++)
+        {
+            Token token = line[i];
+
+            if (token.Text == "begin" || token.Text == "if")
+                chunk.Parser.block.level++;
+
+            if (token.Text == "end")
+            {
+                chunk.Parser.block.level--;
+
+                if (chunk.Parser.block.level == _currentLevel - 1)
+                    return Create(chunk);
+            }
+
+            _line.Last().Add(token);
+        }
+
+        _line.Add(new());
+        return new Bool(new("true"));
+    }
+
+    private static IVariable Create(SourceChunk parentChunk)
+    {
+        _line = _line.Where(l => l.Count != 0).ToList();
+        IVariable result = new Word(new("\"null\""));
+        bool ret = false;
+
+        _loopData.name = _loopData.name.Prepend(new("define")).ToArray();
+
+        Variable.Create(_loopData.name, parentChunk);
+
+        var condt = Variable.Create(_loopData.condition, parentChunk);
+
+        if (condt.Token.Type != TokenType.Boolean)
+            parentChunk.Error(
+                $"Cannot use type '{condt.Token}' for foreach loop.",
+                ExitCode.DisordantTokenError
+            );
+
+        for (; (condt as Bool?)?.Val ?? false; )
+        {
+            SourceChunk chunk = new(_line, parentChunk);
+
+            var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
+            result = chunk.Run(lineNum);
+
+            if (chunk.Parser.turn)
+            {
+                ret = true;
+                break;
+            }
+
+            chunk = new(
+                new()
+                {
+                    new()
+                    {
+                        new("set"),
+                        _loopData.name[1],
+                        new("to"),
+                        new("+"),
+                        _loopData.name[1],
+                        _loopData.action[0]
+                    }
+                },
+                parentChunk
+            );
+
+            chunk.Run();
+
+            condt = Variable.Create(_loopData.condition, parentChunk);
+        }
+
+        _line.Clear();
+        _line = null;
+        _currentLevel = 0;
+        _loopData = (
+            name: System.Array.Empty<Token>(),
+            condition: System.Array.Empty<Token>(),
+            action: System.Array.Empty<Token>()
+        );
+
+        if (ret)
+            parentChunk.Return();
+
+        return result;
+    }
+}

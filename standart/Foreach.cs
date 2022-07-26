@@ -73,11 +73,12 @@ internal class Foreach : Standart
 
         foreach (IVariable var in _loopData.array.Val)
         {
-            SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
+            SourceChunk chunk = new(_line, parentChunk);
 
             chunk.CreateVar(_loopData.name, var);
 
             var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
+
             result = chunk.Run(lineNum);
 
             if (chunk.Parser.turn)

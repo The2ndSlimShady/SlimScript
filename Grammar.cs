@@ -38,6 +38,7 @@ internal class Grammar
         "get",
         "foreach",
         "index",
-        "append"
+        "append",
+        "for"
     };
 }

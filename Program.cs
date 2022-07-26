@@ -6,6 +6,8 @@ namespace SlimScript;
 
 internal class Program
 {
+    public static bool Debug = false;
+
     public static ExitCode ExitCode { get; set; }
     public static SourceChunk MainChunk { get; set; }
     public static bool interactive = false;
@@ -25,6 +27,9 @@ internal class Program
 
                     Exit(ExitCode.NoInputFile);
                 }
+
+                if (args.Contains("-D"))
+                    Debug = true;
 
                 var startupDir = Directory.GetCurrentDirectory();
 

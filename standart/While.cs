@@ -73,8 +73,9 @@ internal class While : Standart
             if (!condition.Val)
                 break;
 
-            SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
+            SourceChunk chunk = new(_line, parentChunk);
             var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
+
             result = chunk.Run(lineNum);
 
             if (chunk.Parser.turn)

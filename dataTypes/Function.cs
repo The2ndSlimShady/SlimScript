@@ -22,12 +22,6 @@ internal struct Function : IVariable
         string name = ""
     )
     {
-        if (parameters.Any(p => currentChunk.VarExists(p)))
-            currentChunk.Error(
-                $"Cannot use '{parameters.Single(s => currentChunk.VarExists(s))}' as parameter name. A variable with same name already exists",
-                ExitCode.GrammarError
-            );
-
         Val.Val = code;
         Val.begin = currentChunk.Parser.lineNumber - code.Lines.Count - 1;
 
@@ -40,19 +34,19 @@ internal struct Function : IVariable
         Val.param = parameters;
     }
 
-    public IVariable Run(Token[] paramTokens)
+    public IVariable Run(Token[] paramTokens, SourceChunk chunk)
     {
         List<IVariable> parameters = new(Val.count);
 
-        SourceChunk tempChunk = new(Val.Val.Lines, Val.Val.Parent);
+        SourceChunk tempChunk = new(Val.Val.Lines, chunk);
 
         for (int i = 0; i < Val.count; i++)
-            parameters.Add(Variable.Create(paramTokens[i..(i + 1)], Val.Val.Parent));
+            parameters.Add(Variable.Create(paramTokens[i..(i + 1)], chunk));
 
         for (int i = 0; i < parameters.Count; i++)
         {
             IVariable param = parameters[i];
-            tempChunk.CreateVar(Val.param[i], param);
+            tempChunk.CreateVar(Val.param[i], param, true);
         }
 
         return tempChunk.Run(Val.begin);

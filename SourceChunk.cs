@@ -85,11 +85,11 @@ internal class SourceChunk
         }
     }
 
-    public void CreateVar(string name, IVariable variable)
+    public void CreateVar(string name, IVariable variable, bool func = false)
     {
         variable.Name = name;
 
-        if (VarExists(name))
+        if (VarExists(name) && !func)
         {
             Error(
                 $"Cannot create variable named '{name}'. A variable with same name already exists.",

@@ -10,7 +10,7 @@ internal class Identifier
         variable = chunk.GetVar(identifier.Text);
 
         if (variable == null)
-            chunk.Error($"Canno get value of unexistent variable '{identifier.Text}'.", ExitCode.NullReferenceError);
+            chunk.Error($"Cannot get value of unexistent variable '{identifier.Text}'.", ExitCode.NullReferenceError);
 
         return variable;
     }

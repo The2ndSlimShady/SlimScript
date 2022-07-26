@@ -12,6 +12,6 @@ internal class Do : Standart
         var variable = (Function)chunk.GetVar(name.Text);
         var parameters = Operator.ReadyParams(line.ToArray()[1..], chunk, 0).ToArray();
 
-        return variable.Run(parameters);
+        return variable.Run(parameters, chunk);
     }
 }

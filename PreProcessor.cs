@@ -5,6 +5,8 @@ namespace SlimScript;
 
 internal class PreProcessor
 {
+    private static List<string> _includedModules = new();
+
     public static string[] Process(string[] source)
     {
         source = PrePreProcess(source);
@@ -62,21 +64,18 @@ internal class PreProcessor
         }
 
 #if DEBUG
-        if (!Program.interactive)
+        if (!Program.interactive && Program.Debug)
         {
             StringBuilder b = new();
-            bool isIndent = true;
             foreach (var item in processedSource)
             {
                 if (item != "EOL")
                 {
                     b.Append($" {item}");
-                    isIndent = false;
                 }
                 else
                 {
                     b.Append(Environment.NewLine);
-                    isIndent = true;
                 }
             }
 
@@ -106,20 +105,35 @@ internal class PreProcessor
             switch (line[0])
             {
                 case "include":
-                    string file = $"{Directory.GetCurrentDirectory()}\\{line[1].Replace("\"", string.Empty)}.ss";
+                    string fileName = $"{line[1].Replace("\"", string.Empty)}.ss";
+                    string file = $"{Directory.GetCurrentDirectory()}\\{fileName}";
                     if (!File.Exists(file))
                     {
-                        //TODO: Standart Library Modules
+                        if (
+                            !File.Exists(
+                                $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SlimScript\\libs\\{fileName}"
+                            )
+                        )
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(
+                                $"Cannot find file on path '{file}'.\nExpression: @{realItem}\nLine {i + 1}"
+                            );
+                            Program.Exit(ExitCode.PreProcessorError);
+                        }
 
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine(
-                            $"Cannot find file on path '{file}'.\nExpression: @{realItem}\nLine {i + 1}"
-                        );
-                        Program.Exit(ExitCode.PreProcessorError);
+                        file = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SlimScript\\libs\\{fileName}";
                     }
 
                     var range = File.ReadAllLines(file);
                     prepreprocessed.Add(string.Join(" ", Process(range)));
+                    break;
+
+                case "module":
+                    if (_includedModules.Contains(line[1]))
+                        return prepreprocessed.ToArray();
+                    else
+                        _includedModules.Add(line[1]);
                     break;
             }
         }
