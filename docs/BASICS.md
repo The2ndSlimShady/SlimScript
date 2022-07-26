@@ -412,3 +412,65 @@ end
 --      Doing some work...
 --      Work Done. Bye!
 ```
+
+---------------------------------------------------
+<br/>
+
+## Splitting Code To Files
+
+Well, imagine you're embedding SlimScript to your project and not being able to share code across files. Imagine a file that contains all the scripts that your project is going to use. That would be a real mess.
+
+Fortunately you can split your code to files and use them wherever you want!
+
+Let's create a `module` that returns the given 24 hours based time converted to AM/PM.
+
+```
+-- time.ss
+
+func toAmPm time begin
+    define mult as / time 12
+
+    if <= mult 1 then
+        return time
+    else
+        return - time 12
+    end
+end
+```
+
+```
+-- main.ss
+
+#include time   -- Now this is the neat part
+
+define amBased as do toAmPm 15
+
+write amBased
+
+-- Output
+--      3
+```
+
+It's just like the many other languages' include/import systems.
+
+To be more technical the main file after the pre-processor operations looks like this:
+
+```
+-- pre-processed main.ss
+
+func toAmPm time begin
+    define mult as / time 12
+
+    if <= mult 1 then
+        return time
+    else
+        return - time 12
+    end
+end
+
+define amBased as do toAmPm 15
+
+write amBased
+```
+
+The pre-processor just copies and pastes the modules code into the main file.

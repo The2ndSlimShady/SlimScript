@@ -1,0 +1,56 @@
+### TODO
+
+- [x] Bool Type
+- [x] Number Type
+- [x] String Type
+- [ ] Arrays
+  - [x] Basic Arrays
+  - [x] Indexers
+  - [x] Changing Values of Indexes
+  - [ ] Adding Values 
+    - [x] With Indexers
+    - [ ] With Function
+  - [ ] Length
+- [x] Operators
+  - [x] Logical Operations
+    - [x] Both
+    - [x] Not
+    - [x] Any
+    - [x] Equals        (=)
+    - [x] Not Equals    (!=)
+    - [x] Lesser Than   (<)
+    - [x] Greater Than  (>)
+    - [x] Lesser Equal  (<=)
+    - [x] Greater Equal (>=)
+  - [x] Numeric Operators
+    - [x] Plus
+    - [x] Minus
+    - [x] Multiply
+    - [x] Divide
+- [x] Standart Library Functions
+  - [x] Define
+  - [x] Set
+  - [x] Write
+  - [x] Do
+  - [x] Delete
+  - [x] Return 
+- [ ] Blocks
+  - [x] Custom Functions
+    - [x] Parameterless Functions
+    - [x] Functions With Parameters
+    - [x] Nested Functions 
+  - [x] If-Else Blocks
+    - [x] If Blocks
+    - [x] Elif Blocks
+    - [x] Else Blocks
+    - [x] Nested If-Else Blocks
+  - [ ] Loops
+    - [x] While Loops
+    - [x] Foreach Loops
+    - [ ] For Loops
+- [ ] Standart Libraries
+- [ ] Other Features
+  - [ ] Using C#/.NET
+  - [x] Splitting Code Into Files
+  - [x] Interactive Mode
+  - [x] Recursion

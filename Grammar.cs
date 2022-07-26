@@ -36,6 +36,7 @@ internal class Grammar
         "else",
         "while",
         "get",
-        "foreach"
+        "foreach",
+        "index"
     };
 }
