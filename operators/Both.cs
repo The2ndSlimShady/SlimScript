@@ -8,15 +8,15 @@ internal class Both : Operator
     {
         var arg = ReadyParams(line, chunk);
     
-        if (arg.Any(t => t.Type != TokenType.Boolean))
+        if (arg.Any(t => t.Token.Type != TokenType.Boolean))
         {
             chunk.Error($"Both function does not exists on type '{arg}'.", ExitCode.DisordantTokenError);
 
             return null;
         }
 
-        Bool first = new(arg[0]);
-        Bool second = new(arg[1]);
+        Bool first = arg[0] as Bool? ?? new(new("false"));
+        Bool second = arg[1] as Bool? ?? new(new("false"));
 
         Bool result = new();
         result.Val = first.Val && second.Val;

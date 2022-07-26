@@ -8,10 +8,10 @@ internal class Equals : Operator
     {
         var arg = ReadyParams(line, chunk);
 
-        var first = Variable.Create(new[]{arg[0]}, chunk).Value;
-        var second = Variable.Create(new[]{arg[1]}, chunk).Value;
+        var first = arg[0] as Bool? ?? new(new("false"));
+        var second = arg[1] as Bool? ?? new(new("false"));
 
-        var val = Equals(first, second) || second == first;
+        var val = Equals(first, second) || second.Val == first.Val;
 
         Bool result = new(new(val.ToString().ToLower()));
 

@@ -4,9 +4,9 @@ internal class Divide : Operator
 {
     public override IVariable Apply(Token[] parameters, SourceChunk chunk)
     {
-        List<Token> realParams = ReadyParams(parameters, chunk);
+        List<IVariable> realParams = ReadyParams(parameters, chunk);
 
-        if (realParams[0].Type != realParams[1].Type)
+        if (realParams[0].Token.Type != realParams[1].Token.Type)
         {
             chunk.Error(
                 $"Cannot multiply types '{realParams[0]}' with '{realParams[1]}'.",
@@ -15,8 +15,8 @@ internal class Divide : Operator
             return null;
         }
 
-        if (realParams[0].Type == TokenType.Number)
-            return DivideNumbers(realParams[0], realParams[1]);
+        if (realParams[0].Token.Type == TokenType.Number)
+            return DivideNumbers((Number)realParams[0], (Number)realParams[1]);
         else
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -29,13 +29,10 @@ internal class Divide : Operator
         }
     }
 
-    private static Number DivideNumbers(Token left, Token right)
+    private static Number DivideNumbers(Number left, Number right)
     {
-        Number l = new(left);
-        Number r = new(right);
-
         Number val = new();
-        val.Val = l.Val / r.Val;
+        val.Val = left.Val / right.Val;
         val.Token = new(val.Val.ToString());
 
         return val;

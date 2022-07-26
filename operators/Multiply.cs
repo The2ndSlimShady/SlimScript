@@ -7,9 +7,13 @@ internal class Multiply : Operator
 {
     public override IVariable Apply(Token[] parameters, SourceChunk chunk)
     {
-        List<Token> realParams = ReadyParams(parameters, chunk);
+        List<IVariable> realParams = ReadyParams(parameters, chunk);
 
-        if (realParams.Any(t => t.Type != TokenType.Number && t.Type != TokenType.String))
+        if (
+            realParams.Any(
+                t => t.Token.Type != TokenType.Number && t.Token.Type != TokenType.String
+            )
+        )
         {
             chunk.Error(
                 $"Cannot multiply types '{realParams[0]}' with '{realParams[1]}'",
@@ -18,17 +22,17 @@ internal class Multiply : Operator
             return null;
         }
 
-        if (realParams[0].Type == TokenType.Number)
+        if (realParams[0].Token.Type == TokenType.Number)
         {
-            if (realParams[1].Type == TokenType.Number)
-                return MultiplyNumbers(realParams[0], realParams[1]);
+            if (realParams[1].Token.Type == TokenType.Number)
+                return MultiplyNumbers((Number)realParams[0], (Number)realParams[1]);
             else
-                return MultiplyStrings(realParams[1], realParams[0]);
+                return MultiplyStrings((Word)realParams[1], (Number)realParams[0]);
         }
         else
         {
-            if (realParams[1].Type == TokenType.Number)
-                return MultiplyStrings(realParams[0], realParams[1]);
+            if (realParams[1].Token.Type == TokenType.Number)
+                return MultiplyStrings((Word)realParams[0], (Number)realParams[1]);
             else
             {
                 chunk.Error(
@@ -40,11 +44,8 @@ internal class Multiply : Operator
         }
     }
 
-    private static Number MultiplyNumbers(Token left, Token right)
+    private static Number MultiplyNumbers(Number l, Number r)
     {
-        Number l = new(left);
-        Number r = new(right);
-
         Number val = new();
         val.Val = l.Val * r.Val;
         val.Token = new(val.Val.ToString());
@@ -52,11 +53,8 @@ internal class Multiply : Operator
         return val;
     }
 
-    private static Word MultiplyStrings(Token str, Token times)
+    private static Word MultiplyStrings(Word word, Number num)
     {
-        Word word = new(str);
-        Number num = new(times);
-
         Word val = new();
         Token token =
             new($"\"{string.Concat(Enumerable.Repeat(word.Value, (int)Math.Floor(num.Val)))}\"");

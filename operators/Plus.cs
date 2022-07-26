@@ -6,10 +6,10 @@ internal class Plus : Operator
 {
     public override IVariable Apply(Token[] parameters, SourceChunk chunk)
     {
-        List<Token> realParams = ReadyParams(parameters, chunk);
+        List<IVariable> realParams = ReadyParams(parameters, chunk);
 
-        Token param1;
-        Token param2;
+        IVariable param1;
+        IVariable param2;
 
         if (realParams.Count == 0)
             chunk.Error($"Plus operator cannot take 0 operands.", ExitCode.GrammarError);
@@ -17,25 +17,21 @@ internal class Plus : Operator
         if (realParams.Count == 1)
             (param1, param2) = (
                 realParams[0],
-                new()
-                {
-                    Type = realParams[0].Type,
-                    Text = realParams[0].Type == TokenType.Number ? "0" : ""
-                }
+                realParams[0].Token.Type == TokenType.Number ? new Number(new("0")) : new Word(new(""))
             );
         else
             (param1, param2) = (realParams[0], realParams[1]);
 
-        if (param1.Type != param2.Type)
+        if (param1.Token.Type != param2.Token.Type)
             chunk.Error(
                 $"Cannot use plus operator on types '{realParams[0]}' and '{realParams[1]}'.",
                 ExitCode.DisordantTokenError
             );
 
-        if (param1.Type == TokenType.Number)
-            return SumNumbers(param1, param2);
-        else if (realParams[0].Type == TokenType.String)
-            return SumStrings(param1, param2);
+        if (param1.Token.Type == TokenType.Number)
+            return SumNumbers((Number)param1, (Number)param2);
+        else if (realParams[0].Token.Type == TokenType.String)
+            return SumStrings((Word)param1, (Word)param2);
         else
         {
             chunk.Error(
@@ -46,19 +42,7 @@ internal class Plus : Operator
         }
     }
 
-    private static Number SumNumbers(Token left, Token right)
-    {
-        Number l = new(left);
-        Number r = new(right);
+    private static Number SumNumbers(Number l, Number r) => l + r;
 
-        return l + r;
-    }
-
-    private static Word SumStrings(Token left, Token right)
-    {
-        Word l = new(left);
-        Word r = new(right);
-
-        return l + r;
-    }
+    private static Word SumStrings(Word l, Word r) => l + r;
 }
