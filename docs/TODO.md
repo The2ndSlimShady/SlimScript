@@ -31,7 +31,7 @@
   - [x] Do
   - [x] Delete
   - [x] Return 
-- [ ] Blocks
+- [x] Blocks
   - [x] Custom Functions
     - [x] Parameterless Functions
     - [x] Functions With Parameters
@@ -41,13 +41,18 @@
     - [x] Elif Blocks
     - [x] Else Blocks
     - [x] Nested If-Else Blocks
-  - [ ] Loops
+  - [x] Loops
     - [x] While Loops
     - [x] Foreach Loops
-    - [ ] For Loops
+    - [x] For Loops
 - [ ] Standart Libraries
+  - [x] Testing Basics
+  - [ ] Implementing All Useful Libraries
+  - [ ] Creating an Installer
 - [ ] Other Features
   - [ ] Using C#/.NET
   - [x] Splitting Code Into Files
+    - [x] Header Guards
   - [x] Interactive Mode
   - [x] Recursion
+- [ ] Full Documentation

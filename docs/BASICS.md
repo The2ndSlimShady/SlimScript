@@ -240,7 +240,7 @@ end
 
 ### Important Note
 
-All the variables in SlimScript are value types. So if you write something like this:
+All the variables in SlimScript except arrays are value types. So if you write something like this:
 
 ```
 define arr as [ 1, 2, 3, 4, 5 ]
@@ -511,6 +511,54 @@ end
 --      Work Done. Bye!
 ```
 
+### For
+
+`For` loops are a bit weirder than other languages. Their structure looks like:
+
+```
+for <var_name> as <start_value> || <condition> || <action> begin
+    -- Code
+end
+```
+
+Seems a bit weird right? But don't worry I'm gonna explain it to you.
+
+First of all, the parameters/statements for `for` loops are splitted via `||` symbol.
+
+The first statement determines the variable that we'll be using inside loop,
+
+the second statement is the condition
+
+and the third statement is the action will be executed at the end of every loop.
+
+Let's look at this example:
+
+```
+for i as 0 || < i 5 || 1 begin
+    write i
+end
+```
+
+Let's roleplay as the interpreter.
+
+We're reading the statements for the loop. There are three of them. `[i as 0] [< i 5] [1]`.
+
+At the first execution we create a variable named `i` assigned to `0`.
+
+Then we check the condition `< i 5`, its true. So we execute `write i`
+
+After that we add `1` to `i` and proceed with the next loop.
+
+So at the end of the loop our output will be
+
+```
+0
+1
+2
+3
+4
+```
+
 ---------------------------------------------------
 <br/>
 
@@ -572,3 +620,77 @@ write amBased
 ```
 
 The pre-processor just copies and pastes the modules code into the main file.
+
+### Header Guards
+
+Let's think about a scenario where two module includes each other.
+
+```
+-- main.ss
+
+@include module
+
+write "Include"
+```
+
+```
+-- module.ss
+
+@include main
+
+write "Infinite"
+```
+
+Pre-processor will try creating something like this:
+
+```
+@include module
+
+write "Include"
+write "Infinite"
+write "Include"
+write "Infinite"
+write "Include"
+write "Infinite"
+write "Include"
+write "Infinite"
+write "Include"
+write "Infinite"
+.
+.
+.
+.
+
+```
+
+And program will never be interpreted. So what can we do to prevent this kind of a situation?
+
+In some languages there is something called a `header guard`. It look like this:
+
+```
+-- main.ss
+@module main
+
+@include module
+
+write "Include"
+```
+
+```
+-- module.ss
+@module module
+
+@include main
+
+write "Infinite"
+```
+
+With `@module <name>` we tell the pre-processor that the module that it's currently processing is named `<name>`. So when another module tries to include the same module, pre-processor will say "Hold on, i've already processed that module" and skip it.
+
+So the processed file will be:
+
+```
+write "Infinite"
+
+write "Include"
+```
