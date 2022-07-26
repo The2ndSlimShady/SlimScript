@@ -3,11 +3,11 @@
 - [x] Bool Type
 - [x] Number Type
 - [x] String Type
-- [ ] Arrays
+- [x] Arrays
   - [x] Basic Arrays
   - [x] Indexers
   - [x] Changing Values of Indexes
-  - [ ] Adding Values
+  - [x] Adding Values
 - [x] Operators
   - [x] Logical Operations
     - [x] Both
