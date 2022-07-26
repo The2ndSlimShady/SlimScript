@@ -14,16 +14,24 @@ internal struct Function : IVariable
         set => Val = (ValueTuple<SourceChunk, int, int, string[]>)value;
     }
 
-    public Function(SourceChunk code, SourceChunk currentChunk, string[] parameters, int parameterCount = 0, string name = "")
+    public Function(
+        SourceChunk code,
+        SourceChunk currentChunk,
+        string[] parameters,
+        int parameterCount = 0,
+        string name = ""
+    )
     {
+        if (parameters.Any(p => currentChunk.VarExists(p)))
+            currentChunk.Error(
+                $"Cannot use '{parameters.Single(s => currentChunk.VarExists(s))}' as parameter name. A variable with same name already exists",
+                ExitCode.GrammarError
+            );
+
         Val.Val = code;
         Val.begin = currentChunk.Parser.lineNumber - code.Lines.Count - 1;
 
-        Token token = new()
-        {
-            Type = TokenType.Function,
-            Text = name,
-        };
+        Token token = new() { Type = TokenType.Function, Text = name, };
 
         Name = name;
 
@@ -39,7 +47,7 @@ internal struct Function : IVariable
         SourceChunk tempChunk = new(Val.Val.Lines, Val.Val.Parent);
 
         for (int i = 0; i < Val.count; i++)
-            parameters.Add(Variable.Create(paramTokens[i..(i+1)], Val.Val.Parent));
+            parameters.Add(Variable.Create(paramTokens[i..(i + 1)], Val.Val.Parent));
 
         for (int i = 0; i < parameters.Count; i++)
         {

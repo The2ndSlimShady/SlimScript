@@ -94,24 +94,26 @@ internal class PreProcessor
         {
             string? item = source[i];
 
-            if (!item.StartsWith('#'))
+            if (!item.StartsWith('@'))
             {
                 prepreprocessed.Add(item);
                 continue;
             }
 
-            var realItem = item.Replace("#", "# ");
+            var realItem = item.Replace("@", string.Empty);
             var line = ProcessLine(realItem).Where(s => s != "EOL").ToArray();
 
-            switch (line[1])
+            switch (line[0])
             {
                 case "include":
-                    string file = $"{Directory.GetCurrentDirectory()}\\{line[2].Replace("\"", "")}.ss";
+                    string file = $"{Directory.GetCurrentDirectory()}\\{line[1].Replace("\"", string.Empty)}.ss";
                     if (!File.Exists(file))
                     {
+                        //TODO: Standart Library Modules
+
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine(
-                            $"Cannot find file on path '{file}'.\nExpression: #{string.Join(' ', line.Where(s => s != "#"))}\nLine {i + 1}"
+                            $"Cannot find file on path '{file}'.\nExpression: @{realItem}\nLine {i + 1}"
                         );
                         Program.Exit(ExitCode.PreProcessorError);
                     }

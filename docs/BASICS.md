@@ -240,7 +240,7 @@ end
 
 ### Important Note
 
-All the variables in SlimScript except arrays are value types. So if you write something like this:
+All the variables in SlimScript are value types. So if you write something like this:
 
 ```
 define arr as [ 1, 2, 3, 4, 5 ]
@@ -265,6 +265,104 @@ The output will still be
 ```
 
 Because when `delete var` executes, it will delete the local copy of the item in array. So array will not be affected nor the elements.
+
+### Getting Values From Array
+
+An array that you can't get the desired element would not be that much useful. 
+
+```
+define arr as [ 1, 2, 3, 4 ]
+
+define i as 3   -- We want to get the 3rd element
+
+write index i of arr
+
+-- Output
+--      4
+```
+
+### Adding Values To Array
+
+Arrays in SlimScript are dynamic sized. So you can add as many items as you want without hesitating (but your memory might not be very happy about it).
+
+```
+define arr as [ 1, 2, 3, 4 ]
+
+append 125 to arr
+
+write arr
+
+-- Output
+--      [ 1, 2, 3, 4, 125 ]
+```
+
+### Mixed Sample
+
+Now lets create a method that takes an array as parameter and reverses it.
+
+```
+func reverse arr begin
+    write "Reversing " arr
+
+    define length as 0
+    define newArr as [ ]
+
+    foreach item in arr begin
+        set length to + length 1
+    end
+
+    write "Length: " length
+
+    foreach item in arr begin
+    
+        -- Don't worry im gonna explain whats going on
+        append index - length 1 of arr to newArr
+
+        set length to - length 1
+    end
+
+    write "Done " newArr
+end
+    
+define array as [ 1, 2, 3, 4 ]
+
+do reverse array
+
+-- Output
+--      Reversing [ 1, 2, 3, 4 ]
+--      Length: 4
+--      Done [ 1, 2, 3, 4 ]
+```
+
+It may seem a bit frustating but hey, I'm here to help you understand.
+
+I assume that you understand whats going on in first foreach loop so lets jump to the second one.
+
+```
+foreach item in arr begin
+    
+    -- Don't worry im gonna explain whats going on
+    append index - length 1 of arr to newArr
+
+    set length to - length 1
+end
+```
+
+Lets split the line `append index - length 1 of arr to newArr` to parts so its easier to understand.
+
+Keep this, `append <item> to <array>`;
+
+And this, `index <number> of <array>` in mind.
+
+First we see the append function. It takes 2 parameters `<item>` and `<array>`. 
+
+Our `<item>` parameter is  `index - length 1 of arr`,
+
+and `<array>` parameter is `newArr`
+
+`<array>` is simple so lets look at `<item>`.
+
+It's clear that `<item>` is index `(length - 1)` of `arr`
 
 ---------------------------------------------------
 <br/>
@@ -384,7 +482,7 @@ write do factorial 5
 --      120
 ```
 
-## Foreach
+### Foreach
 
 `Foreach` loop is the same as other languages foreach loops just like `for` and `while` loops. The structure is simple:
 
@@ -441,7 +539,7 @@ end
 ```
 -- main.ss
 
-#include time   -- Now this is the neat part
+@include time   -- Now this is the neat part
 
 define amBased as do toAmPm 15
 

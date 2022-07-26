@@ -20,7 +20,7 @@ internal class Grammar
             { "any", "Any" }
         };
 
-    public static string[] keywords = { "as", "begin", "end", "to", "then", "in" };
+    public static string[] keywords = { "as", "begin", "end", "to", "then", "in", "of" };
 
     public static string[] standarts =
     {
@@ -37,6 +37,7 @@ internal class Grammar
         "while",
         "get",
         "foreach",
-        "index"
+        "index",
+        "append"
     };
 }

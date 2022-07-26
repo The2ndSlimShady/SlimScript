@@ -4,16 +4,17 @@ internal class Index : Standart
 {
     public override IVariable Run(List<Token> line, SourceChunk chunk)
     {
-        var indexT = line[1];
+        var indexTs = line.ToArray()[1..line.IndexOf(new("of"))];
+        var indexT = Variable.Create(indexTs, chunk);
 
-        if (indexT.Type != TokenType.Number)
+        if (indexT.Token.Type != TokenType.Number)
             chunk.Error(
                 $"Cannot convert from type '{indexT}' to type '<Number>'",
                 ExitCode.DisordantTokenError
             );
 
-        var arrayT = Variable.Create(line.ToArray()[2..], chunk);
-        var index = new Number(indexT);
+        var arrayT = Variable.Create(line.ToArray()[(line.IndexOf(new("of")) + 1)..], chunk);
+        var index = (Number)indexT;
 
         if (arrayT.GetType() != typeof(Array))
             chunk.Error(

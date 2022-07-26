@@ -7,10 +7,7 @@
   - [x] Basic Arrays
   - [x] Indexers
   - [x] Changing Values of Indexes
-  - [ ] Adding Values 
-    - [x] With Indexers
-    - [ ] With Function
-  - [ ] Length
+  - [ ] Adding Values
 - [x] Operators
   - [x] Logical Operations
     - [x] Both

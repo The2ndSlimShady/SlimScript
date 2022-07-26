@@ -23,17 +23,21 @@ internal class Set : Standart
         }
         else
         {
-            var indexT = line[2];
+            var indexTs = line.ToArray()[2..line.IndexOf(new("of"))];
+            var indexT = Variable.Create(indexTs, chunk);
 
-            if (indexT.Type != TokenType.Number)
+            if (indexT.Token.Type != TokenType.Number)
                 chunk.Error(
                     $"Cannot convert from type '{indexT}' to type '<Number>'",
                     ExitCode.DisordantTokenError
                 );
 
-            var index = new Number(indexT);
+            var index = (Number)indexT;
 
-            var arrayT = Variable.Create(line.ToArray()[3..line.IndexOf(new("to"))], chunk);
+            var arrayT = Variable.Create(
+                line.ToArray()[(line.IndexOf(new("of")) + 1)..line.IndexOf(new("to"))],
+                chunk
+            );
 
             if (arrayT.GetType() != typeof(Array))
                 chunk.Error(
@@ -43,15 +47,10 @@ internal class Set : Standart
 
             var array = (Array)arrayT;
 
-            if (index.Val >= array.Val.Count)
-                array.Val.Add(
-                    Variable.Create(line.ToArray()[(line.IndexOf(new("to")) + 1)..], chunk)
-                );
-            else
-                array.Val[(int)index.Val] = Variable.Create(
-                    line.ToArray()[(line.IndexOf(new("to")) + 1)..],
-                    chunk
-                );
+            array.Val[(int)index.Val] = Variable.Create(
+                line.ToArray()[(line.IndexOf(new("to")) + 1)..],
+                chunk
+            );
 
             chunk.SetVar(array.Name, array);
 
