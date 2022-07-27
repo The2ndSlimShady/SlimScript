@@ -79,7 +79,7 @@ internal class PreProcessor
                 }
             }
 
-            File.WriteAllText("post_process.ss", b.ToString());
+            File.WriteAllText("post_process.sso", b.ToString());
         }
 #endif
         return processedSource.ToArray();
@@ -89,18 +89,57 @@ internal class PreProcessor
     {
         List<string> prepreprocessed = new();
 
+        bool inIf = false;
+        bool ifCond = false;
+
         for (int i = 0; i < source.Length; i++)
         {
             string? item = source[i];
+
+            var realItem = item.Replace("@", string.Empty);
+            var line = ProcessLine(realItem).Where(s => s != "EOL").ToArray();
+
+            if (inIf)
+            {
+                if (!ifCond)
+                {
+                    if (!realItem.StartsWith("@"))
+                        continue;
+
+                    switch (line[0])
+                    {
+                        case "elif":
+                            var cntd = DetermineDirective(line);
+
+                            ifCond = cntd;
+                            break;
+
+                        case "else":
+                            ifCond = true;
+                            break;
+
+                        case "endif":
+                            ifCond = false;
+                            inIf = false;
+                            break;
+                    }
+
+                    continue;
+                }
+                else if (line.Length != 0 && line[0] == "endif")
+                {
+                    ifCond = false;
+                    inIf = false;
+
+                    continue;
+                }
+            }
 
             if (!item.StartsWith('@'))
             {
                 prepreprocessed.Add(item);
                 continue;
             }
-
-            var realItem = item.Replace("@", string.Empty);
-            var line = ProcessLine(realItem).Where(s => s != "EOL").ToArray();
 
             switch (line[0])
             {
@@ -111,7 +150,7 @@ internal class PreProcessor
                     {
 #if !DEBUG
                         file =
-                            $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SlimScript\\libs\\{fileName}";
+                            $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SlimScript\\lib\\{fileName}";
 #else
                         file = $"{Program.BasePath}\\lib\\{fileName}";
 #endif
@@ -135,10 +174,77 @@ internal class PreProcessor
                     else
                         _includedModules.Add(line[1]);
                     break;
+
+                case "if":
+                    var cntd = DetermineDirective(line);
+
+                    inIf = true;
+                    ifCond = cntd;
+                    break;
+
+                case "elif":
+                case "else":
+                    if (!inIf)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(
+                            $"Cannot start if-else block with {line[0]}.\nExpression: @{realItem}\nLine {i + 1}"
+                        );
+                        Program.Exit(ExitCode.PreProcessorError);
+                    }
+                    else
+                        ifCond = false;
+                    break;
+
+                case "define":
+                    if (!_includedModules.Contains(line[1]))
+                        _includedModules.Add(line[1]);
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(
+                            $"Cannot define '{line[1]}'. It's already defined.\nExpression: @{realItem}\nLine {i + 1}"
+                        );
+                        Program.Exit(ExitCode.PreProcessorError);
+                    }
+                    break;
+
+                case "undef":
+                    if (_includedModules.Contains(line[1]))
+                        _includedModules.Remove(line[1]);
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(
+                            $"Cannot undef unexistent define.\nExpression: @{realItem}\nLine {i + 1}"
+                        );
+                        Program.Exit(ExitCode.PreProcessorError);
+                    }
+                    break;
+
+                default:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(
+                        $"Cannot determine given directive '{line[0]}'.\nExpression: @{realItem}\nLine {i + 1}"
+                    );
+                    Program.Exit(ExitCode.PreProcessorError);
+                    break;
             }
         }
 
         return prepreprocessed.ToArray();
+    }
+
+    private static bool DetermineDirective(string[] line)
+    {
+        if (line[1] == "not")
+        {
+            var cnd = _includedModules.Contains(line[2]);
+
+            return !cnd;
+        }
+        else
+            return _includedModules.Contains(line[1]);
     }
 
     public static string[] ProcessLine(string line)

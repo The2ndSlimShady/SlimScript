@@ -36,29 +36,20 @@ internal class Lexer
 
             Lines = Lines.Where(line => line.Count != 0).ToList();
 
-#if DEBUG
             if (!Program.interactive && Program.Debug)
             {
                 StringBuilder sb = new();
-                StringBuilder humanized = new();
-                bool after = false;
 
                 foreach (var tokens in Lines)
                 {
                     foreach (var token in tokens)
                     {
                         sb.Append($"[{token}: {token.Text}]");
-                        humanized.Append($"{(after ? " " : "")}{token.Text}");
-                        after = true;
                     }
                     sb.AppendLine();
-                    humanized.AppendLine();
-                    after = false;
                 }
-                File.WriteAllText("post_lexer.ss", sb.ToString());
-                File.WriteAllText("post_lexer_humanized.ss", humanized.ToString());
+                File.WriteAllText("post_lexer.sso", sb.ToString());
             }
-#endif
 
             return Lines;
         }

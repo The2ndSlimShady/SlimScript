@@ -46,14 +46,21 @@
     - [x] While Loops
     - [x] Foreach Loops
     - [x] For Loops
+- [ ] PreProcessor Directives
+  - [x] Module
+  - [x] Include
+  - [x] If-Elif-Else-Endif
+  - [x] Define
+  - [x] Undef
 - [ ] Standart Libraries
   - [x] Testing Basics
   - [ ] Implementing All Useful Libraries
-  - [ ] Creating an Installer
+    - [ ] Array
+    - [ ] Math
+    - [ ] String
+  - [x] Creating an Installer
 - [ ] Other Features
   - [ ] Using C#/.NET
-  - [x] Splitting Code Into Files
-    - [x] Header Guards
   - [x] Interactive Mode
   - [x] Recursion
 - [ ] Full Documentation
