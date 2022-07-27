@@ -7,6 +7,7 @@ namespace SlimScript;
 internal class Program
 {
     public static bool Debug = false;
+    public static string BasePath { get; set; }
 
     public static ExitCode ExitCode { get; set; }
     public static SourceChunk MainChunk { get; set; }
@@ -31,11 +32,11 @@ internal class Program
                 if (args.Contains("-D"))
                     Debug = true;
 
-                var startupDir = Directory.GetCurrentDirectory();
+                BasePath = Directory.GetCurrentDirectory();
 
                 MainChunk = new SourceChunk(args[0]);
 
-                Directory.SetCurrentDirectory(startupDir);
+                Directory.SetCurrentDirectory(BasePath);
 
                 MainChunk.Run();
 
@@ -86,6 +87,7 @@ internal class Program
                 break;
 
             MainChunk.RunInteractive(input, line);
+            
             line++;
         }
 

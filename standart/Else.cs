@@ -39,7 +39,10 @@ internal class Else : Standart
                 if (chunk.Parser.block.level == _currentLevel - 1)
                     return Create(chunk);
             }
-            else if (chunk.Parser.block.level == _currentLevel && token.Text == "if" || token.Text == "elif")
+            else if (
+                chunk.Parser.block.level == _currentLevel && token.Text == "if"
+                || token.Text == "elif"
+            )
                 chunk.Error(
                     $"'{token.Text}' block cannot be placed after else block.",
                     ExitCode.GrammarError

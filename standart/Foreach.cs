@@ -4,7 +4,7 @@ internal class Foreach : Standart
 {
     private static List<List<Token>>? _line;
     private static int _currentLevel = 0;
-    private static (string name, Array array) _loopData = ("", new Array());
+    private static (string name, IVariable array) _loopData = ("", new Array());
 
     public override IVariable Run(List<Token> line, SourceChunk chunk)
     {
@@ -32,13 +32,13 @@ internal class Foreach : Standart
 
             var arr = Variable.Create(line.ToArray()[3..], chunk);
 
-            if (arr.GetType() != typeof(Array))
+            if (arr.GetType() != typeof(Array) && arr.GetType() != typeof(Word))
                 chunk.Error(
                     $"Cannot use type '{arr.Token}' for foreach loop.",
                     ExitCode.DisordantTokenError
                 );
 
-            _loopData.array = (Array)arr;
+            _loopData.array = arr;
 
             i = line.IndexOf(new("begin")) + 1;
         }
@@ -71,27 +71,53 @@ internal class Foreach : Standart
         IVariable result = new Word(new("\"null\""));
         bool ret = false;
 
-        foreach (IVariable var in _loopData.array.Val)
+        if (_loopData.array.Token.Type == TokenType.Array)
         {
-            SourceChunk chunk = new(_line, parentChunk);
-
-            chunk.CreateVar(_loopData.name, var);
-
-            var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
-
-            result = chunk.Run(lineNum);
-
-            if (chunk.Parser.turn)
+            foreach (IVariable var in ((Array)_loopData.array).Val)
             {
-                ret = true;
-                break;
+                SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
+
+                var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
+
+                chunk.Parser.lineNumber = lineNum;
+
+                chunk.CreateVar(_loopData.name, var);
+
+                result = chunk.Run(lineNum);
+
+                if (chunk.Parser.turn)
+                {
+                    ret = true;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            foreach (char ch in ((Word)_loopData.array).Val)
+            {
+                SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
+
+                var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
+
+                chunk.Parser.lineNumber = lineNum;
+
+                chunk.CreateVar(_loopData.name, new Word(new(ch.ToString())));
+
+                result = chunk.Run(lineNum);
+
+                if (chunk.Parser.turn)
+                {
+                    ret = true;
+                    break;
+                }
             }
         }
 
         _line.Clear();
         _line = null;
         _currentLevel = 0;
-        _loopData = ("", new());
+        _loopData = ("", new Array());
 
         if (ret)
             parentChunk.Return();

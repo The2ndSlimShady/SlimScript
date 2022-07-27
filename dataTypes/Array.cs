@@ -1,3 +1,4 @@
+using System;
 namespace SlimScript;
 
 internal class Array : IVariable

@@ -15,8 +15,8 @@ internal class Both : Operator
             return null;
         }
 
-        Bool first = arg[0] as Bool? ?? new(new("false"));
-        Bool second = arg[1] as Bool? ?? new(new("false"));
+        Bool first = (Bool)arg[0];
+        Bool second = (Bool)arg[1];
 
         Bool result = new();
         result.Val = first.Val && second.Val;

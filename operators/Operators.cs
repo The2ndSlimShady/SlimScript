@@ -28,6 +28,11 @@ internal abstract class Operator
 
             if (param.Type == TokenType.Number || param.Type == TokenType.String)
                 realParams.Add(Variable.Create(new[] { param }, chunk));
+            else if (param.Text == "[")
+            {
+                realParams.Add(new Array(parameters[i..], chunk));
+                i = parameters.Length;
+            }
             else if (param.Type == TokenType.Identifier)
                 realParams.Add(Identifier.Identify(parameters[i..], chunk));
             else if (param.Type == TokenType.Standart)

@@ -85,11 +85,11 @@ internal class SourceChunk
         }
     }
 
-    public void CreateVar(string name, IVariable variable, bool func = false)
+    public void CreateVar(string name, IVariable variable)
     {
         variable.Name = name;
 
-        if (VarExists(name) && !func)
+        if (Stack.Any(v => v.Name == name))
         {
             Error(
                 $"Cannot create variable named '{name}'. A variable with same name already exists.",
@@ -150,12 +150,32 @@ internal class SourceChunk
 
     public void Error(string message, ExitCode code)
     {
-        var line = Lines[Parser.lineNumber - 1];
+        SourceChunk ch = this;
+
+        while (true)
+        {
+            if (ch.Parent == null)
+                break;
+
+            ch = ch.Parent;
+        }
+
+        var line = ch.Lines[Parser.lineNumber - 1];
         message =
-            $"{message}\nFile: {_file}\nLine: {Parser.lineNumber}\nExpression: {string.Join(' ', line.Select(t => t.Text))}";
+            $"{message}\nFile: {ch._file}\nLine: {Parser.lineNumber}\nExpression: {string.Join(' ', line.Select(t => t.Text))}";
 
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine(message);
+
+        while (true)
+        {
+            if (ch.Parent == null)
+                break;
+
+            ch = ch.Parent;
+
+            ch.Destructor();
+        }
 
         Program.Exit(code);
     }

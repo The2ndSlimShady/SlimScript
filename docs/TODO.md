@@ -3,6 +3,7 @@
 - [x] Bool Type
 - [x] Number Type
 - [x] String Type
+  - [x] Foreach and Indexers
 - [x] Arrays
   - [x] Basic Arrays
   - [x] Indexers

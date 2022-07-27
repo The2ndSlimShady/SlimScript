@@ -109,11 +109,13 @@ internal class PreProcessor
                     string file = $"{Directory.GetCurrentDirectory()}\\{fileName}";
                     if (!File.Exists(file))
                     {
-                        if (
-                            !File.Exists(
-                                $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SlimScript\\libs\\{fileName}"
-                            )
-                        )
+#if !DEBUG
+                        file =
+                            $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SlimScript\\libs\\{fileName}";
+#else
+                        file = $"{Program.BasePath}\\lib\\{fileName}";
+#endif
+                        if (!File.Exists(file))
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine(
@@ -121,8 +123,6 @@ internal class PreProcessor
                             );
                             Program.Exit(ExitCode.PreProcessorError);
                         }
-
-                        file = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SlimScript\\libs\\{fileName}";
                     }
 
                     var range = File.ReadAllLines(file);

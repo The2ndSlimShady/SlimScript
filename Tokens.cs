@@ -15,11 +15,13 @@ internal struct Token
 
             if (double.TryParse(Text, out _))
                 Type = TokenType.Number;
-            else if (Text.StartsWith("\"") && Text.EndsWith("\""))
+            else if (Text == "null")
+                Type = TokenType.Null;
+            else if (Text.StartsWith("\""))
                 Type = TokenType.String;
             else if (Text == "true" || Text == "false")
                 Type = TokenType.Boolean;
-            else if (Grammar.operators.Keys.Contains(Text))
+            else if (Grammar.operators.ContainsKey(Text))
                 Type = TokenType.Operator;
             else if (Grammar.standarts.Contains(Text))
                 Type = TokenType.Standart;
@@ -27,7 +29,7 @@ internal struct Token
                 Type = TokenType.Keyword;
             else if (Text == "EOL")
                 Type = TokenType.EOL;
-            else if (!Text.Any(ch => Grammar.operators.Keys.Contains($"{ch}")) && !string.IsNullOrEmpty(Text))
+            else if (!Text.Any(ch => Grammar.operators.ContainsKey($"{ch}")) && !string.IsNullOrEmpty(Text))
                 Type = TokenType.Identifier;
             else
             {
@@ -64,5 +66,7 @@ internal enum TokenType
     String,
     Standart,
     Function,
-    Array
+    Array,
+    Null,
+    DotNetInterface
 }

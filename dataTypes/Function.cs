@@ -34,19 +34,17 @@ internal struct Function : IVariable
         Val.param = parameters;
     }
 
-    public IVariable Run(Token[] paramTokens, SourceChunk chunk)
+    public IVariable Run(IVariable[] parameters, SourceChunk chunk)
     {
-        List<IVariable> parameters = new(Val.count);
-
         SourceChunk tempChunk = new(Val.Val.Lines, chunk);
 
-        for (int i = 0; i < Val.count; i++)
-            parameters.Add(Variable.Create(paramTokens[i..(i + 1)], chunk));
+        var lineNum = chunk.Parser.lineNumber - tempChunk.Lines.Count - 1;
+        chunk.Parser.lineNumber = lineNum;
 
-        for (int i = 0; i < parameters.Count; i++)
+        for (int i = 0; i < parameters.Length; i++)
         {
             IVariable param = parameters[i];
-            tempChunk.CreateVar(Val.param[i], param, true);
+            tempChunk.CreateVar(Val.param[i], param);
         }
 
         return tempChunk.Run(Val.begin);

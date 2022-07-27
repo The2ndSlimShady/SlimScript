@@ -240,7 +240,7 @@ end
 
 ### Important Note
 
-All the variables in SlimScript except arrays are value types. So if you write something like this:
+All the variables in SlimScript except arrays (arrays are sometimes value types too. It's a bit complicated) are value types. So if you write something like this:
 
 ```
 define arr as [ 1, 2, 3, 4, 5 ]
@@ -294,6 +294,28 @@ write arr
 
 -- Output
 --      [ 1, 2, 3, 4, 125 ]
+```
+
+### Removing Values From Array
+
+Not much to explaing. Just take a look at the example below.
+
+```
+define arr as [ ]
+
+for i as 0 || < i 5 || 1 begin
+    append i to arr
+end
+
+write "Array before deletion: " arr
+
+delete index 0 of arr   -- remove index 0 of array
+
+write "Array after deletion: " arr
+
+-- Output
+--      Array before deletion: [ 0, 1, 2, 3, 4 ]
+--      Array after deletion: [ 1, 2, 3, 4 ]
 ```
 
 ### Mixed Sample

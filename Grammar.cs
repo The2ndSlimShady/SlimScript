@@ -39,6 +39,10 @@ internal class Grammar
         "foreach",
         "index",
         "append",
-        "for"
+        "for",
+        "error",
+        "typeof",
+        "tostring",
+        "break"
     };
 }

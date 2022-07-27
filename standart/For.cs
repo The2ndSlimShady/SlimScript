@@ -97,13 +97,13 @@ internal class For : Standart
 
         if (condt.Token.Type != TokenType.Boolean)
             parentChunk.Error(
-                $"Cannot use type '{condt.Token}' for foreach loop.",
+                $"Cannot use type '{condt.Token}' for for loop.",
                 ExitCode.DisordantTokenError
             );
 
         for (; (condt as Bool?)?.Val ?? false; )
         {
-            SourceChunk chunk = new(_line, parentChunk);
+            SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
 
             var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
             result = chunk.Run(lineNum);
