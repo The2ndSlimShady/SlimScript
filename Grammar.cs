@@ -43,6 +43,6 @@ internal class Grammar
         "error",
         "typeof",
         "tostring",
-        "break"
+        "tonumber"
     };
 }

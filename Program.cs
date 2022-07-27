@@ -15,8 +15,8 @@ internal class Program
 
     public static void Main(string[] args)
     {
-        // try
-        // {
+        try
+        {
             if (args.Length != 0 && args[0] == "-i")
                 RunInteractive();
             else
@@ -42,26 +42,23 @@ internal class Program
 
                 Exit(ExitCode.Normal);
             }
-        // }
-        // catch (Exception e)
-        // {
-        //     if (e.GetType() == typeof(StackOverflowException))
-        //     {
-        //         Console.ForegroundColor = ConsoleColor.Red;
-        //         Console.WriteLine(
-        //             $"An Error [StakcOverFlowError] Occured due to inifinite recursion. \nMessage: {e.Message}"
-        //         );
-        //         Exit(ExitCode.RuntimeError);
-        //     }
-            // else
-            // {
-            //     Console.ForegroundColor = ConsoleColor.Red;
-            //     Console.WriteLine(
-            //         $"An Excepton Occured During Runtime.\nMessage: {e.Message}\nline {MainChunk.Parser.lineNumber}"
-            //     );
-            //     Exit(ExitCode.RuntimeError);
-            // }
-        // }
+        }
+        catch (StackOverflowException e)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(
+                $"An Error [StakcOverFlowError] Occured due to inifinite recursion. \nMessage: {e.Message}"
+            );
+            Exit(ExitCode.RuntimeError);
+        }
+        catch (Exception e)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(
+                $"An Excepton Occured During Runtime.\nMessage: {e.Message}\nline {MainChunk.Parser.lineNumber}"
+            );
+            Exit(ExitCode.RuntimeError);
+        }
     }
 
     private static void RunInteractive()
@@ -87,7 +84,7 @@ internal class Program
                 break;
 
             MainChunk.RunInteractive(input, line);
-            
+
             line++;
         }
 

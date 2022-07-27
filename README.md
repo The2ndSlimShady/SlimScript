@@ -17,9 +17,11 @@ Slim Script has many flaws in its design and it may lack some features
 but it is a good place to start teaching someone programming because of 
 its easy design.
 
+### Debugging Note
+
 After some time using SlimScript, you might wonder why error outputs line numbers does not match with source codes 
-line numbers? Well thats because Interpreter uses the file post_lexer_humanized.ss as source code. If you're having trouble
-finding it, it should be placed at the same directory as input file.
+line numbers? Well thats because Interpreter uses the file post_lexer_humanized.sso as source code. If you're having trouble
+finding it, it should be placed at the same directory as input file. If it's still not there, try running SlimScript.exe with `-D` flag
 
 ---------------------------------------------------
 <br/>
