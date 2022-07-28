@@ -1,3 +1,5 @@
+<- [Functions](Functions.md) | [Docs Main Page](BASICS.md) | [Using Multiple Files](Include.md) ->
+
 # Loops
 
 ## <br> While

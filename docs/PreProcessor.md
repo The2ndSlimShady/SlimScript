@@ -1,3 +1,5 @@
+<- [Using Multiple Files](Include.md) | [Docs Main Page](BASICS.md)
+
 # Advenced PreProcessor Directives
 
 If you're reading this, that means you're interested in pre-processor directives. Firstly for the beginners, what is a pre-processor directive?
@@ -153,4 +155,4 @@ Output will always be `Hello` because pre-processor sees `@define somebool` and 
 @endif
 ```
 
-Yet `@module` is my personal recommendation because it's easier to use (and its performance is slightly faster than `@if-@define`).
+Yet `@module` is my personal recommendation because it's easier to use (and its performance is slightly better than `@if-@define`).

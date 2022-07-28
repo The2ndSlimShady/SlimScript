@@ -1,3 +1,5 @@
+<- [If-Else](IfElse.md) | [Docs Main Page](BASICS.md) | [Loops](Loops.md) ->
+
 # Functions
 
 Now this is where the fun part begins. Everybody loves functions right?
@@ -31,7 +33,8 @@ but in SlimScript you'll get this instead:
 
 ```
 Cannot find grammar rule of expression 'greet'.
-Line: <the_line_number>
+File: <file_name>
+Line: <line_num>
 Expression: greet "Hi" "Quandale"
 
 Exit Code: 8 <GrammarError>

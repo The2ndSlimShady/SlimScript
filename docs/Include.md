@@ -1,3 +1,5 @@
+<- [Loops](Loops.md) | [Docs Main Page](BASICS.md) | [Pre-Processor Directives](PreProcessor.md) ->
+
 # Splitting Code To Files
 
 Well, imagine you're embedding SlimScript to your project and not being able to share code across files. Imagine a file that contains all the scripts that your project is going to use. That would be a real mess.

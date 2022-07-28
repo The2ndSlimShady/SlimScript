@@ -1,3 +1,5 @@
+<- [Docs Main Page](BASICS.md) | [Operators](Operators.md) ->
+
 # Variables
 
 ## <br> Creating Variables
@@ -31,7 +33,7 @@ write "Value of Some Num is " someNum
 set <variable_name> to <new_value>
 ```
 
-As mentioned before SlimScript is not strong typed so variable types are dynamic. Check the program below
+As mentioned before SlimScript is not strong typed so variable types are dynamic. Check the code below
 
 ```
 define var as 2
@@ -67,7 +69,10 @@ write someVal
 
 -- Output
 --		Some Value
---		Variable named 'someVal' does not exists. line 4
+--		Variable named 'someVal' does not exists.
+--      File: <file_name>
+--      Line: <line_num>
+--      Expression: write someVal
 --
 --		Exit Code: 14 <NullReferenceError>
 ```

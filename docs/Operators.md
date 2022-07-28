@@ -1,3 +1,5 @@
+<- [Variables](Variables.md) | [Docs Main Page](BASICS.md) | [Arrays](Arrays.md) ->
+
 # Operators
 
 - (+) 		Plus

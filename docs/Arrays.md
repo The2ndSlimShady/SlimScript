@@ -1,3 +1,5 @@
+<- [Operators](Operators.md) | [Docs Main Page](BASICS.md) | [If-Else](IfElse.md) ->
+
 # Arrays
 
 Arrays in SlimScript are non-generic and can hold any value type including functions and arrays. To create array you can use `define` standart method but with a little difference and restriction.
@@ -10,10 +12,10 @@ func someFunc begin
 end
 
 define arr as [ 12, false, "Test String", someFunc ]      
--- There should be at least one  space between braces and -- arguments
+-- There should be at least one  space between braces and arguments
 ```
 
-The space between arguments are optional whereas the space between arguments and braces are a must.
+The space between arguments and commas are optional whereas the space between arguments and braces are a must.
 
 Now lets loop through our array and write the elements to console.
 
@@ -23,7 +25,7 @@ func someFunc begin
 end
 
 define arr as [ 12, false, "Test String", someFunc ]      
--- There should be at least one  space between braces and -- arguments
+-- There should be at least one  space between braces and arguments
 
 --You'll learn foreach loop at loops section
 foraech element in arr begin

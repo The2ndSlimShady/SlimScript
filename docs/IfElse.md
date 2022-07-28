@@ -1,3 +1,5 @@
+<- [Arrays](Arrays.md) | [Docs Main Page](BASICS.md) | [Functions](Functions.md) ->
+
 # If-Else Blocks
 
 If-else blocks in SlimScript are just like the Lua's. One sample program should be enough for you to understand.
