@@ -13,6 +13,8 @@ public class Parser
 
     public SourceChunk Chunk { get; set; }
 
+    public Parser() => Chunk = new();
+
     public Parser(SourceChunk chunk) => Chunk = chunk;
 
     public IVariable Parse(List<List<Token>> lines, int lineNum = 0)

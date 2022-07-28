@@ -121,6 +121,17 @@ internal class Program
         var config = new SerializerConfig();
         config.ConfigType<SourceChunk>();
 
+        Type[] types = new[]
+        {
+            typeof(SourceChunk),
+            typeof(Parser),
+            typeof(Token),
+            typeof(IVariable),
+            typeof(TokenType)
+        };
+
+        config.KnownTypes.AddRange(types);
+
         config
             .ConfigType<SourceChunk>()
             .ConfigProperty("Stack")
@@ -144,7 +155,8 @@ internal class Program
             .Exclude()
             .ConfigProperty("Chunk")
             .Include()
-            .ConstructBy(typeof(Parser).GetConstructor(new[] { typeof(SourceChunk) }));
+            // .ConstructBy(typeof(Parser).GetConstructor(new[] { typeof(SourceChunk) }));
+            ;
 
         config
             .ConfigType<Token>()
@@ -162,7 +174,6 @@ internal class Program
             .ConfigProperty("Value")
             .Include();
 
-        config.ConfigType<TokenType>();
         return new CerasSerializer(config);
     }
 

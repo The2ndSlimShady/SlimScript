@@ -59,6 +59,7 @@
   - [ ] String
 - [ ] Other Features
   - [ ] Using C#/.NET
+  - [x] Byte Compile (its not actually byte compile. See [docs](BASICS.md))
   - [x] Creating an Installer
   - [x] Interactive Mode
   - [x] Recursion
