@@ -14,9 +14,10 @@ internal class Program
     public static SourceChunk MainChunk { get; set; }
     public static bool interactive = false;
 
+    private static Stopwatch watch = new();
+
     public static void Main(string[] args)
     {
-        Stopwatch watch = new();
         watch.Start();
 
         try
@@ -42,10 +43,14 @@ internal class Program
 
                 Directory.SetCurrentDirectory(BasePath);
 
+                if (args.Contains("-B"))
+                {
+                    Console.WriteLine("Starting byte-compile...");
+                }
+
                 MainChunk.Run();
 
 
-                System.Console.WriteLine($"Elapsed: {watch.Elapsed}");
                 Exit(ExitCode.Normal);
             }
         }
@@ -86,7 +91,7 @@ internal class Program
             if (string.IsNullOrEmpty(input))
                 continue;
 
-            if (input == ":q")
+            if (input == "qqq")
                 break;
 
             MainChunk.RunInteractive(input, line);
@@ -105,7 +110,8 @@ internal class Program
         ExitCode = code;
 
         Console.ResetColor();
-        Console.WriteLine($"\nExit Code: {(int)code} <{code}>");
+        Console.WriteLine($"\nProgram Exited in {watch.ElapsedMilliseconds}ms");
+        Console.WriteLine($"Exit Code: {(int)code} <{code}>");
         Environment.Exit((int)code);
     }
 }
