@@ -6,3 +6,5 @@ publish/
 
 *.ss
 *.iss
+
+!lib/*.ss

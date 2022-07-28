@@ -18,7 +18,7 @@ internal struct Number : IVariable
     {
         if (tokens[0].Type == TokenType.Number)
         {
-            Val = Convert.ToDouble(tokens[0].Text);
+            Val = Convert.ToDouble(tokens[0].Text.Replace(".", ","));
             Token = tokens[0];
         }
         else if (tokens[0].Type == TokenType.Identifier)
@@ -60,7 +60,7 @@ internal struct Number : IVariable
 
     public Number(Token token)
     {
-        Val = Convert.ToDouble(token.Text);
+        Val = Convert.ToDouble(token.Text.Replace(".", ","));
         Token = token;
     }
 

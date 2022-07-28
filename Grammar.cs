@@ -8,6 +8,7 @@ internal class Grammar
             { "+", "Plus" },
             { "-", "Minus" },
             { "*", "Multiply" },
+            { "^", "Power" },
             { "/", "Divide" },
             { "=", "Equals" },
             { "!=", "NotEquals" },
