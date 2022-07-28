@@ -3,14 +3,17 @@ using System.Text;
 
 namespace SlimScript;
 
-internal class SourceChunk
+public class SourceChunk
 {
     public List<IVariable> Stack { get; set; }
+
     public SourceChunk? Parent { get; set; }
+
     public List<List<Token>> Lines { get; set; }
+
     public Parser Parser { get; set; }
 
-    private string _file;
+    public string _file;
 
     public SourceChunk(string sourceFile)
     {

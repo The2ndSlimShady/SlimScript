@@ -1,6 +1,6 @@
 namespace SlimScript;
 
-internal class Identifier
+public class Identifier
 {
     public static IVariable Identify(Token[] tokens, SourceChunk chunk)
     {

@@ -1,6 +1,6 @@
 namespace SlimScript;
 
-internal interface IVariable
+public interface IVariable
 {
     Token Token { get; set; }
 

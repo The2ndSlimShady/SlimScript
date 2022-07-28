@@ -1,6 +1,6 @@
 namespace SlimScript;
 
-internal struct Number : IVariable
+public struct Number : IVariable
 {
     public Token Token { get; set; }
 

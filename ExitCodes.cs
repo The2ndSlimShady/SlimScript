@@ -1,6 +1,6 @@
 namespace SlimScript;
 
-internal enum ExitCode
+public enum ExitCode
 {
     Normal = 0b0000_0000,
     NoInputFile = 0b0000_0001,
@@ -12,5 +12,6 @@ internal enum ExitCode
     DisordantTokenError = 0b0000_1010,
     RuntimeError = 0b0000_0010,
     PreProcessorError = 0b0000_0011,
-    CodeRuntimeError = 0b0000_0110
+    CodeRuntimeError = 0b0000_0110,
+    CompilationError = 0b0001_0010
 }

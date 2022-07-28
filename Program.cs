@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿using Ceras;
+
+using System.Reflection;
+using System.Diagnostics;
 using System.Text;
 using System;
 using System.IO;
@@ -34,22 +37,30 @@ internal class Program
                     Exit(ExitCode.NoInputFile);
                 }
 
-                if (args.Contains("-D"))
-                    Debug = true;
-
-                BasePath = Directory.GetCurrentDirectory();
-
-                MainChunk = new SourceChunk(args[0]);
-
-                Directory.SetCurrentDirectory(BasePath);
-
-                if (args.Contains("-B"))
+                if (Path.GetExtension(args[0]) == ".ssbo" || args.Contains("-RB"))
                 {
-                    Console.WriteLine("Starting byte-compile...");
+                    byte[] data = File.ReadAllBytes(args[0]);
+
+                    var deserializer = GetSerializer();
+
+                    MainChunk = deserializer.Deserialize<SourceChunk>(data);
+                }
+                else
+                {
+                    if (args.Contains("-D"))
+                        Debug = true;
+
+                    BasePath = Directory.GetCurrentDirectory();
+
+                    MainChunk = new SourceChunk(args[0]);
+
+                    Directory.SetCurrentDirectory(BasePath);
+
+                    if (args.Contains("-BC"))
+                        CompileByte();
                 }
 
                 MainChunk.Run();
-
 
                 Exit(ExitCode.Normal);
             }
@@ -70,6 +81,89 @@ internal class Program
             );
             Exit(ExitCode.RuntimeError);
         }
+    }
+
+    private static void CompileByte()
+    {
+        try
+        {
+            Directory.SetCurrentDirectory($"{BasePath}\\{Path.GetDirectoryName(MainChunk._file)}");
+
+            Console.WriteLine("Starting byte-compile...");
+
+            byte[]? data = null;
+
+            GetSerializer().Serialize(MainChunk, ref data);
+
+            File.WriteAllBytes($"{Path.GetFileNameWithoutExtension(MainChunk._file)}.ssbo", data);
+
+            Console.WriteLine(
+                $"Successfully Compiled {MainChunk._file} -> {Path.GetFileNameWithoutExtension(MainChunk._file)}.ssbo"
+            );
+
+            Exit(ExitCode.Normal);
+        }
+        catch (Exception e)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(
+                $"An Exception Occured During Byte-Compilation.\nMessage: {e.Message}"
+            );
+
+            File.Delete($"{Path.GetFileNameWithoutExtension(MainChunk._file)}.ssbo");
+
+            Exit(ExitCode.CompilationError);
+        }
+    }
+
+    private static CerasSerializer GetSerializer()
+    {
+        var config = new SerializerConfig();
+        config.ConfigType<SourceChunk>();
+
+        config
+            .ConfigType<SourceChunk>()
+            .ConfigProperty("Stack")
+            .Include()
+            .ConfigProperty("Parent")
+            .Include()
+            .ConfigProperty("Lines")
+            .Include()
+            .ConfigProperty("Parser")
+            .Include()
+            .ConfigField("_file")
+            .Include();
+
+        config
+            .ConfigType<Parser>()
+            .ConfigField("lineNumber")
+            .Exclude()
+            .ConfigField("turn")
+            .Exclude()
+            .ConfigField("block")
+            .Exclude()
+            .ConfigProperty("Chunk")
+            .Include()
+            .ConstructBy(typeof(Parser).GetConstructor(new[] { typeof(SourceChunk) }));
+
+        config
+            .ConfigType<Token>()
+            .ConfigProperty("Type")
+            .Include()
+            .ConfigProperty("Text")
+            .Include();
+
+        config
+            .ConfigType<IVariable>()
+            .ConfigProperty("Token")
+            .Include()
+            .ConfigProperty("Name")
+            .Include()
+            .ConfigProperty("Value")
+            .Include();
+
+        config.ConfigType<TokenType>();
+        return new CerasSerializer(config);
     }
 
     private static void RunInteractive()

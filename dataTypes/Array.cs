@@ -1,11 +1,12 @@
 using System;
 namespace SlimScript;
 
-internal class Array : IVariable
+public class Array : IVariable
 {
     private string _name;
 
     public Token Token { get; set; }
+
     public string Name
     {
         get => _name;

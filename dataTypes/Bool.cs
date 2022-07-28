@@ -1,6 +1,6 @@
 namespace SlimScript;
 
-internal struct Bool : IVariable
+public struct Bool : IVariable
 {
     public Token Token { get; set; }
 
@@ -12,6 +12,7 @@ internal struct Bool : IVariable
     {
         get => Val;
         set { Val = (bool)value; }
+
     }
 
     public Bool(Token[] tokens, SourceChunk chunk)

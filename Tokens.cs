@@ -2,9 +2,10 @@ using System;
 
 namespace SlimScript;
 
-internal struct Token
+public struct Token
 {
     public TokenType Type { get; set; }
+    
     public string Text { get; set; }
 
     public Token(string source)
@@ -48,13 +49,18 @@ internal struct Token
         }
     }
 
-	public override string ToString() => $"<{Type}>";
+    public Token()
+    {
+        Type = TokenType.Null;
+        Text = "";
+    }
 
+	public override string ToString() => $"<{Type}>";
     public static bool operator==(Token left, Token right) => !(left != right);
     public static bool operator!=(Token left, Token right) => (left.Text != right.Text) && (left.Type != right.Type);
 }
 
-internal enum TokenType
+public enum TokenType
 {
     Number,
     Operator,

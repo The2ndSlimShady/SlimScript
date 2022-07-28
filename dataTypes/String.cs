@@ -1,6 +1,6 @@
 namespace SlimScript;
 
-internal struct Word : IVariable
+public struct Word : IVariable
 {
     public Token Token { get; set; }
 
