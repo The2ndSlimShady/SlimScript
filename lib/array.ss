@@ -171,3 +171,31 @@ func array.removeRange arr startIndex endIndex begin
 
     return tmpArr_forRemoveRange
 end
+
+-- Passed
+func array.createRange startNum endNum begin
+    define tmpArr_toRange as [ ]
+
+    if < startNum endNum then
+        for i as startNum || < i endNum || 1 begin
+            append i to tmpArr_toRange
+        end
+    else
+        for i as startNum || > i endNum || -1 begin
+            append i to tmpArr_toRange
+        end
+    end
+
+    return tmpArr_toRange
+end
+
+-- Passed
+func array.repeat val times begin
+    define tmpArr_toRepeat as [ ]
+
+    for i as 0 || < i times || 1 begin
+        append val to tmpArr_toRepeat
+    end
+
+    return tmpArr_toRepeat
+end

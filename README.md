@@ -21,7 +21,7 @@ its easy design.
 
 After some time using SlimScript, you might wonder why error outputs line numbers does not match with source codes 
 line numbers? Well thats because Interpreter uses the file post_lexer_humanized.sso as source code. If you're having trouble
-finding it, it should be placed at the same directory as input file. If it's still not there, try running SlimScript.exe with `-D` flag
+finding it, it should be placed at the same directory as input file. If it's still not there, try running SlimScript.exe with flag `-D`.
 
 ---------------------------------------------------
 <br/>

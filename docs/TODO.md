@@ -25,13 +25,14 @@
     - [x] Minus
     - [x] Multiply
     - [x] Divide
+    - [x] Power
 - [x] Standart Library Functions
   - [x] Define
   - [x] Set
   - [x] Write
   - [x] Do
   - [x] Delete
-  - [x] Return 
+  - [x] Return
 - [x] Blocks
   - [x] Custom Functions
     - [x] Parameterless Functions
@@ -46,21 +47,19 @@
     - [x] While Loops
     - [x] Foreach Loops
     - [x] For Loops
-- [ ] PreProcessor Directives
+- [x] PreProcessor Directives
   - [x] Module
   - [x] Include
   - [x] If-Elif-Else-Endif
   - [x] Define
   - [x] Undef
 - [ ] Standart Libraries
-  - [x] Testing Basics
-  - [ ] Implementing All Useful Libraries
-    - [ ] Array
-    - [ ] Math
-    - [ ] String
-  - [x] Creating an Installer
+  - [x] Array
+  - [ ] Math
+  - [ ] String
 - [ ] Other Features
   - [ ] Using C#/.NET
+  - [x] Creating an Installer
   - [x] Interactive Mode
   - [x] Recursion
 - [ ] Full Documentation

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System;
 using System.IO;
 
@@ -15,6 +16,9 @@ internal class Program
 
     public static void Main(string[] args)
     {
+        Stopwatch watch = new();
+        watch.Start();
+
         try
         {
             if (args.Length != 0 && args[0] == "-i")
@@ -40,6 +44,8 @@ internal class Program
 
                 MainChunk.Run();
 
+
+                System.Console.WriteLine($"Elapsed: {watch.Elapsed}");
                 Exit(ExitCode.Normal);
             }
         }

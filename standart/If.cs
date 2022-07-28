@@ -52,9 +52,9 @@ internal class If : Standart
                     if (token.Text == "end")
                         chunk.Parser.block.level--;
 
-                    if (chunk.Parser.block.level == _currentLevel - 1)
+                    if (chunk.Parser.block.level == _currentLevel - 1 && token.Text == "end")
                         return Create(chunk);
-                    else if (chunk.Parser.block.level == _currentLevel)
+                    else if (chunk.Parser.block.level == _currentLevel && token.Text != "end")
                         return Create(chunk);
                 }
 

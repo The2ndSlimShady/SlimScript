@@ -7,4 +7,4 @@ publish/
 *.ss
 *.iss
 
-!lib/*.ss
+!lib/*

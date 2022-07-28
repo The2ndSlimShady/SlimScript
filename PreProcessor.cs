@@ -96,6 +96,8 @@ internal class PreProcessor
         {
             string? item = source[i];
 
+            item = item.Trim();
+
             var realItem = item.Replace("@", string.Empty);
             var line = ProcessLine(realItem).Where(s => s != "EOL").ToArray();
 
@@ -103,7 +105,7 @@ internal class PreProcessor
             {
                 if (!ifCond)
                 {
-                    if (!realItem.StartsWith("@"))
+                    if (!item.StartsWith("@"))
                         continue;
 
                     switch (line[0])
@@ -133,6 +135,16 @@ internal class PreProcessor
 
                     continue;
                 }
+            }
+            else if (ifCond)
+            {
+                if (line.Length != 0 && line[0] == "endif")
+                {
+                    ifCond = false;
+                    inIf = false;
+                }
+
+                continue;
             }
 
             if (!item.StartsWith('@'))
@@ -193,7 +205,10 @@ internal class PreProcessor
                         Program.Exit(ExitCode.PreProcessorError);
                     }
                     else
-                        ifCond = false;
+                    {
+                        ifCond = true;
+                        inIf = false;
+                    }
                     break;
 
                 case "define":

@@ -75,7 +75,7 @@ internal class Array : IVariable
         }
     }
 
-    public Array(Array array)
+    public Array(Array array, SourceChunk chunk)
     {
         Token = array.Token;
         Val = array.Val;

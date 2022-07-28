@@ -23,7 +23,7 @@ internal class Tonumber : Standart
 
         try
         {
-            return new Number(new($"{Convert.ToDouble(var.Value)}"));
+            return new Number(new($"{Convert.ToDouble(var.Value.ToString()?.Replace(".", ","))}"));
         }
         catch (Exception e)
         {

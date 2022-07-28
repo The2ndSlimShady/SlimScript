@@ -98,7 +98,7 @@ internal class Variable
     {
         if (variable.GetType() == typeof(Array))
         {
-            Array arr = new(variable as Array ?? new Array());
+            Array arr = new(variable as Array ?? new Array(), chunk);
             arr.Token = new(){Type = TokenType.Array, Text = "null"};
             arr.Value = variable.Value;
 

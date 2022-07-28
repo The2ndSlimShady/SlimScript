@@ -46,7 +46,10 @@ define <variable_name> as <value>
 
 By this way you can create variables. Note that SlimScript is not a strong typed language so you can assign any value to any variable.
 
-#### Using Variables
+---------------------------------------------------
+<br/>
+
+## Using Variables
 
 ```
 define someNum as 15
@@ -117,10 +120,11 @@ write someVal
 - (*)  		Multiply
 - (/) 		Divide
 - (=) 		Equals
+- (^)       Power
 - (!=) 		Not Equals
 - (<) 		Lesser Than
 - (>) 		Greater Than
-- (<=) 	   Lesser Equals
+- (<=) 	    Lesser Equals
 - (>=)		Greater Equals
 - (not)		Not
 - (both)	And
@@ -148,7 +152,7 @@ But note that the operators just accepts two operands. Like if you write
 
 the value of variable `num` will be `4`.
 
-### Using Return Values as Operands
+### <br> Using Return Values as Operands
 
 Let's assume that you gotta use an operators return value as operand in your code. How are you gonna do it? It's simple but a bit tricky.
 
@@ -160,11 +164,11 @@ define three as 3
 write - 5 - 4 3
 ```
 
-Seems a bit frustating isn't it? Lets split the expression into parts. As mentioned before operators accepts just two operands, so the operands of the first '-' will be `5` and `- 4 3`
+Seems a bit intimidating isn't it? Lets split the expression into parts. As mentioned before operators accepts just two operands, so the operands of the first '-' will be `5` and `- 4 3`
 
 So our operation will be `- 5 1`.
 
-### Note:
+### <br> Note:
 
 We mentioned that '`operators take everything at their right as their operands`' so if you're gonna use return values as operands, they always should be the right operand. For example;
 
@@ -176,7 +180,7 @@ We can write the final expression that interpreter sees like this:
 
 `define someNum as + 6`.
 
-### Another Note About Numeric Operators:
+### <br> Another Note About Numeric Operators:
 
 Actually there is no operator precedence in SlimScript. Everything will be executed the way you write it. You want the addition to be executed before multiplication, go on, you have the right to do whatever you want.
 
@@ -238,7 +242,7 @@ end
 --      Hello
 ```
 
-### Important Note
+### <br> Important Note
 
 All the variables in SlimScript except arrays (arrays are sometimes value types too. It's a bit complicated) are value types. So if you write something like this:
 
@@ -266,14 +270,44 @@ The output will still be
 
 Because when `delete var` executes, it will delete the local copy of the item in array. So array will not be affected nor the elements.
 
-### Getting Values From Array
+### <br> With More Detail
 
-An array that you can't get the desired element would not be that much useful. 
+```
+define arr as [ 1, 2, 3 ]
+define otherArr as arr
+
+set index 0 of arr to 5   -- You'll see this later. It basically sets the first element of array to 5
+
+write otherArr
+
+-- Output
+--      [ 5, 2, 3 ]
+```
+
+This is a situation where arrays act like reference type. As long as `arr` exists in memory, `otherArr` will point to it. But if you do something like this:
+
+```
+define arr as [ 1, 2, 3 ]
+define otherArr as arr
+
+delete arr
+
+write otherArr
+
+-- Output
+--      [ 5, 2, 3 ]
+```
+
+`otherArr` is now has it's own value.
+
+### <br> Getting Values From Array
+
+An array that you can't get the desired element would not be that much useful. Keep in mind that indexes start from `0` not `1`!
 
 ```
 define arr as [ 1, 2, 3, 4 ]
 
-define i as 3   -- We want to get the 3rd element
+define i as 3   -- We want to get the 4th element
 
 write index i of arr
 
@@ -281,7 +315,7 @@ write index i of arr
 --      4
 ```
 
-### Adding Values To Array
+### <br> Adding Values To Array
 
 Arrays in SlimScript are dynamic sized. So you can add as many items as you want without hesitating (but your memory might not be very happy about it).
 
@@ -296,16 +330,12 @@ write arr
 --      [ 1, 2, 3, 4, 125 ]
 ```
 
-### Removing Values From Array
+### <br> Removing Values From Array
 
 Not much to explaing. Just take a look at the example below.
 
 ```
-define arr as [ ]
-
-for i as 0 || < i 5 || 1 begin
-    append i to arr
-end
+define arr as [ 0, 1, 2, 3, 4 ]
 
 write "Array before deletion: " arr
 
@@ -318,7 +348,7 @@ write "Array after deletion: " arr
 --      Array after deletion: [ 1, 2, 3, 4 ]
 ```
 
-### Mixed Sample
+### <br> Mixed Sample
 
 Now lets create a method that takes an array as parameter and reverses it.
 
@@ -356,7 +386,7 @@ do reverse array
 --      Done [ 1, 2, 3, 4 ]
 ```
 
-It may seem a bit frustating but hey, I'm here to help you understand.
+It may seem a bit intimidating but hey, I'm here to help you understand.
 
 I assume that you understand whats going on in first foreach loop so lets jump to the second one.
 
@@ -398,7 +428,7 @@ define age as 18
 
 if >= age 18 then
     write "You're too old"
-elif >= 15 then
+elif >= age 15 then
     write "You're a teen"
 else
     write "Baby"
@@ -458,11 +488,11 @@ and with that you should get your desired output:
 
 `Hi Quandale!`
 
-### Using Return Values As Parameters
+### <br> Using Return Values As Parameters
 
 It's the same as operators. The expression that is gonna return a value should be written as the last expression.
 
-### Recursion
+### <br> Recursion
 
 SlimScript has recurson support but it's not recommended to  use it for long loops (around 700-800 recursion will cause a StackOverFlow). It's because interpreter will create a new unique CallStack for every call and CallStacks will only be cleaned after they finished their execution.
 
@@ -473,7 +503,7 @@ Prefer loops over recursion when possible because loops wont craete a new CallSt
 
 ## Loops
 
-### While
+### <br> While
 
 Well there's not much to explain. Basically the structure of a while loop is:
 
@@ -504,7 +534,7 @@ write do factorial 5
 --      120
 ```
 
-### Foreach
+### <br> Foreach
 
 `Foreach` loop is the same as other languages foreach loops just like `for` and `while` loops. The structure is simple:
 
@@ -533,7 +563,7 @@ end
 --      Work Done. Bye!
 ```
 
-### For
+### <br> For
 
 `For` loops are a bit weirder than other languages. Their structure looks like:
 
@@ -643,7 +673,7 @@ write amBased
 
 The pre-processor just copies and pastes the modules code into the main file.
 
-### Header Guards
+### <br> Prevent Including A Module Multiple Times
 
 Let's think about a scenario where two module includes each other.
 
@@ -716,3 +746,162 @@ write "Infinite"
 
 write "Include"
 ```
+
+The lines that start with `@` in your code are what we call a `pre-processor directive`. If you want to learn more about them, the next section is perfect for you. You can skip it if don't wan to.
+
+### <br> Advenced PreProcessor Directives
+
+If you're reading this, that means you're interested in pre-processor directives. Firstly for the beginners, what is a pre-processor directive?
+
+Before you start executing your code, a process named `pre-processor` will run through your code and remove comments, include modules etc. A `pre-processor directive` is a directive that tells something to pre-processor and only to pre-processor.
+
+Let's take a look at previous sections example code.
+
+```
+-- main.ss
+@module main
+
+@include module
+
+write "Include"
+```
+
+We can see that `@module` and `@include` are clearly pre-processor directives. If you run your script with flag `-D` (SlimScript.exe main.ss -D) you'll see that interpreter creates a file named `post_lexer.sso` in the same directory as `main.ss`. Now open that file and you'll see something like this:
+
+```
+[<Standart>: write][<String>: "Infinite"]
+[<Standart>: write][<String>: "Include"]
+```
+
+If you builded the exe in debug mode interpreter will also create a file named `post_process.sso`. It'll look like this:
+
+```
+
+
+
+ write "Infinite"
+
+
+ write "Include"
+
+```
+
+(Those white-spaces are intentional)
+
+You see that the comments and pre-processor directives are gone. Because "A `pre-processor directive` is a directive that tells something to pre-processor and `only` to pre-processor.". So comments and directives does not exist at runtime.
+
+#### <b> LIST OF PRE-PROCESSOR DIRECTIVES </b>
+
+-   if
+-   elif
+-   else
+-   endif
+-   define
+-   undef
+-   include
+-   module
+
+#### <br> <b> @include and @module </b>
+
+You know what these two do. So im gonna skip them.
+
+#### <br> <b> @define </b>
+
+Usage: `@define <the_thing_you_wanna_define>`
+
+It basically defines a name so you can use it with other directives. The thing it defiens is just a name, it's not complicated like C-like language macros.
+
+#### <br> <b> @undef </b>
+
+Usage: `@undef <defined_name>`
+
+In case you don't want to define something.
+
+#### <br> <b> @if @elif @else and @endif </b>
+
+Usage: 
+```
+@if <defined_name>
+@if not <defined_name>
+
+@elif <defined_name>
+@elif not <defined_name>
+
+@else
+
+@endif
+```
+
+Let's explain this with an example.
+
+```
+@define V2
+
+@if not V2
+    write "Version is 1"
+@else
+    write "Version is 2"
+@endif
+
+write "End Program"
+
+-- Tabs are optional
+```
+
+Let's role-play as pre-processor.
+
+We're reading the code line-by-line. First we saw `@define V2`. So we defined `V2` an stored it in memory.
+
+Then we saw `@if not V2`. We checked whether `V2` is defined or not. Since we defined it above, `not V2` evaluates to `false`. So the directive `@if not V2` is not true.
+
+We skipped the line `write "Version is 1"` since it's for the case where `V2` is not defined.
+
+`@else` directive automatically evaluates to true.
+
+`write "Version is 2"` will be present at runtime because it's in `@else` block.
+
+`@endif` closes the `@if-@else` block.
+
+`write "End Program"` is automatically included cause there is no reason to exclude it.
+
+`-- Tabs are optional` is skipped cause its a comment line.
+
+So if you run the script with flag `-D` the output file `post_lexer.sso` will look like this:
+
+```
+[<Standart>: write][<String>: "Version is 2"]
+[<Standart>: write][<String>: "End Program"]
+```
+
+With that way you can procedurally include-exclude code blocks from executing.
+
+### <br> NOTE
+
+Keep in mind that pre-processor can't see normal if-else blocks. So if you write
+
+```
+define someBool as false
+
+if someBool then
+    @define somebool
+end
+
+@if somebool
+write "Hello"
+@endif
+```
+
+Output will always be `Hello` because pre-processor sees `@define somebool` and defines it no matter what value someBool has.
+
+### <br> Rewriting @module with @if-@define
+
+`@module` is just a shorthand for
+
+```
+@if not <module_name>
+@define <module_name>
+    -- Module Code
+@endif
+```
+
+Yet `@module` is my personal recommendation because it's easier to use (and its performance is slightly faster than `@if-@define`).

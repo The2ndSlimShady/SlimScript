@@ -93,4 +93,6 @@ internal struct Number : IVariable
 
         return num;
     }
+
+    public string GetString() => Token.Text.Replace(",", ".");
 }

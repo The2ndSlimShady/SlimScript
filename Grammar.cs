@@ -44,6 +44,7 @@ internal class Grammar
         "error",
         "typeof",
         "tostring",
-        "tonumber"
+        "tonumber",
+        "nameof"
     };
 }

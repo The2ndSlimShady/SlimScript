@@ -3,6 +3,7 @@
 define math.E as 2.71828182845905
 define math.PI as 3.14159265358979
 
+-- Passed
 func math.absolute num begin
     if != "Number" typeof num then
         define errMsg as + "Cannot get absolute value of type " typeof num
@@ -17,6 +18,7 @@ func math.absolute num begin
     end
 end
 
+-- Passed
 func math.divRem dividend divisor begin
     if != "Number" typeof num then
         define errMsg as + "Cannot get floor value of type " typeof num
@@ -42,6 +44,7 @@ func math.divRem dividend divisor begin
     return dividend
 end
 
+-- Passed
 func math.max num1 num2 begin
     if < num1 num2 then
         return num2
@@ -50,6 +53,7 @@ func math.max num1 num2 begin
     end
 end
 
+-- Passed
 func math.min num1 num2 begin
     if < num1 num2 then
         return num1
@@ -58,6 +62,7 @@ func math.min num1 num2 begin
     end
 end
 
+-- Passed
 func math.root base root begin
     if < base 0 then
         return base
@@ -66,6 +71,18 @@ func math.root base root begin
     return ^ base / 1 root
 end
 
+-- Passed
 func math.sqrt base begin
     return do math.root base 2
+end
+
+-- Passed
+func math.fact num begin
+    define resultofFact as 1
+
+    for i as num || > i 1 || -1 begin
+        set resultofFact to * resultofFact i
+    end
+
+    return resultofFact
 end
