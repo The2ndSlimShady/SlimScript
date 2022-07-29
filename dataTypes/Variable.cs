@@ -121,7 +121,7 @@ public class Variable
             return (IVariable)clr;
         if (double.TryParse(clr.ToString(), out _))
             return new Number(new($"{clr}"));
-        else if (clr.GetType() == typeof(string))
+        else if (clr.GetType() == typeof(string) || clr.GetType() == typeof(char))
             return new Word(new($"\"{clr}\""));
         else if (clr.GetType().IsAssignableTo(typeof(IEnumerable)))
         {

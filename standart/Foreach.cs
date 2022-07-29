@@ -73,7 +73,7 @@ internal class Foreach : Standart
 
         if (_loopData.array.Token.Type == TokenType.Array)
         {
-            foreach (IVariable var in ((Array)_loopData.array).Val)
+            foreach (IVariable var in (Array)_loopData.array)
             {
                 SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
 
@@ -94,7 +94,7 @@ internal class Foreach : Standart
         }
         else
         {
-            foreach (char ch in ((Word)_loopData.array).Val)
+            foreach (Word ch in (Word)_loopData.array)
             {
                 SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
 
@@ -102,7 +102,7 @@ internal class Foreach : Standart
 
                 chunk.Parser.lineNumber = lineNum;
 
-                chunk.CreateVar(_loopData.name, new Word(new(ch.ToString())));
+                chunk.CreateVar(_loopData.name, ch);
 
                 result = chunk.Run(lineNum);
 

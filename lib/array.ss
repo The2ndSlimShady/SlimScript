@@ -2,6 +2,20 @@
 
 -- Passed
 func array.addRange arr range begin
+    define notArrArr as != "Array" typeof arr
+    define notArrRange as != "Array" typeof range
+
+    if any notArrArr notArrRange then
+        define errMsg as + "Cannot use types arr:" typeof arr
+        set errMsg to + errMsg + " and range:" typeof range
+        set errMsg to + errMsg " as parameters for array.addRange"
+
+        define errExpl as + "addRange " + "arr:" tostring arr
+        set errExpl to + errExpl + " range:" tostring range
+
+        error errMsg errExpl
+    end
+
     foreach item in range begin
         append item to arr
     end
@@ -9,6 +23,15 @@ end
 
 -- Passed
 func array.copy arr begin
+    if != "Array" typeof arr then
+        define errMsg as + "Cannot use type arr:" typeof arr
+        set errMsg to + errMsg " as parameter for array.copy"
+
+        define errExpl as + "array.copy arr:" arr
+
+        error errMsg errExpl
+    end
+
     define newCopied_arr as [ ]
 
     foreach item in arr begin
@@ -20,17 +43,26 @@ end
 
 -- Passed
 func array.top arr begin
+    if != "Array" typeof arr then
+        define errMsg as + "Cannot use type arr:" typeof arr
+        set errMsg to + errMsg " as parameter for array.top"
+
+        define errExpl as + "array.top " + "arr:" tostring arr
+
+        error errMsg errExpl
+    end
+
     define maxVal_inArr as index 0 of arr
 
     foreach item in arr begin
         if != "Number" typeof item then
-            define errMsg_top as + "Cannot evaluate numeric comprasion on type " typeof item
-            define errExpl_top as  + "array.top " tostring arr
+            define errMsg as + "Cannot evaluate numeric comprasion on type item:" typeof item
 
-            set errExpl_top to + errExpl_top " -> where item is "
-            set errExpl_top to + errExpl_top item
+            define errExpl as  + "array.top arr:" tostring arr
+            set errExpl to + errExpl " -> where item is "
+            set errExpl to + errExpl tostring item
 
-            error errMsg_top errExpl_top
+            error errMsg errExpl
         end
 
         if > item maxVal_inArr then
@@ -43,17 +75,26 @@ end
 
 -- Passed
 func array.bottom arr begin
+    if != "Array" typeof arr then
+        define errMsg as + "Cannot use type arr:" typeof arr
+        set errMsg to + errMsg " as parameter for array.bottom"
+
+        define errExpl as + "array.bottom " + "arr:" tostring arr
+
+        error errMsg errExpl
+    end
+
     define minVal_inArr as index 0 of arr
 
     foreach item in arr begin
         if != "Number" typeof item then
-            define errMsg_top as + "Cannot evaluate numeric comprasion on type " typeof item
-            define errExpl_top as  + "array.top " tostring arr
+            define errMsg as + "Cannot evaluate numeric comprasion on type " typeof item
+            define errExpl as  + "array.bottom " tostring arr
 
-            set errExpl_top to + errExpl_top " -> where item is "
-            set errExpl_top to + errExpl_top item
+            set errExpl to + errExpl " -> where item is "
+            set errExpl to + errExpl item
 
-            error errMsg_top errExpl_top
+            error errMsg errExpl
         end
 
         if < item minVal_inArr then
@@ -66,6 +107,15 @@ end
 
 -- Passed
 func array.reverse arr begin
+    if != "Array" typeof arr then
+        define errMsg as + "Cannot use type arr:" typeof arr
+        set errMsg to + errMsg " as parameter for array.reverse"
+
+        define errExpl as + "array.reverse " + "arr:" tostring arr
+
+        error errMsg errExpl
+    end
+
     define tempArr_forReverse as [ ]
 
     define lengthOf_Arr as do array.length arr
@@ -84,11 +134,29 @@ end
 
 -- Passed
 func array.tail arr begin
+    if != "Array" typeof arr then
+        define errMsg as + "Cannot use type arr:" typeof arr
+        set errMsg to + errMsg " as parameter for array.tail"
+
+        define errExpl as + "array.tail " + "arr:" tostring arr
+
+        error errMsg errExpl
+    end
+
     return do array.removeRange arr 0 1
 end
 
 -- Passed
 func array.head arr begin
+    if != "Array" typeof arr then
+        define errMsg as + "Cannot use type arr:" typeof arr
+        set errMsg to + errMsg " as parameter for array.head"
+
+        define errExpl as + "array.head " + "arr:" tostring arr
+
+        error errMsg errExpl
+    end
+
     if = 0 do array.length arr then
         return [ ]
     end
@@ -98,6 +166,15 @@ end
 
 -- Passed
 func array.indexOf arr val begin
+    if != "Array" typeof arr then
+        define errMsg as + "Cannot use type arr:" typeof arr
+        set errMsg to + errMsg " as parameter for array.indexOf"
+
+        define errExpl as + "array.indexOf " + "arr:" tostring + arr + " val:" tostring val
+
+        error errMsg errExpl
+    end
+
     for i as 0 || < i do array.length arr || 1 begin
         if = val index i of arr then
             return i
@@ -109,6 +186,15 @@ end
 
 -- Passed
 func array.lastIndexOf arr val begin
+    if != "Array" typeof arr then
+        define errMsg as + "Cannot use type arr:" typeof arr
+        set errMsg to + errMsg " as parameter for array.lastIndexOf"
+
+        define errExpl as + "array.lastIndexOf " + "arr:" tostring + arr + " val:" tostring val
+
+        error errMsg errExpl
+    end
+
     define lengthOf_Arr as do array.length arr
     define tmpiFor_for as - lengthOf_Arr 1
 
@@ -123,6 +209,15 @@ end
 
 -- Passed
 func array.length arr begin
+    if != "Array" typeof arr then
+        define errMsg as + "Cannot use type arr:" typeof arr
+        set errMsg to + errMsg " as parameter for array.length"
+
+        define errExpl as + "array.length " + "arr:" tostring arr
+
+        error errMsg errExpl
+    end
+
     define lengthOf_Arr as 0
 
     foreach item in arr begin

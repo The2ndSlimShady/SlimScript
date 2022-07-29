@@ -37,38 +37,21 @@ internal class Program
                     Exit(ExitCode.NoInputFile);
                 }
 
-                if (Path.GetExtension(args[0]) == ".sso" || args.Contains("-FF"))
-                {
-                    BasePath = Directory.GetCurrentDirectory();
+                Debug = args.Contains("-D") || args.Contains("-DH");
+                Humanize = args.Contains("-H") || args.Contains("-DH");
 
-                    MainChunk = new SourceChunk(args[0]);
+                BasePath = Directory.GetCurrentDirectory();
 
-                    Directory.SetCurrentDirectory(BasePath);
-                }
-                else
-                {
-                    Debug = args.Contains("-D") || args.Contains("-DH");
-                    Humanize = args.Contains("-H") || args.Contains("-DH");
+                MainChunk = new SourceChunk(args[0]);
 
-                    BasePath = Directory.GetCurrentDirectory();
-
-                    MainChunk = new SourceChunk(args[0]);
-
-                    Directory.SetCurrentDirectory(BasePath);
-                }
+                Directory.SetCurrentDirectory(BasePath);
 
                 MainChunk.Run();
 
+                watch.Stop();
+                Console.WriteLine($"\nProgram Exited in {watch.ElapsedMilliseconds}ms");
                 Exit(ExitCode.Normal);
             }
-        }
-        catch (StackOverflowException e)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"An Error [StakcOverFlowError] Occured due to inifinite recursion. \nMessage: {e.Message}"
-            );
-            Exit(ExitCode.RuntimeError);
         }
         catch (Exception e)
         {
@@ -118,8 +101,7 @@ internal class Program
         ExitCode = code;
 
         Console.ResetColor();
-        Console.WriteLine($"\nProgram Exited in {watch.ElapsedMilliseconds}ms");
-        Console.WriteLine($"Exit Code: {(int)code} <{code}>");
+        Console.WriteLine($"\nExit Code: {(int)code} <{code}>");
         Environment.Exit((int)code);
     }
 }

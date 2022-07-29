@@ -1,6 +1,8 @@
+using System.Collections;
+
 namespace SlimScript;
 
-public struct Word : IVariable
+public struct Word : IVariable, IEnumerable<Word>
 {
     public Token Token { get; set; }
 
@@ -38,7 +40,10 @@ public struct Word : IVariable
             }
             else
             {
-                chunk.Error($"Cannot create String from return of {tokens[0].Type}.", ExitCode.DisordantTokenError);
+                chunk.Error(
+                    $"Cannot create String from return of {tokens[0].Type}.",
+                    ExitCode.DisordantTokenError
+                );
 
                 Token = new Token();
             }
@@ -65,4 +70,9 @@ public struct Word : IVariable
 
         return str;
     }
+
+    public IEnumerator<Word> GetEnumerator() =>
+        Val.Select(c => (Word)Variable.ClrToVar(c)).GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
