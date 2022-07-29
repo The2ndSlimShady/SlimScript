@@ -12,6 +12,5 @@ public enum ExitCode
     DisordantTokenError = 0b0000_1010,
     RuntimeError = 0b0000_0010,
     PreProcessorError = 0b0000_0011,
-    CodeRuntimeError = 0b0000_0110,
-    CompilationError = 0b0001_0010
+    CodeRuntimeError = 0b0000_0110
 }
