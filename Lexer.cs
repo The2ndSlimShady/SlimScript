@@ -7,6 +7,10 @@ internal class Lexer
 {
     public static List<List<Token>> Lex(string[] source)
     {
+        #if DEBUG
+        Console.WriteLine($"Lexing Source Code...");
+        #endif
+
         try
         {
             int _line = 0;
@@ -53,7 +57,7 @@ internal class Lexer
 
                     foreach (var token in tokens)
                     {
-                        sb.Append($"[{token}: {token.Text}]");
+                        sb.Append($"[{token}: {token.Text}]$");
 
                         humanized?.Append($"{(first ? string.Empty : " ")}{token.Text}");
 

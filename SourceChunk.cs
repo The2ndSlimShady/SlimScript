@@ -15,6 +15,15 @@ public class SourceChunk
 
     internal string _file;
 
+    internal SourceChunk()
+    {
+        Stack = new();
+        Parent = null;
+        Lines = new();
+        Parser = new(this);
+        _file = "???";
+    }
+
     internal SourceChunk(List<List<Token>> lines, SourceChunk chunk)
     {
         Stack = new();
@@ -27,13 +36,18 @@ public class SourceChunk
     public SourceChunk(string sourceFile)
     {
         _file = sourceFile;
-        var dirName = new FileInfo(sourceFile).DirectoryName;
+        var dirName = new FileInfo(sourceFile).DirectoryName ?? "./";
         Directory.SetCurrentDirectory(dirName);
 
         var source = File.ReadAllLines(new FileInfo(sourceFile).Name);
 
         Stack = new();
         Parent = null;
+
+        #if DEBUG
+        Console.WriteLine($"Pre-Processing Source Code...");
+        #endif
+        
         var processedSource = PreProcessor.Process(source);
         Lines = Lexer.Lex(processedSource);
         Parser = new(this);
@@ -45,15 +59,6 @@ public class SourceChunk
         Parent = null;
         var processedSource = PreProcessor.Process(source);
         Lines = Lexer.Lex(processedSource);
-        Parser = new(this);
-        _file = "???";
-    }
-
-    internal SourceChunk()
-    {
-        Stack = new();
-        Parent = null;
-        Lines = new();
         Parser = new(this);
         _file = "???";
     }

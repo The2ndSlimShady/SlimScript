@@ -26,7 +26,7 @@ func math.divRem dividend divisor begin
         define errMsg as + "Cannot get division remainder of types " typeof dividend
         set errMsg to + errMsg + " and " typeof divisor
 
-        define errData as + "math.floor " typeof dividend
+        define errData as + "math.divRem " typeof dividend
         set errData to + errData + " " typeof divisor  
         error errMsg errData
     end

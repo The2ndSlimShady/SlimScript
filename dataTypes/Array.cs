@@ -5,7 +5,7 @@ namespace SlimScript;
 
 public class Array : IVariable, IEnumerable<IVariable>
 {
-    private string _name;
+    private string _name = "";
 
     public Token Token { get; set; }
 
@@ -27,7 +27,7 @@ public class Array : IVariable, IEnumerable<IVariable>
         set => Val = (List<IVariable>)value;
     }
 
-    public Array(Token[] items, SourceChunk chunk)
+    public Array(Token[] items, SourceChunk? chunk)
     {
         Val = new();
         Token = new() { Type = TokenType.Array };
@@ -78,7 +78,7 @@ public class Array : IVariable, IEnumerable<IVariable>
         }
     }
 
-    public Array(Array array, SourceChunk chunk)
+    public Array(Array array)
     {
         Token = array.Token;
         Val = array.Val;

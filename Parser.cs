@@ -4,16 +4,13 @@ using System.Runtime.Serialization;
 namespace SlimScript;
 
 internal class Parser
-{
-    public int lineNumber;
+{    public int lineNumber;
 
     public bool turn = false;
 
     public (int level, string block) block = (0, "");
 
-    public SourceChunk Chunk { get; set; }
-
-    public Parser() => Chunk = new();
+    public SourceChunk? Chunk { get; set; }
 
     public Parser(SourceChunk chunk) => Chunk = chunk;
 

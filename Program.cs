@@ -1,6 +1,4 @@
-﻿using Ceras;
-
-using System.Reflection;
+﻿using System.Reflection;
 using System.Diagnostics;
 using System.Text;
 using System;
@@ -39,27 +37,24 @@ internal class Program
                     Exit(ExitCode.NoInputFile);
                 }
 
-                if (Path.GetExtension(args[0]) == ".ssbo" || args.Contains("-RB"))
+                if (Path.GetExtension(args[0]) == ".sso" || args.Contains("-FF"))
                 {
-                    byte[] data = File.ReadAllBytes(args[0]);
+                    BasePath = Directory.GetCurrentDirectory();
 
-                    var deserializer = GetSerializer();
+                    MainChunk = new SourceChunk(args[0]);
 
-                    MainChunk = deserializer.Deserialize<SourceChunk>(data);
+                    Directory.SetCurrentDirectory(BasePath);
                 }
                 else
                 {
                     Debug = args.Contains("-D") || args.Contains("-DH");
-                    Humanize = args.Contains("-H") ||args.Contains("-DH");
+                    Humanize = args.Contains("-H") || args.Contains("-DH");
 
                     BasePath = Directory.GetCurrentDirectory();
 
                     MainChunk = new SourceChunk(args[0]);
 
                     Directory.SetCurrentDirectory(BasePath);
-
-                    if (args.Contains("-BC"))
-                        CompileByte();
                 }
 
                 MainChunk.Run();
@@ -83,99 +78,6 @@ internal class Program
             );
             Exit(ExitCode.RuntimeError);
         }
-    }
-
-    private static void CompileByte()
-    {
-        try
-        {
-            Directory.SetCurrentDirectory($"{BasePath}\\{Path.GetDirectoryName(MainChunk._file)}");
-
-            Console.WriteLine("Starting byte-compile...");
-
-            byte[]? data = null;
-
-            GetSerializer().Serialize(MainChunk, ref data);
-
-            File.WriteAllBytes($"{Path.GetFileNameWithoutExtension(MainChunk._file)}.ssbo", data);
-
-            Console.WriteLine(
-                $"Successfully Compiled {MainChunk._file} -> {Path.GetFileNameWithoutExtension(MainChunk._file)}.ssbo"
-            );
-
-            Exit(ExitCode.Normal);
-        }
-        catch (Exception e)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"An Exception Occured During Byte-Compilation.\nMessage: {e.Message}"
-            );
-
-            File.Delete($"{Path.GetFileNameWithoutExtension(MainChunk._file)}.ssbo");
-
-            Exit(ExitCode.CompilationError);
-        }
-    }
-
-    private static CerasSerializer GetSerializer()
-    {
-        var config = new SerializerConfig();
-        config.ConfigType<SourceChunk>();
-
-        Type[] types = new[]
-        {
-            typeof(SourceChunk),
-            typeof(Parser),
-            typeof(Token),
-            typeof(IVariable),
-            typeof(TokenType)
-        };
-
-        config.KnownTypes.AddRange(types);
-
-        config
-            .ConfigType<SourceChunk>()
-            .ConfigProperty("Stack")
-            .Include()
-            .ConfigProperty("Parent")
-            .Include()
-            .ConfigProperty("Lines")
-            .Include()
-            .ConfigProperty("Parser")
-            .Include()
-            .ConfigField("_file")
-            .Include();
-
-        config
-            .ConfigType<Parser>()
-            .ConfigField("lineNumber")
-            .Exclude()
-            .ConfigField("turn")
-            .Exclude()
-            .ConfigField("block")
-            .Exclude()
-            .ConfigProperty("Chunk")
-            .Include()
-            .ConstructBy(typeof(Parser).GetConstructor(new[] { typeof(SourceChunk) }));
-
-        config
-            .ConfigType<Token>()
-            .ConfigProperty("Type")
-            .Include()
-            .ConfigProperty("Text")
-            .Include();
-
-        config
-            .ConfigType<IVariable>()
-            .ConfigProperty("Token")
-            .Include()
-            .ConfigProperty("Name")
-            .Include()
-            .ConfigProperty("Value")
-            .Include();
-
-        return new CerasSerializer(config);
     }
 
     private static void RunInteractive()
