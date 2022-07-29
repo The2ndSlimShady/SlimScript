@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace SlimScript;
 
-public class Parser
+internal class Parser
 {
     public int lineNumber;
 

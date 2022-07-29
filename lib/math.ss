@@ -18,11 +18,16 @@ func math.absolute num begin
     end
 end
 
--- Passed
 func math.divRem dividend divisor begin
-    if != "Number" typeof num then
-        define errMsg as + "Cannot get floor value of type " typeof num
-        define errData as + "math.floor " typeof num
+    define divNum as != "Number" typeof dividend
+    define divsNum as != "Number" typeof divisor
+
+    if any divNum divsNum then
+        define errMsg as + "Cannot get division remainder of types " typeof dividend
+        set errMsg to + errMsg + " and " typeof divisor
+
+        define errData as + "math.floor " typeof dividend
+        set errData to + errData + " " typeof divisor  
         error errMsg errData
     end
 

@@ -1,11 +1,12 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SlimScript;
 
 public struct Token
 {
     public TokenType Type { get; set; }
-    
+
     public string Text { get; set; }
 
     public Token(string source)
@@ -30,7 +31,10 @@ public struct Token
                 Type = TokenType.Keyword;
             else if (Text == "EOL")
                 Type = TokenType.EOL;
-            else if (!Text.Any(ch => Grammar.operators.ContainsKey($"{ch}")) && !string.IsNullOrEmpty(Text))
+            else if (
+                !Text.Any(ch => Grammar.operators.ContainsKey($"{ch}"))
+                && !string.IsNullOrEmpty(Text)
+            )
                 Type = TokenType.Identifier;
             else
             {
@@ -55,9 +59,14 @@ public struct Token
         Text = "";
     }
 
-	public override string ToString() => $"<{Type}>";
-    public static bool operator==(Token left, Token right) => !(left != right);
-    public static bool operator!=(Token left, Token right) => (left.Text != right.Text) && (left.Type != right.Type);
+    public override string ToString() => $"<{Type}>";
+
+    public override int GetHashCode() => base.GetHashCode();
+
+    public static bool operator ==(Token left, Token right) => !(left != right);
+
+    public static bool operator !=(Token left, Token right) =>
+        (left.Text != right.Text) && (left.Type != right.Type);
 }
 
 public enum TokenType

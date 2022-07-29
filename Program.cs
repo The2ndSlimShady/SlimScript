@@ -11,6 +11,8 @@ namespace SlimScript;
 internal class Program
 {
     public static bool Debug = false;
+    public static bool Humanize = false;
+
     public static string BasePath { get; set; }
 
     public static ExitCode ExitCode { get; set; }
@@ -47,8 +49,8 @@ internal class Program
                 }
                 else
                 {
-                    if (args.Contains("-D"))
-                        Debug = true;
+                    Debug = args.Contains("-D") || args.Contains("-DH");
+                    Humanize = args.Contains("-H") ||args.Contains("-DH");
 
                     BasePath = Directory.GetCurrentDirectory();
 
@@ -155,8 +157,7 @@ internal class Program
             .Exclude()
             .ConfigProperty("Chunk")
             .Include()
-            // .ConstructBy(typeof(Parser).GetConstructor(new[] { typeof(SourceChunk) }));
-            ;
+            .ConstructBy(typeof(Parser).GetConstructor(new[] { typeof(SourceChunk) }));
 
         config
             .ConfigType<Token>()

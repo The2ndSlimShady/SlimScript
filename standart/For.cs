@@ -21,15 +21,16 @@ internal class For : Standart
         {
             chunk.Parser.turn = false;
 
-            if (line.IndexOf(new("begin")) == -1)
+            if (line.LastIndexOf(new("begin")) == -1)
                 chunk.Error($"Cannot find keyword 'begin' to start block.", ExitCode.GrammarError);
 
             chunk.Parser.block = (chunk.Parser.block.level + 1, "For");
             _currentLevel = chunk.Parser.block.level;
 
             List<List<Token>> tokens = new() { new() };
+            line = line.GetRange(1, line.LastIndexOf(new("begin")) - 1);
 
-            foreach (var item in line.ToArray()[1..line.IndexOf(new("begin"))])
+            foreach (var item in line)
             {
                 if (item.Text == "||")
                 {
@@ -39,7 +40,7 @@ internal class For : Standart
 
                 if (item.Text.Contains("||"))
                 {
-                    tokens.Last().Add(new(item.Text.Replace(",", string.Empty)));
+                    tokens.Last().Add(new(item.Text.Replace(",", string.Empty).Replace("||", string.Empty)));
                     tokens.Add(new());
                     continue;
                 }
@@ -49,7 +50,7 @@ internal class For : Standart
 
             if (tokens.Count < 3)
                 chunk.Error(
-                    $"Cannot create multiple for loop from given arguments.",
+                    $"Cannot create for loop from given arguments.",
                     ExitCode.GrammarError
                 );
 
@@ -58,7 +59,7 @@ internal class For : Standart
             _loopData.condition = tokens[1].ToArray();
             _loopData.action = tokens[2].ToArray();
 
-            i = line.IndexOf(new("begin")) + 1;
+            i = line.Count;
         }
 
         for (; i < line.Count; i++)
@@ -103,7 +104,7 @@ internal class For : Standart
 
         for (; (condt as Bool?)?.Val ?? false; )
         {
-            SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
+            SourceChunk chunk = new(_line.ToList(), parentChunk);
 
             var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
             result = chunk.Run(lineNum);

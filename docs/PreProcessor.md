@@ -1,4 +1,4 @@
-<- [Using Multiple Files](Include.md) | [Docs Main Page](BASICS.md)
+<- [Using Multiple Files](Include.md) | [Docs Main Page](BASICS.md) | []() ->
 
 # Advenced PreProcessor Directives
 
@@ -156,3 +156,7 @@ Output will always be `Hello` because pre-processor sees `@define somebool` and 
 ```
 
 Yet `@module` is my personal recommendation because it's easier to use (and its performance is slightly better than `@if-@define`).
+
+### Why @module is faster than @if-@define
+
+Basically, if `@if` directive is false, pre-processor still seeks for `@endif` and will continue processing the file until the end. But with `@module` directive, if the module is already included, pre-processor will instantly stop processing the file. So `@module` is slightly faster.

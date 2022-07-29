@@ -134,3 +134,7 @@ write "Include"
 ```
 
 The lines that start with `@` in your code are what we call a `pre-processor directive`. If you want to learn more about them, the next section is perfect for you. You can skip it if don't wan to.
+
+## <br> NOTE
+
+It's better for `@module` directive to be at the top of the file, above every other directive and code.

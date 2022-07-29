@@ -4,7 +4,7 @@ public struct Function : IVariable
 {
     public Token Token { get; set; }
 
-    public (SourceChunk Val, int begin, int count, string[] param) Val;
+    internal (SourceChunk Val, int begin, int count, string[] param) Val;
 
     public string Name { get; set; } = "";
 
@@ -14,7 +14,7 @@ public struct Function : IVariable
         set => Val = (ValueTuple<SourceChunk, int, int, string[]>)value;
     }
 
-    public Function(
+    internal Function(
         SourceChunk code,
         SourceChunk currentChunk,
         string[] parameters,
@@ -34,7 +34,7 @@ public struct Function : IVariable
         Val.param = parameters;
     }
 
-    public IVariable Run(IVariable[] parameters, SourceChunk chunk)
+    internal IVariable Run(IVariable[] parameters, SourceChunk chunk)
     {
         SourceChunk tempChunk = new(Val.Val.Lines, chunk);
 
@@ -48,5 +48,17 @@ public struct Function : IVariable
         }
 
         return tempChunk.Run(Val.begin);
+    }
+
+    public IVariable Run(IVariable[] parameters) => Run(parameters, Val.Val.Parent);
+
+    public IVariable Run(params object[] parameters)
+    {
+        List<IVariable> vars = new(parameters.Length);
+
+        foreach (var param in parameters)
+            vars.Add(Variable.ClrToVar(param));
+
+        return Run(vars.ToArray());
     }
 }

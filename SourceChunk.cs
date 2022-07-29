@@ -9,11 +9,20 @@ public class SourceChunk
 
     public SourceChunk? Parent { get; set; }
 
-    public List<List<Token>> Lines { get; set; }
+    internal List<List<Token>> Lines { get; set; }
 
-    public Parser Parser { get; set; }
+    internal Parser Parser { get; set; }
 
-    public string _file;
+    internal string _file;
+
+    internal SourceChunk(List<List<Token>> lines, SourceChunk chunk)
+    {
+        Stack = new();
+        Parent = chunk;
+        Lines = lines;
+        Parser = new(this);
+        _file = "???";
+    }
 
     public SourceChunk(string sourceFile)
     {
@@ -30,34 +39,42 @@ public class SourceChunk
         Parser = new(this);
     }
 
-    public SourceChunk()
+    public SourceChunk(string[] source)
+    {
+        Stack = new();
+        Parent = null;
+        var processedSource = PreProcessor.Process(source);
+        Lines = Lexer.Lex(processedSource);
+        Parser = new(this);
+        _file = "???";
+    }
+
+    internal SourceChunk()
     {
         Stack = new();
         Parent = null;
         Lines = new();
         Parser = new(this);
+        _file = "???";
     }
-
-    public SourceChunk(List<List<Token>> lines, SourceChunk chunk)
+    
+    public IVariable Run()
     {
-        Stack = new();
-        Parent = chunk;
-        Lines = lines;
-        Parser = new(this);
-    }
-
-    public IVariable Run(int lineNum = 0)
-    {
-        var result = Parser.Parse(Lines, lineNum);
-
-        Destructor();
+        var result = Parser.Parse(Lines);
 
         return result;
     }
 
-    public void Return() => Parser.turn = true;
+    internal IVariable Run(int lineNum)
+    {
+        var result = Parser.Parse(Lines, lineNum);
 
-    public IVariable RunInteractive(string source, int line)
+        return result;
+    }
+
+    internal void Return() => Parser.turn = true;
+
+    internal IVariable RunInteractive(string source, int line)
     {
         var processed = PreProcessor.ProcessLine(source);
         Lines.Add(Lexer.LexLine(processed));
@@ -67,7 +84,7 @@ public class SourceChunk
         return result;
     }
 
-    private void Destructor() => Stack.Clear();
+    public void ClearSource() => Stack.Clear();
 
     public IVariable? GetVar(string name)
     {
@@ -151,7 +168,7 @@ public class SourceChunk
             return Parent?.VarExists(variable) ?? false;
     }
 
-    public void Error(string message, ExitCode code)
+    internal void Error(string message, ExitCode code)
     {
         SourceChunk ch = this;
 
@@ -169,16 +186,6 @@ public class SourceChunk
 
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine(message);
-
-        while (true)
-        {
-            if (ch.Parent == null)
-                break;
-
-            ch = ch.Parent;
-
-            ch.Destructor();
-        }
 
         Program.Exit(code);
     }

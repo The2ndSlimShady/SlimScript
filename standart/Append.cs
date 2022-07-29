@@ -4,10 +4,10 @@ internal class Append : Standart
 {
     public override IVariable Run(List<Token> line, SourceChunk chunk)
     {
-        var varT = line.ToArray()[1..line.IndexOf(new("to"))];
+        var varT = line.ToArray()[1..line.LastIndexOf(new("to"))];
         var var = Variable.Create(varT, chunk);
 
-        var arrayT = Variable.Create(line.ToArray()[(line.IndexOf(new("to")) + 1)..], chunk);
+        var arrayT = Variable.Create(line.ToArray()[(line.LastIndexOf(new("to")) + 1)..], chunk);
 
         if (arrayT.GetType() != typeof(Array))
             chunk.Error(

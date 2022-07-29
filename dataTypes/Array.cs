@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
+
 namespace SlimScript;
 
-public class Array : IVariable
+public class Array : IVariable, IEnumerable<IVariable>
 {
     private string _name;
 
@@ -86,4 +88,8 @@ public class Array : IVariable
     public Array() : this(System.Array.Empty<Token>(), null) { }
 
     public string GetString() => $"[ {string.Join(", ", Val.Select(var => var.GetString()))} ]";
+
+    public IEnumerator<IVariable> GetEnumerator() => Val.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => Val.GetEnumerator();
 }

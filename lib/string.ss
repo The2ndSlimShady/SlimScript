@@ -95,5 +95,6 @@ func string.concat arr begin
         set tmpStrForConcat to + tmpStrForConcat tostring item
     end
 
+    write tmpStrForConcat
     return tmpStrForConcat
 end

@@ -23,7 +23,7 @@ internal class Foreach : Standart
             chunk.Parser.block = (chunk.Parser.block.level + 1, "Foreach");
             _currentLevel = chunk.Parser.block.level;
 
-            Token[] nameTokens = line.ToArray()[1..line.IndexOf(new("in"))];
+            Token[] nameTokens = line.ToArray()[1..(line.IndexOf(new("in")))];
 
             if (nameTokens.Length != 1)
                 chunk.Error($"Cannot create multiple loop variables.", ExitCode.GrammarError);
@@ -40,7 +40,7 @@ internal class Foreach : Standart
 
             _loopData.array = arr;
 
-            i = line.IndexOf(new("begin")) + 1;
+            i = line.LastIndexOf(new("begin")) + 1;
         }
 
         for (; i < line.Count; i++)

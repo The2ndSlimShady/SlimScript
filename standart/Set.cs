@@ -35,7 +35,7 @@ internal class Set : Standart
             var index = (Number)indexT;
 
             var arrayT = Variable.Create(
-                line.ToArray()[(line.IndexOf(new("of")) + 1)..line.IndexOf(new("to"))],
+                line.ToArray()[(line.IndexOf(new("of")) + 1)..line.LastIndexOf(new("to"))],
                 chunk
             );
 

@@ -1,11 +1,11 @@
-using System.Data.Common;
+using System.Collections;
 using System.Reflection;
 
 namespace SlimScript;
 
-internal class Variable
+public class Variable
 {
-    public static IVariable Create(Token[] parameters, SourceChunk chunk)
+    internal static IVariable Create(Token[] parameters, SourceChunk chunk)
     {
         object realParam = null;
 
@@ -82,7 +82,7 @@ internal class Variable
         }
     }
 
-    public static object? CreateType(string type)
+    internal static object? CreateType(string type)
     {
         return (
             Activator
@@ -94,12 +94,12 @@ internal class Variable
         );
     }
 
-    public static IVariable Copy(IVariable variable, SourceChunk chunk)
+    internal static IVariable Copy(IVariable variable, SourceChunk chunk)
     {
         if (variable.GetType() == typeof(Array))
         {
             Array arr = new(variable as Array ?? new Array(), chunk);
-            arr.Token = new(){Type = TokenType.Array, Text = "null"};
+            arr.Token = new() { Type = TokenType.Array, Text = "null" };
             arr.Value = variable.Value;
 
             return arr;
@@ -113,5 +113,37 @@ internal class Variable
         returnVar.Token = variable.Token;
 
         return returnVar;
+    }
+
+    public static IVariable ClrToVar(object clr)
+    {
+        if (clr.GetType().IsAssignableTo(typeof(IVariable)))
+            return (IVariable)clr;
+        if (double.TryParse(clr.ToString(), out _))
+            return new Number(new($"{clr}"));
+        else if (clr.GetType() == typeof(string))
+            return new Word(new($"\"{clr}\""));
+        else if (clr.GetType().IsAssignableTo(typeof(IEnumerable)))
+        {
+            Array arr =
+                new()
+                {
+                    Token = new("null") { Type = TokenType.Array },
+                    Val = new()
+                };
+
+            foreach (var item in (IEnumerable)clr)
+                arr.Val.Add(ClrToVar(item));
+
+            return arr;
+        }
+        else if (clr.GetType() == typeof(bool))
+            return new Bool(new($"{clr}".ToLower()));
+        else
+        {
+            //TODO: DotNetInterface
+            
+            throw new Exception("Type <DotNetInterface> is not supperted yet.");
+        }
     }
 }

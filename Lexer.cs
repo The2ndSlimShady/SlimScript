@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 
 namespace SlimScript;
@@ -39,16 +40,35 @@ internal class Lexer
             if (!Program.interactive && Program.Debug)
             {
                 StringBuilder sb = new();
+                StringBuilder? humanized = null;
+
+                if (Program.Humanize)
+                    humanized = new();
+                
+                bool first = false;
 
                 foreach (var tokens in Lines)
                 {
+                    first = true;
+
                     foreach (var token in tokens)
                     {
                         sb.Append($"[{token}: {token.Text}]");
+
+                        humanized?.Append($"{(first ? string.Empty : " ")}{token.Text}");
+
+                        first = false;                   
                     }
+
                     sb.AppendLine();
+
+                    humanized?.AppendLine();
                 }
+
                 File.WriteAllText("post_lexer.sso", sb.ToString());
+
+                if (Program.Humanize)
+                    File.WriteAllText("post_lexer_humanized.sso", humanized?.ToString());
             }
 
             return Lines;
@@ -56,7 +76,7 @@ internal class Lexer
         catch (Exception)
         {
             Program.Exit(ExitCode.LexerError);
-            return null;
+            return new();
         }
     }
 

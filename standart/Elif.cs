@@ -20,7 +20,7 @@ internal class Elif : Standart
         {
             _entered = true;
 
-            if (line.IndexOf(new("then")) == -1)
+            if (!line.Contains(new("then")))
                 chunk.Error($"Cannot find keyword 'then' to start block.", ExitCode.GrammarError);
 
             chunk.Parser.block = (chunk.Parser.block.level, "Elif");
@@ -101,7 +101,7 @@ internal class Elif : Standart
                     else if (token.Text == "else")
                     {
                         chunk.Parser.block = (chunk.Parser.block.level, "Else");
-                        return new Elif().Run(line, chunk);
+                        return new Else().Run(line, chunk);
                     }
                 }
             }
