@@ -43,13 +43,13 @@ public class SourceChunk
 
         Stack = new();
         Parent = null;
-
+        
         #if DEBUG
         Console.WriteLine($"Pre-Processing Source Code...");
         #endif
-        
+
         var processedSource = PreProcessor.Process(source);
-        Lines = Lexer.Lex(processedSource);
+        Lines = Lexer.Lex(processedSource, this);
         Parser = new(this);
     }
 
@@ -57,8 +57,11 @@ public class SourceChunk
     {
         Stack = new();
         Parent = null;
+        #if DEBUG
+        Console.WriteLine($"Pre-Processing Source Code...");
+        #endif
         var processedSource = PreProcessor.Process(source);
-        Lines = Lexer.Lex(processedSource);
+        Lines = Lexer.Lex(processedSource, this);
         Parser = new(this);
         _file = "???";
     }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Text;
 using System;
 using System.IO;
+using System.IO.Compression;
 
 namespace SlimScript;
 
@@ -37,12 +38,25 @@ internal class Program
                     Exit(ExitCode.NoInputFile);
                 }
 
-                Debug = args.Contains("-D") || args.Contains("-DH");
-                Humanize = args.Contains("-H") || args.Contains("-DH");
-
                 BasePath = Directory.GetCurrentDirectory();
 
-                MainChunk = new SourceChunk(args[0]);
+                if (Path.GetExtension(args[0]) == ".hsso" || args.Contains("-RH"))
+                {
+                    Debug = args.Contains("-D") || args.Contains("-DH");
+                    Humanize = false;
+
+                    var tmpStr = Encoding.UTF8.GetString(Decompress(File.ReadAllBytes(args[0])));
+                    var source = tmpStr.Split(Environment.NewLine, StringSplitOptions.TrimEntries);
+
+                    MainChunk = new(source) { _file = args[0] };
+                }
+                else
+                {
+                    Debug = args.Contains("-D") || args.Contains("-DH");
+                    Humanize = args.Contains("-H") || args.Contains("-DH");
+
+                    MainChunk = new SourceChunk(args[0]);
+                }
 
                 Directory.SetCurrentDirectory(BasePath);
 
@@ -91,6 +105,24 @@ internal class Program
         }
 
         Exit(ExitCode.Normal);
+    }
+
+    public static byte[] Compress(byte[] data)
+    {
+        using var compressedStream = new MemoryStream();
+        using var zipStream = new GZipStream(compressedStream, CompressionMode.Compress);
+        zipStream.Write(data, 0, data.Length);
+        zipStream.Close();
+        return compressedStream.ToArray();
+    }
+
+    public static byte[] Decompress(byte[] data)
+    {
+        using var compressedStream = new MemoryStream(data);
+        using var zipStream = new GZipStream(compressedStream, CompressionMode.Decompress);
+        using var resultStream = new MemoryStream();
+        zipStream.CopyTo(resultStream);
+        return resultStream.ToArray();
     }
 
     public static void Exit(ExitCode code)

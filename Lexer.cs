@@ -5,11 +5,11 @@ namespace SlimScript;
 
 internal class Lexer
 {
-    public static List<List<Token>> Lex(string[] source)
+    public static List<List<Token>> Lex(string[] source, SourceChunk chunk)
     {
-        #if DEBUG
-        Console.WriteLine($"Lexing Source Code...");
-        #endif
+#if DEBUG
+        Console.WriteLine($"Lexing Source Code...\n");
+#endif
 
         try
         {
@@ -41,15 +41,22 @@ internal class Lexer
 
             Lines = Lines.Where(line => line.Count != 0).ToList();
 
-            if (!Program.interactive && Program.Debug)
+            if (!Program.interactive)
             {
-                StringBuilder sb = new();
+                StringBuilder? sb = null;
+
+                if (Program.Debug)
+                    sb = new();
+
                 StringBuilder? humanized = null;
 
                 if (Program.Humanize)
                     humanized = new();
-                
+
                 bool first = false;
+
+                if (sb == null && humanized == null)
+                    return Lines;
 
                 foreach (var tokens in Lines)
                 {
@@ -57,28 +64,39 @@ internal class Lexer
 
                     foreach (var token in tokens)
                     {
-                        sb.Append($"[{token}: {token.Text}]$");
+                        sb?.Append($"[{token}: {token.Text}] ");
 
                         humanized?.Append($"{(first ? string.Empty : " ")}{token.Text}");
 
-                        first = false;                   
+                        first = false;
                     }
 
-                    sb.AppendLine();
+                    sb?.AppendLine();
 
                     humanized?.AppendLine();
                 }
 
-                File.WriteAllText("post_lexer.sso", sb.ToString());
+                if (Program.Debug)
+                    File.WriteAllText(
+                        $"{Path.GetFileNameWithoutExtension(chunk._file) ?? string.Empty}.sso",
+                        sb?.ToString()
+                    );
 
                 if (Program.Humanize)
-                    File.WriteAllText("post_lexer_humanized.sso", humanized?.ToString());
+                    File.WriteAllBytes(
+                        $"{Path.GetFileNameWithoutExtension(chunk._file) ?? string.Empty}.hsso",
+                        Program.Compress(Encoding.UTF8.GetBytes(humanized?.ToString() ?? ""))
+                    );
             }
 
             return Lines;
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Console.ForegroundColor = ConsoleColor.Red;
+            System.Console.WriteLine(
+                $"An Error occured during Lexical Analysis.\nMessage:{e.Message}"
+            );
             Program.Exit(ExitCode.LexerError);
             return new();
         }
