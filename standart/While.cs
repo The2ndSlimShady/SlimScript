@@ -26,7 +26,7 @@ internal class While : Standart
 
             var condition = Variable.Create(_conditionTokens, chunk);
 
-            if (condition.Token.Type != TokenType.Boolean)
+            if (condition.Token.Type != TokenType.Bool)
                 chunk.Error(
                     $"Cannot evaluate boolean comprasion on type '{condition}'.",
                     ExitCode.DisordantTokenError

@@ -17,7 +17,7 @@ public struct Bool : IVariable
 
     internal Bool(Token[] tokens, SourceChunk chunk)
     {
-        if (tokens[0].Type == TokenType.Boolean)
+        if (tokens[0].Type == TokenType.Bool)
         {
             Val = Convert.ToBoolean(tokens[0].Text);
             Token = tokens[0];

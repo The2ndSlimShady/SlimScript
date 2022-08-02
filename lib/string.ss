@@ -1,58 +1,48 @@
 @module string
 
--- Passed
+@include system
+
+define string_t as {System::String}
+define sbuilder_t as {System::Text::StringBuilder}
+
+define string.empty as ""
+
 func string.length str begin
-    define lengthOf_Str as 0
-
-    foreach ch in str begin
-        set lengthOf_Str to + lengthOf_Str 1
-    end
-
-    return lengthOf_Str
+    define builder as sbuilder_t->new str
+    return variable->ClrToVar builder:Length
 end
 
--- Passed
+
 func string.indexOf str val begin
-    for i as 0 || < i do string.length str || 1 begin
-        if = val index i of str then
-            return i
-        end
-    end
+    define builder as sbuilder_t->new str
+    define clrStr as builder->ToString
 
-    return -1
+    delete builder
+
+    return variable->ClrToVar clrStr->IndexOf val
 end
 
--- Passed
+
 func string.lastIndexOf str val begin
-    define lengthOf_Str as do string.length str
-    define tmpiFor_for as - lengthOf_Str 1
+    define builder as sbuilder_t->new str
+    define clrStr as builder->ToString
 
-    for i as tmpiFor_for || >= i 0 || -1 begin
-        if = val index i of str then
-            return i
-        end
-    end
+    delete builder
 
-    return -1
+    return variable->ClrToVar clrStr->LastIndexOf val
 end
 
--- Passed
-func string.subString str startIndex endIndex begin
-    define tmpArr_toSubStr as [ ]
 
-    for i as 0 || < i do string.length str || 1 begin
-        define greaterThanStr as >= i startIndex
-        define lesserThanStr as < i endIndex
+func string.subString str startIndex length begin
+    define builder as sbuilder_t->new str
+    define clrStr as builder->ToString
 
-        if both greaterThanStr lesserThanStr then
-            append index i of str to tmpArr_toSubStr
-        end
-    end
+    delete builder
 
-    return do string.concat tmpArr_toSubStr
+    return variable->ClrToVar clrStr->Substring startIndex length
 end
 
--- Passed
+
 func string.endsWith str ch begin
     if = 0 do string.length str then
         return false
@@ -63,7 +53,7 @@ func string.endsWith str ch begin
     return = ch index - lengthOf_Str 1 of str
 end
 
--- Passed
+
 func string.startsWith str ch begin
     if = 0 do string.length str then
         return false
@@ -72,29 +62,33 @@ func string.startsWith str ch begin
     return = ch index 0 of str
 end
 
--- Passed
+
 func string.isEmpty str begin
-    if = 0 do string.length str then
-        return true
-    end
+    define firstBool as variable->ClrToVar string_t->IsNullOrEmpty str
+    define secondBool as variable->ClrToVar string_t->IsNullOrWhiteSpace str
 
-    foreach ch in str begin
-        if != ch " " then
-            return false
-        end
-    end
-
-    return true
+    return both firstBool secondBool
 end
 
--- Passed
+
 func string.concat arr begin
-    define tmpStrForConcat as ""
+    return variable->ClrToVar string_t->Concat arr
+end
 
-    foreach item in arr begin
-        set tmpStrForConcat to + tmpStrForConcat tostring item
-    end
+func string.toLower str begin
+    define builder as sbuilder_t->new str
+    define clrStr as builder->ToString
 
-    write tmpStrForConcat
-    return tmpStrForConcat
+    delete builder
+
+    return variable->ClrToVar clrStr->ToLower
+end
+
+func string.toUpper str begin
+    define builder as sbuilder_t->new str
+    define clrStr as builder->ToString
+
+    delete builder
+
+    return variable->ClrToVar clrStr->ToUpper
 end

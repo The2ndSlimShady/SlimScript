@@ -29,7 +29,7 @@ internal class Elif : Standart
             var conditionTokens = line.ToArray()[1..line.IndexOf(new("then"))];
             var condition = Variable.Create(conditionTokens, chunk);
 
-            if (condition.Token.Type != TokenType.Boolean)
+            if (condition.Token.Type != TokenType.Bool)
                 chunk.Error(
                     $"Cannot evaluate boolean comprasion on type '{condition}'.",
                     ExitCode.DisordantTokenError

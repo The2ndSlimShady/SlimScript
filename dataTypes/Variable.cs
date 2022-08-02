@@ -25,12 +25,12 @@ public class Variable
             if (
                 param.Type == TokenType.Number
                 || param.Type == TokenType.Word
-                || param.Type == TokenType.Boolean
+                || param.Type == TokenType.Bool
                 || param.Type == TokenType.Function
             )
                 realParam = param;
             else if (param.Type == TokenType.CLR)
-                realParam = new CLR(param.Text, parameters[i..], chunk);
+                realParam = CLR.Create(param.Text, parameters[i..], chunk);
             else if (param.Type == TokenType.Identifier)
                 realParam = Identifier.Identify(parameters[i..], chunk);
             else if (param.Type == TokenType.Standart)
@@ -72,7 +72,7 @@ public class Variable
                 TokenType.Function
                 or TokenType.Identifier
                     => Identifier.Identify(parameters, chunk),
-                TokenType.Boolean => new Bool(parameters, chunk),
+                TokenType.Bool => new Bool(parameters, chunk),
                 _ => new Null(),
             };
         }
@@ -119,12 +119,14 @@ public class Variable
 
     public static IVariable ClrToVar(object? clr)
     {
-        if (clr?.GetType().IsAssignableTo(typeof(IVariable)) ?? false)
+        if (clr?.GetType() == typeof(CLR))
+            return ClrToVar((clr as CLR?)?.Value);
+        else if (clr?.GetType().IsAssignableTo(typeof(IVariable)) ?? false)
             return (IVariable)clr;
-        if (double.TryParse(clr?.ToString() ?? "", out _))
-            return new Number(new($"{clr}"));
         else if (clr?.GetType() == typeof(string) || clr?.GetType() == typeof(char))
             return new Word(new($"\"{clr}\""));
+        else if (double.TryParse(clr?.ToString() ?? "", out _))
+            return new Number(new($"{clr}"));
         else if (clr?.GetType().IsAssignableTo(typeof(IEnumerable)) ?? false)
         {
             Array arr =
@@ -150,17 +152,17 @@ public class Variable
     public static object? VarToClr(IVariable variable)
     {
         if (variable.Token.Type == TokenType.Array)
-            return (variable as Array)?.Val.Select(v => v.Value).ToArray();
-        else if (variable.Token.Type == TokenType.Boolean)
+            return new ArrayList((variable as Array)?.Val.Select(v => v.Value).ToArray());
+        else if (variable.Token.Type == TokenType.Bool)
             return (variable as Bool?)?.Val;
-        else if (variable.Token.Type == TokenType.CLR)
-            return (variable as CLR?)?.Val;
         else if (variable.Token.Type == TokenType.Null)
             return null;
         else if (variable.Token.Type == TokenType.Number)
             return (variable as Number?)?.Val;
         else if (variable.Token.Type == TokenType.Word)
             return (variable as Word?)?.Val;
+        else if (variable.Token.Type == TokenType.CLR)
+            return (variable as CLR?)?.Val;
         else
         {
             Console.ForegroundColor = ConsoleColor.Red;

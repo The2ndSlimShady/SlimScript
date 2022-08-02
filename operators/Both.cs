@@ -8,7 +8,7 @@ internal class Both : Operator
     {
         var arg = ReadyParams(line, chunk);
 
-        if (arg.Any(t => t.Token.Type != TokenType.Boolean))
+        if (arg.Any(t => t.Token.Type != TokenType.Bool))
         {
             chunk.Error(
                 $"Both function does not exists on type '{arg}'.",

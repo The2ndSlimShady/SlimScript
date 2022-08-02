@@ -1,24 +1,15 @@
 @module array
 
+@include system
+
+define array_t as {System::Collections::ArrayList}
+
 -- Passed
 func array.addRange arr range begin
-    define notArrArr as != "Array" typeof arr
-    define notArrRange as != "Array" typeof range
 
-    if any notArrArr notArrRange then
-        define errMsg as + "Cannot use types arr:" typeof arr
-        set errMsg to + errMsg + " and range:" typeof range
-        set errMsg to + errMsg " as parameters for array.addRange"
+    -- TODO
 
-        define errExpl as + "addRange " + "arr:" tostring arr
-        set errExpl to + errExpl + " range:" tostring range
-
-        error errMsg errExpl
-    end
-
-    foreach item in range begin
-        append item to arr
-    end
+    set arr to array_t->new arr
 end
 
 -- Passed

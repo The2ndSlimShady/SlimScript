@@ -1,9 +1,12 @@
 @module math
 
+@include system
+
+define math_t as {System::Math}
+
 define math.E as 2.71828182845905
 define math.PI as 3.14159265358979
 
--- Passed
 func math.absolute num begin
     if != "Number" typeof num then
         define errMsg as + "Cannot get absolute value of type " typeof num
@@ -11,45 +14,18 @@ func math.absolute num begin
         error errMsg errData
     end
 
-    if > 0 num then
-        return * -1 num
-    else
-        return num
-    end
+    return variable->ClrToVar math_t->Abs num
 end
 
-func math.divRem dividend divisor begin
-    define divNum as != "Number" typeof dividend
-    define divsNum as != "Number" typeof divisor
+func math.mod dividend divisor begin
+    set divisor to variable->ClrToVar convert->ToInt32 divisor
+    set dividend to variable->ClrToVar convert->ToInt32 dividend
 
-    if any divNum divsNum then
-        define errMsg as + "Cannot get division remainder of types " typeof dividend
-        set errMsg to + errMsg + " and " typeof divisor
+    define valTuple as math_t->DivRem dividend divisor
 
-        define errData as + "math.divRem " typeof dividend
-        set errData to + errData + " " typeof divisor  
-        error errMsg errData
-    end
-
-    define isNegative as false
-
-    if < dividend 0 then
-        set dividend to - dividend
-        set isNegative to true
-    end
-
-    while >= dividend divisor begin
-        set dividend to - dividend divisor
-    end
-
-    if isNegative then
-        set dividend to - dividend
-    end
-
-    return dividend
+    return variable->ClrToVar valTuple:Item1
 end
 
--- Passed
 func math.max num1 num2 begin
     if < num1 num2 then
         return num2
@@ -58,7 +34,6 @@ func math.max num1 num2 begin
     end
 end
 
--- Passed
 func math.min num1 num2 begin
     if < num1 num2 then
         return num1
@@ -67,7 +42,6 @@ func math.min num1 num2 begin
     end
 end
 
--- Passed
 func math.root base root begin
     if < base 0 then
         return base
@@ -76,12 +50,10 @@ func math.root base root begin
     return ^ base / 1 root
 end
 
--- Passed
 func math.sqrt base begin
     return do math.root base 2
 end
 
--- Passed
 func math.fact num begin
     define resultofFact as 1
 
@@ -90,4 +62,32 @@ func math.fact num begin
     end
 
     return resultofFact
+end
+
+func math.floor num begin
+    return variable->ClrToVar math_t->Floor num
+end
+
+func math.ceiling num begin
+    return variable->ClrToVar math_t->Ceiling num
+end
+
+func math.sin angle begin
+    return variable->ClrToVar math_t->Sin angle
+end
+
+func math.tan angle begin
+    return variable->ClrToVar math_t->Tan angle
+end
+
+func math.cos angle begin
+    return variable->ClrToVar math_t->Cos angle
+end
+
+func math.round num begin
+    return variable->ClrToVar math_t->Round num
+end
+
+func math.truncate num begin
+    return variable->ClrToVar math_t->Truncate num
 end

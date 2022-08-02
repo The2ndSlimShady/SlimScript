@@ -9,7 +9,7 @@ internal class Tonumber : Standart
         switch (var.Token.Type)
         {
             case TokenType.Number:
-            case TokenType.Boolean:
+            case TokenType.Bool:
             case TokenType.Word:
                 break;
 

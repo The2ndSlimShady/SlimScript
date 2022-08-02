@@ -96,7 +96,7 @@ internal class Parser
         {
             if (Grammar.standarts.Contains(expression))
                 return $"{expression[0].ToString().ToUpper(CultureInfo.GetCultureInfoByIetfLanguageTag("en-us"))}{expression[1..]}";
-            else if (expression.Contains("->") || expression.Contains('.'))
+            else if (expression.Contains("->") || expression.Contains(':'))
                 return "CLR";
             else
                 return Grammar.operators[expression];

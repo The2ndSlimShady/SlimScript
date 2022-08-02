@@ -8,7 +8,7 @@ internal class Any : Operator
     {
         var arg = ReadyParams(line, chunk);
     
-        if (arg.Any(t => t.Token.Type != TokenType.Boolean))
+        if (arg.Any(t => t.Token.Type != TokenType.Bool))
         {
             chunk.Error($"Not function does not exists on type '{arg}'.", ExitCode.DisordantTokenError);
 

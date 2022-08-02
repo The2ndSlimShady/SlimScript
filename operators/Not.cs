@@ -8,7 +8,7 @@ internal class Not : Operator
     {
         var arg = Variable.Create(line[1..], chunk);
 
-        if (arg.Token.Type != TokenType.Boolean)
+        if (arg.Token.Type != TokenType.Bool)
         {
             chunk.Error(
                 $"Not Function Does Not Exists on type '{arg.Token}'",

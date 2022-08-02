@@ -55,10 +55,10 @@
   - [x] Undef
 - [ ] Standart Libraries
   - [x] Array
-  - [ ] Math
+  - [x] Math
   - [ ] String
-- [ ] Other Features
-  - [ ] Using C#/.NET
+- [x] Other Features
+  - [x] Using C#/.NET
   - [x] Creating an Installer
   - [x] Interactive Mode
   - [x] Recursion

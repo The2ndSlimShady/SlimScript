@@ -97,7 +97,7 @@ public struct Number : IVariable
         return num;
     }
 
-    public string GetString() => Token.Text.Replace(",", ".");
+    public string GetString() => Token.Text?.Replace(",", ".") ?? "";
 
     public override string ToString() => (this as IVariable).GetString();
 }

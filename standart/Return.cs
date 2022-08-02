@@ -9,7 +9,7 @@ internal class Return : Standart
         if (line.Count != 1)
             variable = Variable.Create(line.ToArray()[1..], chunk);
         else
-            variable = new Word(new("\"null\""));
+            variable = new Null();
 
         chunk.Return();
 

@@ -7,7 +7,7 @@ public struct Token
 {
     public TokenType Type { get; set; }
 
-    public string Text { get; set; }
+    public string Text { get; set; } = "";
 
     public Token(string source)
     {
@@ -22,7 +22,7 @@ public struct Token
             else if (Text.StartsWith("\""))
                 Type = TokenType.Word;
             else if (Text == "true" || Text == "false")
-                Type = TokenType.Boolean;
+                Type = TokenType.Bool;
             else if (Grammar.operators.ContainsKey(Text))
                 Type = TokenType.Operator;
             else if (Grammar.standarts.Contains(Text))
@@ -31,7 +31,7 @@ public struct Token
                 Type = TokenType.Keyword;
             else if (Text == "EOL")
                 Type = TokenType.EOL;
-            else if (Text.Contains("->") || Text.Contains('.'))
+            else if (Text.Contains("->") || Text.Contains(':'))
                 Type = TokenType.CLR;
             else if (!string.IsNullOrEmpty(Text))
                 Type = TokenType.Identifier;
@@ -72,7 +72,7 @@ public enum TokenType
 {
     Number,
     Operator,
-    Boolean,
+    Bool,
     Identifier,
     EOL,
     Keyword,

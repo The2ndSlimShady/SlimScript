@@ -70,9 +70,9 @@ public struct CLR : IVariable
     /// </summary>
     /// <param name="value"></param>
     /// <param name="chunk"></param>
-    internal CLR(string value, Token[] parameters, SourceChunk chunk)
+    unsafe internal static IVariable Create(string value, Token[] parameters, SourceChunk chunk)
     {
-        string[] seperators = new string[2] { ".", "->" };
+        string[] seperators = new string[2] { ":", "->" };
 
         List<string> expressions = new() { "" };
 
@@ -97,7 +97,7 @@ public struct CLR : IVariable
             ? chunk.GetVar(expressions[0])?.Value
             : null;
 
-        for (int i = 0; i < expressions.Count; i++)
+        for (int i = 0; i <= expressions.Count - 3; i++)
         {
             if (expressions[i + 1] == "->")
             {
@@ -106,45 +106,81 @@ public struct CLR : IVariable
                     .Select(var => Variable.VarToClr(var))
                     .ToArray();
 
-                var paramTypes = invokeParams.Select(p => p.GetType()).ToArray();
+                var paramTypes = invokeParams.Select(p => p?.GetType() ?? typeof(Null)).ToArray();
 
                 MethodBase? method = null;
+
+                bool selectMethod(MethodBase method)
+                    {
+                        bool allOk = false;
+                        var methodParams = method.GetParameters();
+
+                        if (methodParams.Length == 0 && paramTypes.Length == 0)
+                            return true;
+
+                        if (methodParams.Length != paramTypes.Length)
+                            return false;
+
+                        for (int i = 0; i < methodParams.Length; i++)
+                        {
+                            int index = Math.Min(i, paramTypes.Length - 1);
+
+                            var param = methodParams[i].ParameterType;
+
+                            if (index < 0)
+                                return false;
+
+                            var paramType = paramTypes[index];
+
+                            allOk = paramType == param || paramType.IsAssignableTo(param);
+
+                            if (!allOk)
+                            {
+                                try
+                                {
+                                    allOk = Variable.ClrToVar(paramType).GetType() == param;
+
+                                    var temp = allOk
+                                        ? Variable.ClrToVar(paramType)
+                                        : Convert.ChangeType(invokeParams[index], param);
+
+                                    paramType = temp?.GetType();
+
+                                    allOk = paramType == param;
+
+                                    invokeParams[index] = allOk ? temp : invokeParams[index];
+                                }
+                                catch (Exception)
+                                {
+                                    allOk = false;
+                                }
+                            }
+
+                            if (invokeParams[index].GetType().GetInterfaces().Contains(typeof(IConvertible)))
+                                invokeParams[index] = Convert.ChangeType(invokeParams[index], param);
+                        }
+
+                        return allOk;
+                    }
 
                 if (expressions[i + 2] != "new")
                 {
                     if (theVal?.GetType() != typeof(string).GetType())
-                        method = theVal?.GetType().GetRuntimeMethod(expressions[i + 2], paramTypes);
+                        method = theVal
+                            ?.GetType()
+                            .GetRuntimeMethods()
+                            .Where(m => m.Name == expressions[i + 2])
+                            .Where(m => selectMethod(m))
+                            .Last();
                     else
-                        method = (theVal as Type)?.GetRuntimeMethod(expressions[i + 2], paramTypes);
+                        method = (theVal as Type)
+                            ?.GetRuntimeMethods()
+                            .Where(m => m.Name == expressions[i + 2])
+                            .Where(m => selectMethod(m))
+                            .Last();
                 }
-
                 else
-                    method = (theVal as Type)
-                        ?.GetConstructors()
-                        .Single(ctor =>
-                        {
-                            bool allOk = false;
-                            var ctorParams = ctor.GetParameters();
-
-                            if (ctorParams.Length == 0 && paramTypes.Length == 0)
-                                return true;
-
-                            for (int i = 0; i < ctorParams.Length; i++)
-                            {
-                                int index = Math.Min(i, paramTypes.Length - 1);
-
-                                var param = ctorParams[i].ParameterType;
-
-                                if (index < 0)
-                                    return false;
-
-                                var paramType = paramTypes[i];
-
-                                allOk = paramType == param;
-                            }
-
-                            return allOk;
-                        });
+                    method = (theVal as Type)?.GetConstructors().Where(ctor => selectMethod(ctor)).Last();
 
                 if (method?.IsConstructor ?? false)
                     theVal = Activator.CreateInstance(theVal as Type, invokeParams);
@@ -155,9 +191,9 @@ public struct CLR : IVariable
 
                 i += 2;
             }
-            else if (expressions[i + 1] == ".")
+            else if (expressions[i + 1] == ":")
             {
-                object? tmpVal;
+                object? tmpVal = null;
 
                 if (theVal?.GetType() == typeof(string).GetType())
                     tmpVal = (theVal as Type)
@@ -186,12 +222,12 @@ public struct CLR : IVariable
 
                 i += 2;
             }
-
-            if (i == expressions.Count - 3)
-                break;
         }
 
-        this = new(theVal);
+        if (theVal?.GetType().IsAssignableTo(typeof(IVariable)) ?? false)
+            return Variable.ClrToVar((theVal as IVariable)?.Value);
+
+        return new CLR(theVal);
     }
 
     /// <summary>
@@ -211,14 +247,12 @@ public struct CLR : IVariable
             CLRType = CLRType.Object;
     }
 
-    public string GetString()
+    public string? GetString()
     {
-        if (Val == null)
-            return "null";
-        else if (CLRType == CLRType.Object)
-            return Val.ToString() ?? "null";
+        if (CLRType == CLRType.Object)
+            return Value.ToString();
         else if (CLRType == CLRType.Type)
-            return ((Type?)Val)?.FullName ?? "null";
+            return ((Type?)Value)?.FullName;
         else
             return "null";
     }

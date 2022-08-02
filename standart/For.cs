@@ -96,7 +96,7 @@ internal class For : Standart
 
         var condt = Variable.Create(_loopData.condition, parentChunk);
 
-        if (condt.Token.Type != TokenType.Boolean)
+        if (condt.Token.Type != TokenType.Bool)
             parentChunk.Error(
                 $"Cannot use type '{condt.Token}' for for loop.",
                 ExitCode.DisordantTokenError

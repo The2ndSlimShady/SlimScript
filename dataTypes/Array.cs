@@ -32,7 +32,7 @@ public class Array : IVariable
         Val = new();
         Token = new() { Type = TokenType.Array };
 
-        if (items.Length == 0)
+        if (items.Length <= 2)
             return;
 
         List<List<Token>> realItems = new() { new() };

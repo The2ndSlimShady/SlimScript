@@ -24,8 +24,8 @@ internal class Program
     {
         watch.Start();
 
-        try
-        {
+        // try
+        // {
             if (args.Length != 0 && args[0] == "-i")
                 RunInteractive();
             else
@@ -66,18 +66,20 @@ internal class Program
                 Console.WriteLine($"\nProgram Exited in {watch.ElapsedMilliseconds}ms");
                 Exit(ExitCode.Normal);
             }
-        }
-        catch (Exception e)
-        {
-            var line = MainChunk.Lines[MainChunk.Parser.lineNumber - 1];
-            var message =
-                $"An Exception occured during runtime.\nMessage: {e.Message}\nFile: {Path.GetFileNameWithoutExtension(MainChunk._file)}_p.sso\nLine: {MainChunk.Parser.lineNumber}\nExpression: {string.Join(' ', line.Select(t => t.Text))}";
+        // }
+        // catch (Exception e)
+        // {
+            // var line = MainChunk.Lines[MainChunk.Parser.lineNumber - 1];
+            // var message =
+            //     $"An Exception occured during runtime.\nMessage: {e.Message}\nFile: {Path.GetFileNameWithoutExtension(MainChunk._file)}_p.sso\nLine: {MainChunk.Parser.lineNumber}\nExpression: {string.Join(' ', line.Select(t => t.Text))}";
 
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(message);
+            // Console.ForegroundColor = ConsoleColor.Red;
+            // Console.WriteLine(message);
 
-            Exit(ExitCode.RuntimeError);
-        }
+            // Exit(ExitCode.RuntimeError);
+
+        //     throw e;
+        // }
     }
 
     private static void RunInteractive()
