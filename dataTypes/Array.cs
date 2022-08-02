@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace SlimScript;
 
-public class Array : IVariable, IEnumerable<IVariable>
+public class Array : IVariable
 {
     private string _name = "";
 
@@ -27,7 +27,7 @@ public class Array : IVariable, IEnumerable<IVariable>
         set => Val = (List<IVariable>)value;
     }
 
-    public Array(Token[] items, SourceChunk? chunk)
+    internal Array(Token[] items, SourceChunk chunk)
     {
         Val = new();
         Token = new() { Type = TokenType.Array };
@@ -35,13 +35,24 @@ public class Array : IVariable, IEnumerable<IVariable>
         if (items.Length == 0)
             return;
 
-        items = items[1..(items.Length - 1)];
-
         List<List<Token>> realItems = new() { new() };
 
         for (int i = 0, j = 0; i < items.Length; i++)
         {
             Token t = items[i];
+
+            if (t.Text[0] == '[')
+                t.Text = t.Text[1..];
+            if (t.Text.Last() == ']')
+            {
+                t.Text = t.Text[0..^1];
+                i = items.Length;
+            }
+
+            if (t.Text == "" || string.IsNullOrWhiteSpace(t.Text))
+                continue;
+
+            t = new(t.Text);
 
             if (t.Text == "," || t.Text.Contains(','))
             {
@@ -89,7 +100,5 @@ public class Array : IVariable, IEnumerable<IVariable>
 
     public string GetString() => $"[ {string.Join(", ", Val.Select(var => var.GetString()))} ]";
 
-    public IEnumerator<IVariable> GetEnumerator() => Val.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => Val.GetEnumerator();
+    public override string ToString() => GetString();
 }

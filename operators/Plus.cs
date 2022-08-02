@@ -30,7 +30,7 @@ internal class Plus : Operator
 
         if (param1.Token.Type == TokenType.Number)
             return SumNumbers((Number)param1, (Number)param2);
-        else if (realParams[0].Token.Type == TokenType.String)
+        else if (realParams[0].Token.Type == TokenType.Word)
             return SumStrings((Word)param1, (Word)param2);
         else
         {
@@ -38,7 +38,7 @@ internal class Plus : Operator
                 $"Minus Operator Does Not Exists on type '{realParams[0]}'",
                 ExitCode.DisordantTokenError
             );
-            return new Word(new("null"));
+            return new Null();
         }
     }
 

@@ -1,10 +1,10 @@
 using System.Globalization;
-using System.Runtime.Serialization;
 
 namespace SlimScript;
 
 internal class Parser
-{    public int lineNumber;
+{
+    public int lineNumber;
 
     public bool turn = false;
 
@@ -43,12 +43,12 @@ internal class Parser
 
             if (!exprBlock.GetType().IsSubclassOf(typeof(Standart)))
             {
-                Chunk.Error($"Error at line '{lineNumber}'.", ExitCode.GrammarError);
+                Chunk?.Error($"Error at line '{lineNumber}'.", ExitCode.GrammarError);
 
                 return new Number(new Token("-1"));
             }
 
-            return (exprBlock as Standart).Run(line, Chunk);
+            return (exprBlock as Standart)?.Run(line, Chunk) ?? new Null();
         }
 
         string? rule = null;
@@ -57,13 +57,17 @@ internal class Parser
         try
         {
             rule = IdentifyAndGet(line, Chunk);
+
+            if (rule == "CLR")
+                return Variable.Create(line.ToArray(), Chunk);
+
             obj = Variable.CreateType(rule);
         }
         catch (Exception)
         {
-            Chunk.Error($"Cannot execute command '{rule?.ToLower()}'.", ExitCode.RuntimeError);
+            Chunk?.Error($"Cannot execute command '{rule?.ToLower()}'.", ExitCode.RuntimeError);
 
-            return new Number(new Token("-1"));
+            return new Null();
         }
 
         if (obj.GetType().IsSubclassOf(typeof(Standart)))
@@ -92,6 +96,8 @@ internal class Parser
         {
             if (Grammar.standarts.Contains(expression))
                 return $"{expression[0].ToString().ToUpper(CultureInfo.GetCultureInfoByIetfLanguageTag("en-us"))}{expression[1..]}";
+            else if (expression.Contains("->") || expression.Contains('.'))
+                return "CLR";
             else
                 return Grammar.operators[expression];
         }

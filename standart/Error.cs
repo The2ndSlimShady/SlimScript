@@ -13,6 +13,6 @@ internal class Error : Standart
 
         chunk.Error($"{message.Value}\nData: {code.Value}", ExitCode.CodeRuntimeError);
 
-        return new Word(new("null"));
+        return new Null();
     }
 }

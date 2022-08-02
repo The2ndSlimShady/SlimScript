@@ -10,7 +10,7 @@ internal class Tonumber : Standart
         {
             case TokenType.Number:
             case TokenType.Boolean:
-            case TokenType.String:
+            case TokenType.Word:
                 break;
 
             default:
@@ -28,7 +28,7 @@ internal class Tonumber : Standart
         catch (Exception e)
         {
             chunk.Error($"Cannot convert \"{var.GetString()}\" to Number. {e.Message}", ExitCode.RuntimeError);
-            return new Word(new("null"));
+            return new Null();
         }
     }
 }

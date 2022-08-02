@@ -51,7 +51,10 @@ public struct Number : IVariable
             }
             else
             {
-                chunk.Error($"Cannot create Number from return of {tokens[0].Type}.", ExitCode.DisordantTokenError);
+                chunk.Error(
+                    $"Cannot create Number from return of {tokens[0].Type}.",
+                    ExitCode.DisordantTokenError
+                );
 
                 Token = new Token();
             }
@@ -95,4 +98,6 @@ public struct Number : IVariable
     }
 
     public string GetString() => Token.Text.Replace(",", ".");
+
+    public override string ToString() => (this as IVariable).GetString();
 }

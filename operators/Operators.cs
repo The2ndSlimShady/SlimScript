@@ -26,11 +26,21 @@ internal abstract class Operator
 
             Token param = parameters[i];
 
-            if (param.Type == TokenType.Number || param.Type == TokenType.String)
+            if (param.Type == TokenType.Number || param.Type == TokenType.Word)
                 realParams.Add(Variable.Create(new[] { param }, chunk));
-            else if (param.Text == "[")
+            else if (param.Text.Contains('['))
             {
                 realParams.Add(new Array(parameters[i..], chunk));
+                i = parameters.Length;
+            }
+            else if (param.Text.Contains('{'))
+            {
+                realParams.Add(new CLR(parameters[i..], chunk));
+                i = parameters.Length;
+            }
+            else if (param.Type == TokenType.CLR)
+            {
+                realParams.Add(Variable.Create(parameters[i..], chunk));
                 i = parameters.Length;
             }
             else if (param.Type == TokenType.Identifier)

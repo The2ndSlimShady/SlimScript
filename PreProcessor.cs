@@ -7,9 +7,9 @@ internal class PreProcessor
 {
     private static List<string> _includedModules = new();
 
-    public static string[] Process(string[] source)
+    public static string[] Process(string[] source, SourceChunk chunk)
     {
-        source = PrePreProcess(source);
+        source = PrePreProcess(source, chunk);
 
         List<string> processedSource = new();
 
@@ -67,25 +67,34 @@ internal class PreProcessor
         if (!Program.interactive && Program.Debug)
         {
             StringBuilder b = new();
+            bool first = true;
+
             foreach (var item in processedSource)
             {
                 if (item != "EOL")
                 {
-                    b.Append($" {item}");
+                    b.Append($"{(first ? string.Empty : " ")}{item}");
+                    first = false;
                 }
                 else
                 {
+                    first = true;
                     b.Append(Environment.NewLine);
                 }
             }
 
-            File.WriteAllText("post_process.sso", b.ToString());
+            File.WriteAllLines(
+                $"{Path.GetFileNameWithoutExtension(chunk._file) ?? string.Empty}_p.sso",
+                b.ToString()
+                    .Split(Environment.NewLine)
+                    .Where(l => !string.IsNullOrEmpty(l) || !string.IsNullOrWhiteSpace(l))
+            );
         }
 #endif
         return processedSource.ToArray();
     }
 
-    private static string[] PrePreProcess(string[] source)
+    private static string[] PrePreProcess(string[] source, SourceChunk chunk)
     {
         List<string> prepreprocessed = new();
 
@@ -177,7 +186,7 @@ internal class PreProcessor
                     }
 
                     var range = File.ReadAllLines(file);
-                    prepreprocessed.Add(string.Join(" ", Process(range)));
+                    prepreprocessed.Add(string.Join(" ", Process(range, chunk)));
                     break;
 
                 case "module":

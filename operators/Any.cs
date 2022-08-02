@@ -12,7 +12,7 @@ internal class Any : Operator
         {
             chunk.Error($"Not function does not exists on type '{arg}'.", ExitCode.DisordantTokenError);
 
-            return null;
+            return new Null();
         }
 
         Bool first = arg[0] as Bool? ?? new Bool(new("false"));

@@ -9,8 +9,11 @@ public class Variable
     {
         object realParam = null;
 
-        if (parameters[0].Text == "[")
+        if (parameters[0].Text.StartsWith('['))
             return new Array(parameters, chunk);
+
+        if (parameters[0].Text.StartsWith('{'))
+            return new CLR(parameters, chunk);
 
         for (int i = 0; i < parameters.Length; i++)
         {
@@ -21,11 +24,13 @@ public class Variable
 
             if (
                 param.Type == TokenType.Number
-                || param.Type == TokenType.String
+                || param.Type == TokenType.Word
                 || param.Type == TokenType.Boolean
                 || param.Type == TokenType.Function
             )
                 realParam = param;
+            else if (param.Type == TokenType.CLR)
+                realParam = new CLR(param.Text, parameters[i..], chunk);
             else if (param.Type == TokenType.Identifier)
                 realParam = Identifier.Identify(parameters[i..], chunk);
             else if (param.Type == TokenType.Standart)
@@ -39,23 +44,18 @@ public class Variable
             else
             {
                 chunk.Error(
-                    $"Cannot use token '{param.Text}' as operator parameter.",
+                    $"Cannot create variable from '{string.Join(' ', parameters.Select(t => t.Text))} -> where @param: {param.Text}'",
                     ExitCode.DisordantTokenError
                 );
 
-                return new Number(new Token("-1"));
+                return new Null();
             }
         }
 
         if (realParam == null)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"Cannot define variable from null value. line {chunk.Parser.lineNumber}"
-            );
-
-            Program.Exit(ExitCode.NullReferenceError);
-            return new Number(new Token("-1"));
+            chunk.Error($"Cannot create variable from null value.", ExitCode.NullReferenceError);
+            return new Null();
         }
 
         if (parameters.Length == 1 && realParam.GetType() == typeof(Token))
@@ -65,20 +65,16 @@ public class Variable
             return (IVariable)realParam;
         else
         {
-            switch ((realParam as Token?)?.Type)
+            return ((realParam as Token?)?.Type) switch
             {
-                case TokenType.Number:
-                    return new Number(parameters, chunk);
-                case TokenType.String:
-                    return new Word(parameters, chunk);
-                case TokenType.Function:
-                case TokenType.Identifier:
-                    return Identifier.Identify(parameters, chunk);
-                case TokenType.Boolean:
-                    return new Bool(parameters, chunk);
-                default:
-                    return new Number(new Token("-1"));
-            }
+                TokenType.Number => new Number(parameters, chunk),
+                TokenType.Word => new Word(parameters, chunk),
+                TokenType.Function
+                or TokenType.Identifier
+                    => Identifier.Identify(parameters, chunk),
+                TokenType.Boolean => new Bool(parameters, chunk),
+                _ => new Null(),
+            };
         }
     }
 
@@ -98,37 +94,43 @@ public class Variable
     {
         if (variable.GetType() == typeof(Array))
         {
-            Array arr = new(variable as Array ?? new Array());
-            arr.Token = new() { Type = TokenType.Array, Text = "null" };
-            arr.Value = variable.Value;
+            Array arr =
+                new(variable as Array ?? new Array())
+                {
+                    Token = new() { Type = TokenType.Array, Text = "" },
+                    Value = variable.Value
+                };
 
             return arr;
         }
 
-        var returnVar =
-            (IVariable?)Activator.CreateInstance(variable.GetType()) ?? new Word(new("null"));
+        var returnVar = (IVariable?)Activator.CreateInstance(variable.GetType()) ?? new Null();
 
         returnVar.Value = variable.Value;
         returnVar.Name = variable.Name;
-        returnVar.Token = variable.Token;
+        returnVar.Token = new()
+        {
+            Text = variable.Token.Text,
+            Type = Enum.Parse<TokenType>(variable.GetType().Name)
+        };
 
         return returnVar;
     }
 
-    public static IVariable ClrToVar(object clr)
+    public static IVariable ClrToVar(object? clr)
     {
-        if (clr.GetType().IsAssignableTo(typeof(IVariable)))
+        if (clr?.GetType().IsAssignableTo(typeof(IVariable)) ?? false)
             return (IVariable)clr;
-        if (double.TryParse(clr.ToString(), out _))
+        if (double.TryParse(clr?.ToString() ?? "", out _))
             return new Number(new($"{clr}"));
-        else if (clr.GetType() == typeof(string) || clr.GetType() == typeof(char))
+        else if (clr?.GetType() == typeof(string) || clr?.GetType() == typeof(char))
             return new Word(new($"\"{clr}\""));
-        else if (clr.GetType().IsAssignableTo(typeof(IEnumerable)))
+        else if (clr?.GetType().IsAssignableTo(typeof(IEnumerable)) ?? false)
         {
             Array arr =
                 new()
                 {
-                    Token = new("null") { Type = TokenType.Array },
+                    Token = new() { Type = TokenType.Array },
                     Val = new()
                 };
 
@@ -137,13 +139,35 @@ public class Variable
 
             return arr;
         }
-        else if (clr.GetType() == typeof(bool))
-            return new Bool(new($"{clr}".ToLower()));
+        else if (clr?.GetType() == typeof(bool))
+            return new Bool(new Token($"{clr}".ToLower()));
+        else if (clr == null)
+            return new Null();
+        else
+            return new CLR(clr);
+    }
+
+    public static object? VarToClr(IVariable variable)
+    {
+        if (variable.Token.Type == TokenType.Array)
+            return (variable as Array)?.Val.Select(v => v.Value).ToArray();
+        else if (variable.Token.Type == TokenType.Boolean)
+            return (variable as Bool?)?.Val;
+        else if (variable.Token.Type == TokenType.CLR)
+            return (variable as CLR?)?.Val;
+        else if (variable.Token.Type == TokenType.Null)
+            return null;
+        else if (variable.Token.Type == TokenType.Number)
+            return (variable as Number?)?.Val;
+        else if (variable.Token.Type == TokenType.Word)
+            return (variable as Word?)?.Val;
         else
         {
-            //TODO: DotNetInterface
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Cannot convert type {variable.Token} to clr type.");
+            Program.Exit(ExitCode.RuntimeError);
             
-            throw new Exception("Type <DotNetInterface> is not supperted yet.");
+            return null;
         }
     }
 }

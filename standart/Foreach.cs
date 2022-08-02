@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace SlimScript;
 
 internal class Foreach : Standart
@@ -23,7 +25,7 @@ internal class Foreach : Standart
             chunk.Parser.block = (chunk.Parser.block.level + 1, "Foreach");
             _currentLevel = chunk.Parser.block.level;
 
-            Token[] nameTokens = line.ToArray()[1..(line.IndexOf(new("in")))];
+            Token[] nameTokens = line.ToArray()[1..line.IndexOf(new("in"))];
 
             if (nameTokens.Length != 1)
                 chunk.Error($"Cannot create multiple loop variables.", ExitCode.GrammarError);
@@ -32,10 +34,10 @@ internal class Foreach : Standart
 
             var arr = Variable.Create(line.ToArray()[3..], chunk);
 
-            if (arr.GetType() != typeof(Array) && arr.GetType() != typeof(Word))
+            if (!arr.Value.GetType().IsAssignableTo(typeof(IEnumerable)))
                 chunk.Error(
-                    $"Cannot use type '{arr.Token}' for foreach loop.",
-                    ExitCode.DisordantTokenError
+                    $"Cannot loop through non-enumerable type '{_loopData.array.GetType().FullName}'",
+                    ExitCode.RuntimeError
                 );
 
             _loopData.array = arr;
@@ -68,49 +70,27 @@ internal class Foreach : Standart
     private static IVariable Create(SourceChunk parentChunk)
     {
         _line = _line.Where(l => l.Count != 0).ToList();
-        IVariable result = new Word(new("\"null\""));
+        IVariable result = new Null();
         bool ret = false;
 
-        if (_loopData.array.Token.Type == TokenType.Array)
+        foreach (object nonCastVar in (IEnumerable)_loopData.array.Value)
         {
-            foreach (IVariable var in (Array)_loopData.array)
+            var var = Variable.ClrToVar(nonCastVar);
+
+            SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
+
+            var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
+
+            chunk.Parser.lineNumber = lineNum;
+
+            chunk.CreateVar(_loopData.name, var);
+
+            result = chunk.Run(lineNum);
+
+            if (chunk.Parser.turn)
             {
-                SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
-
-                var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
-
-                chunk.Parser.lineNumber = lineNum;
-
-                chunk.CreateVar(_loopData.name, var);
-
-                result = chunk.Run(lineNum);
-
-                if (chunk.Parser.turn)
-                {
-                    ret = true;
-                    break;
-                }
-            }
-        }
-        else
-        {
-            foreach (Word ch in (Word)_loopData.array)
-            {
-                SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
-
-                var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
-
-                chunk.Parser.lineNumber = lineNum;
-
-                chunk.CreateVar(_loopData.name, ch);
-
-                result = chunk.Run(lineNum);
-
-                if (chunk.Parser.turn)
-                {
-                    ret = true;
-                    break;
-                }
+                ret = true;
+                break;
             }
         }
 

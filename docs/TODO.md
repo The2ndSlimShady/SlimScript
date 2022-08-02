@@ -2,7 +2,7 @@
 
 - [x] Bool Type
 - [x] Number Type
-- [x] String Type
+- [x] Word Type (A.K.A String)
   - [x] Foreach and Indexers
 - [x] Arrays
   - [x] Basic Arrays

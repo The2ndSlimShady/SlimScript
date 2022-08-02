@@ -15,7 +15,7 @@ internal class LesserThan : Operator
                 ExitCode.DisordantTokenError
             );
 
-            return null;
+            return new Null();
         }
 
         Number first = (Number)arg[0];

@@ -2,7 +2,7 @@ using System.Collections;
 
 namespace SlimScript;
 
-public struct Word : IVariable, IEnumerable<Word>
+public struct Word : IVariable
 {
     public Token Token { get; set; }
 
@@ -18,7 +18,7 @@ public struct Word : IVariable, IEnumerable<Word>
 
     public Word(Token[] tokens, SourceChunk chunk)
     {
-        if (tokens[0].Type == TokenType.String)
+        if (tokens[0].Type == TokenType.Word)
         {
             Val = tokens[0].Text.Replace("\"", "");
             Token = tokens[0];
@@ -63,7 +63,7 @@ public struct Word : IVariable, IEnumerable<Word>
 
         str.Val = left.Val + Right.Val;
 
-        token.Type = TokenType.String;
+        token.Type = TokenType.Word;
         token.Text = str.Val.ToString();
 
         str.Token = token;
@@ -73,6 +73,4 @@ public struct Word : IVariable, IEnumerable<Word>
 
     public IEnumerator<Word> GetEnumerator() =>
         Val.Select(c => (Word)Variable.ClrToVar(c)).GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

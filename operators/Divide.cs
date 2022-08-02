@@ -12,7 +12,7 @@ internal class Divide : Operator
                 $"Cannot multiply types '{realParams[0]}' with '{realParams[1]}'.",
                 ExitCode.DisordantTokenError
             );
-            return null;
+            return new Null();
         }
 
         if (realParams[0].Token.Type == TokenType.Number)
@@ -25,7 +25,7 @@ internal class Divide : Operator
             );
 
             Program.Exit(ExitCode.DisordantTokenError);
-            return null;
+            return new Null();
         }
     }
 

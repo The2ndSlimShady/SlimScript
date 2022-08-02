@@ -7,12 +7,15 @@ internal class Both : Operator
     public override IVariable Apply(Token[] line, SourceChunk chunk)
     {
         var arg = ReadyParams(line, chunk);
-    
+
         if (arg.Any(t => t.Token.Type != TokenType.Boolean))
         {
-            chunk.Error($"Both function does not exists on type '{arg}'.", ExitCode.DisordantTokenError);
+            chunk.Error(
+                $"Both function does not exists on type '{arg}'.",
+                ExitCode.DisordantTokenError
+            );
 
-            return null;
+            return new Null();
         }
 
         Bool first = (Bool)arg[0];

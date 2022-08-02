@@ -61,4 +61,6 @@ public struct Function : IVariable
 
         return Run(vars.ToArray());
     }
+    
+    public override string ToString() => (this as IVariable).GetString();
 }

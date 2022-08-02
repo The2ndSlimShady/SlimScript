@@ -15,7 +15,7 @@ public struct Bool : IVariable
 
     }
 
-    public Bool(Token[] tokens, SourceChunk chunk)
+    internal Bool(Token[] tokens, SourceChunk chunk)
     {
         if (tokens[0].Type == TokenType.Boolean)
         {
@@ -53,15 +53,16 @@ public struct Bool : IVariable
             else
             {
                 chunk.Error($"Cannot create Bool from return of {tokens[0].Type}.", ExitCode.DisordantTokenError);
-
-                Token = new Token();
+                Token = new("false");
             }
         }
     }
 
-    public Bool(Token token)
+    internal Bool(Token token)
     {
         Val = Convert.ToBoolean(token.Text);
         Token = token;
     }
+
+    public override string ToString() => (this as IVariable).GetString();
 }

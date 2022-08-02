@@ -20,7 +20,7 @@ public struct Token
             else if (Text == "null")
                 Type = TokenType.Null;
             else if (Text.StartsWith("\""))
-                Type = TokenType.String;
+                Type = TokenType.Word;
             else if (Text == "true" || Text == "false")
                 Type = TokenType.Boolean;
             else if (Grammar.operators.ContainsKey(Text))
@@ -31,10 +31,9 @@ public struct Token
                 Type = TokenType.Keyword;
             else if (Text == "EOL")
                 Type = TokenType.EOL;
-            else if (
-                !Text.Any(ch => Grammar.operators.ContainsKey($"{ch}"))
-                && !string.IsNullOrEmpty(Text)
-            )
+            else if (Text.Contains("->") || Text.Contains('.'))
+                Type = TokenType.CLR;
+            else if (!string.IsNullOrEmpty(Text))
                 Type = TokenType.Identifier;
             else
             {
@@ -56,7 +55,7 @@ public struct Token
     public Token()
     {
         Type = TokenType.Null;
-        Text = "";
+        Text = "null";
     }
 
     public override string ToString() => $"<{Type}>";
@@ -78,10 +77,10 @@ public enum TokenType
     EOL,
     Keyword,
     Unidentified,
-    String,
     Standart,
     Function,
+    Word,
     Array,
     Null,
-    DotNetInterface
+    CLR
 }

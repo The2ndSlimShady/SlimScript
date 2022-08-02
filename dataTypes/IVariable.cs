@@ -9,4 +9,6 @@ public interface IVariable
     object Value { get; set; }
 
     string GetString() => Value.ToString() ?? "";
+
+    string ToString() => GetString();
 }

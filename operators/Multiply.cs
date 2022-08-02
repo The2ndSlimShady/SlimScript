@@ -11,7 +11,7 @@ internal class Multiply : Operator
 
         if (
             realParams.Any(
-                t => t.Token.Type != TokenType.Number && t.Token.Type != TokenType.String
+                t => t.Token.Type != TokenType.Number && t.Token.Type != TokenType.Word
             )
         )
         {
@@ -19,7 +19,7 @@ internal class Multiply : Operator
                 $"Cannot multiply types '{realParams[0]}' with '{realParams[1]}'",
                 ExitCode.DisordantTokenError
             );
-            return null;
+            return new Null();
         }
 
         if (realParams[0].Token.Type == TokenType.Number)
@@ -39,7 +39,7 @@ internal class Multiply : Operator
                     $"Multiply Operator Does Not Exists on type '{realParams[0]}'",
                     ExitCode.DisordantTokenError
                 );
-                return null;
+                return new Null();
             }
         }
     }

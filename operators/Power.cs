@@ -15,7 +15,7 @@ internal class Power : Operator
                 $"Cannot multiply types '{realParams[0]}' with '{realParams[1]}'",
                 ExitCode.DisordantTokenError
             );
-            return null;
+            return new Null();
         }
 
         return PowerNumbers((Number)realParams[0], (Number)realParams[1]);

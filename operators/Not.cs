@@ -15,12 +15,12 @@ internal class Not : Operator
                 ExitCode.DisordantTokenError
             );
 
-            return null;
+            return new Null();
         }
 
         var val = !((Bool)arg).Val;
         arg.Value = val;
-        arg.Token = new Token(arg.Value.ToString().ToLower());
+        arg.Token = new Token(arg.Value.ToString()??"null".ToLower());
 
         return arg;
     }

@@ -48,14 +48,14 @@ internal class Lexer
                 if (Program.Debug)
                     sb = new();
 
-                StringBuilder? humanized = null;
+                StringBuilder? compressed = null;
 
-                if (Program.Humanize)
-                    humanized = new();
+                if (Program.CompressStandalone)
+                    compressed = new();
 
                 bool first = false;
 
-                if (sb == null && humanized == null)
+                if (sb == null && compressed == null)
                     return Lines;
 
                 foreach (var tokens in Lines)
@@ -66,26 +66,26 @@ internal class Lexer
                     {
                         sb?.Append($"[{token}: {token.Text}] ");
 
-                        humanized?.Append($"{(first ? string.Empty : " ")}{token.Text}");
+                        compressed?.Append($"{(first ? string.Empty : " ")}{token.Text}");
 
                         first = false;
                     }
 
                     sb?.AppendLine();
 
-                    humanized?.AppendLine();
+                    compressed?.AppendLine();
                 }
 
                 if (Program.Debug)
                     File.WriteAllText(
-                        $"{Path.GetFileNameWithoutExtension(chunk._file) ?? string.Empty}.sso",
+                        $"{Path.GetFileNameWithoutExtension(chunk._file) ?? string.Empty}_l.sso",
                         sb?.ToString()
                     );
 
-                if (Program.Humanize)
+                if (Program.CompressStandalone)
                     File.WriteAllBytes(
-                        $"{Path.GetFileNameWithoutExtension(chunk._file) ?? string.Empty}.hsso",
-                        Program.Compress(Encoding.UTF8.GetBytes(humanized?.ToString() ?? ""))
+                        $"{Path.GetFileNameWithoutExtension(chunk._file) ?? string.Empty}.csso",
+                        Program.Compress(Encoding.UTF8.GetBytes(compressed?.ToString() ?? ""))
                     );
             }
 

@@ -10,7 +10,7 @@ namespace SlimScript;
 internal class Program
 {
     public static bool Debug = false;
-    public static bool Humanize = false;
+    public static bool CompressStandalone = false;
 
     public static string BasePath { get; set; }
 
@@ -43,17 +43,17 @@ internal class Program
                 if (Path.GetExtension(args[0]) == ".hsso" || args.Contains("-RH"))
                 {
                     Debug = args.Contains("-D") || args.Contains("-DH");
-                    Humanize = false;
+                    CompressStandalone = false;
 
                     var tmpStr = Encoding.UTF8.GetString(Decompress(File.ReadAllBytes(args[0])));
                     var source = tmpStr.Split(Environment.NewLine, StringSplitOptions.TrimEntries);
 
-                    MainChunk = new(source) { _file = args[0] };
+                    MainChunk = new(source, 0) { _file = args[0] };
                 }
                 else
                 {
-                    Debug = args.Contains("-D") || args.Contains("-DH");
-                    Humanize = args.Contains("-H") || args.Contains("-DH");
+                    Debug = args.Contains("-D");
+                    CompressStandalone = args.Contains("-C");
 
                     MainChunk = new SourceChunk(args[0]);
                 }
@@ -69,10 +69,13 @@ internal class Program
         }
         catch (Exception e)
         {
+            var line = MainChunk.Lines[MainChunk.Parser.lineNumber - 1];
+            var message =
+                $"An Exception occured during runtime.\nMessage: {e.Message}\nFile: {Path.GetFileNameWithoutExtension(MainChunk._file)}_p.sso\nLine: {MainChunk.Parser.lineNumber}\nExpression: {string.Join(' ', line.Select(t => t.Text))}";
+
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
-                $"An Excepton Occured During Runtime.\nMessage: {e.Message}\nline {MainChunk.Parser.lineNumber}"
-            );
+            Console.WriteLine(message);
+
             Exit(ExitCode.RuntimeError);
         }
     }
