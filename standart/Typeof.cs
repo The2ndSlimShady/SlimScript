@@ -1,3 +1,4 @@
+using System.Collections;
 namespace SlimScript;
 
 internal class Typeof : Standart
@@ -6,6 +7,11 @@ internal class Typeof : Standart
     {
         var var = Variable.Create(line.ToArray()[1..], chunk);
 
-        return new Word(new($"\"{var.Token.Type}\""));
+        if (var.Token.Type != TokenType.CLR)
+            return new Word(new($"\"{var.Token.Type}\""));
+        else
+            return new Word(
+                new($"\"{(var as CLR?)?.GetTypeString()}\"")
+            );
     }
 }

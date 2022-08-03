@@ -70,7 +70,7 @@ public struct CLR : IVariable
     /// </summary>
     /// <param name="value"></param>
     /// <param name="chunk"></param>
-    unsafe internal static IVariable Create(string value, Token[] parameters, SourceChunk chunk)
+    internal static IVariable Create(string value, Token[] parameters, SourceChunk chunk)
     {
         string[] seperators = new string[2] { ":", "->" };
 
@@ -108,60 +108,69 @@ public struct CLR : IVariable
 
                 var paramTypes = invokeParams.Select(p => p?.GetType() ?? typeof(Null)).ToArray();
 
+                List<Type> genericParams = new();
+
                 MethodBase? method = null;
 
                 bool selectMethod(MethodBase method)
+                {
+                    bool allOk = false;
+                    var methodParams = method.GetParameters();
+
+                    if (methodParams.Length == 0 && paramTypes.Length == 0)
+                        return true;
+
+                    if (methodParams.Length != paramTypes.Length)
+                        return false;
+
+                    for (int i = 0; i < methodParams.Length; i++)
                     {
-                        bool allOk = false;
-                        var methodParams = method.GetParameters();
+                        int index = Math.Min(i, paramTypes.Length - 1);
 
-                        if (methodParams.Length == 0 && paramTypes.Length == 0)
-                            return true;
+                        var param = methodParams[i].ParameterType;
 
-                        if (methodParams.Length != paramTypes.Length)
+                        if (index < 0)
                             return false;
 
-                        for (int i = 0; i < methodParams.Length; i++)
+                        var paramType = paramTypes[index];
+
+                        allOk = paramType == param || paramType.IsAssignableTo(param);
+
+                        if (!allOk)
                         {
-                            int index = Math.Min(i, paramTypes.Length - 1);
-
-                            var param = methodParams[i].ParameterType;
-
-                            if (index < 0)
-                                return false;
-
-                            var paramType = paramTypes[index];
-
-                            allOk = paramType == param || paramType.IsAssignableTo(param);
-
-                            if (!allOk)
+                            try
                             {
-                                try
-                                {
-                                    allOk = Variable.ClrToVar(paramType).GetType() == param;
+                                allOk = Variable.ClrToVar(paramType).GetType() == param;
 
-                                    var temp = allOk
-                                        ? Variable.ClrToVar(paramType)
-                                        : Convert.ChangeType(invokeParams[index], param);
+                                var temp = allOk
+                                    ? Variable.ClrToVar(paramType)
+                                    : Convert.ChangeType(invokeParams[index], param);
 
-                                    paramType = temp?.GetType();
+                                paramType = temp?.GetType();
 
-                                    allOk = paramType == param;
+                                allOk = paramType == param;
 
-                                    invokeParams[index] = allOk ? temp : invokeParams[index];
-                                }
-                                catch (Exception)
-                                {
-                                    allOk = false;
-                                }
+                                invokeParams[index] = allOk ? temp : invokeParams[index];
                             }
-
-                            if (invokeParams[index].GetType().GetInterfaces().Contains(typeof(IConvertible)))
-                                invokeParams[index] = Convert.ChangeType(invokeParams[index], param);
+                            catch (Exception)
+                            {
+                                allOk = false;
+                            }
                         }
 
-                        return allOk;
+                        if (
+                            invokeParams[index]
+                                .GetType()
+                                .GetInterfaces()
+                                .Contains(typeof(IConvertible)) && !param.IsGenericParameter
+                        )
+                            invokeParams[index] = Convert.ChangeType(invokeParams[index], param);
+                        else if (param.IsGenericParameter)
+                            genericParams.Add(paramType);
                     }
+
+                    return allOk;
+                }
 
                 if (expressions[i + 2] != "new")
                 {
@@ -180,7 +189,13 @@ public struct CLR : IVariable
                             .Last();
                 }
                 else
-                    method = (theVal as Type)?.GetConstructors().Where(ctor => selectMethod(ctor)).Last();
+                    method = (theVal as Type)
+                        ?.GetConstructors()
+                        .Where(ctor => selectMethod(ctor))
+                        .Last();
+
+                if (method?.IsGenericMethod ?? false)
+                    method = (method as MethodInfo)?.MakeGenericMethod(genericParams.ToArray());
 
                 if (method?.IsConstructor ?? false)
                     theVal = Activator.CreateInstance(theVal as Type, invokeParams);
@@ -189,7 +204,7 @@ public struct CLR : IVariable
                 else
                     theVal = method?.Invoke(theVal, invokeParams);
 
-                i += 2;
+                i++;
             }
             else if (expressions[i + 1] == ":")
             {
@@ -220,7 +235,7 @@ public struct CLR : IVariable
                             ?.GetValue(theVal);
                 }
 
-                i += 2;
+                i++;
             }
         }
 
@@ -247,14 +262,22 @@ public struct CLR : IVariable
             CLRType = CLRType.Object;
     }
 
-    public string? GetString()
+    public string GetString()
     {
         if (CLRType == CLRType.Object)
-            return Value.ToString();
+            return Value.ToString() ?? "";
         else if (CLRType == CLRType.Type)
-            return ((Type?)Value)?.FullName;
+            return ((Type?)Value)?.FullName ?? "";
         else
             return "null";
+    }
+
+    public string GetTypeString()
+    {
+        if (CLRType == CLRType.Type)
+            return $"CLR : {(Val as Type)?.FullName}";
+        else
+            return $"CLR : {Val?.GetType().FullName}";
     }
 
     public override string ToString() => GetString();

@@ -103,6 +103,11 @@ public class Variable
 
             return arr;
         }
+        else if (variable.GetType() == typeof(CLR))
+        {
+            CLR clr = new(variable.Value);
+            return clr;
+        }
 
         var returnVar = (IVariable?)Activator.CreateInstance(variable.GetType()) ?? new Null();
 
@@ -168,7 +173,7 @@ public class Variable
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"Cannot convert type {variable.Token} to clr type.");
             Program.Exit(ExitCode.RuntimeError);
-            
+
             return null;
         }
     }
