@@ -8,22 +8,16 @@ define math.E as 2.71828182845905
 define math.PI as 3.14159265358979
 
 func math.absolute num begin
-    if != "Number" typeof num then
-        define errMsg as + "Cannot get absolute value of type " typeof num
-        define errData as + "math.absolute " typeof num
-        error errMsg errData
-    end
-
     return variable->ClrToVar math_t->Abs num
 end
 
 func math.mod dividend divisor begin
-    set divisor to variable->ClrToVar convert->ToInt32 divisor
-    set dividend to variable->ClrToVar convert->ToInt32 dividend
+    set divisor to math_t->Floor divisor
+    set dividend to math_t->Floor dividend
 
     define valTuple as math_t->DivRem dividend divisor
 
-    return variable->ClrToVar valTuple:Item1
+    return variable->ClrToVar valTuple:Item2
 end
 
 func math.max num1 num2 begin

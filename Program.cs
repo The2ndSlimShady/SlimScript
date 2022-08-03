@@ -26,57 +26,44 @@ internal class Program
 
         // try
         // {
-            if (args.Length != 0 && args[0] == "-i")
-                RunInteractive();
-            else
+        if (args.Length != 0 && args[0] == "-i")
+            RunInteractive();
+        else
+        {
+            if (args.Length == 0 || !File.Exists(args[0]))
             {
-                if (args.Length == 0 || !File.Exists(args[0]))
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("No Input File...");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("No Input File...");
 
-                    Exit(ExitCode.NoInputFile);
-                }
-
-                BasePath = Directory.GetCurrentDirectory();
-
-                if (Path.GetExtension(args[0]) == ".hsso" || args.Contains("-RH"))
-                {
-                    Debug = args.Contains("-D") || args.Contains("-DH");
-                    CompressStandalone = false;
-
-                    var tmpStr = Encoding.UTF8.GetString(Decompress(File.ReadAllBytes(args[0])));
-                    var source = tmpStr.Split(Environment.NewLine, StringSplitOptions.TrimEntries);
-
-                    MainChunk = new(source, 0) { _file = args[0] };
-                }
-                else
-                {
-                    Debug = args.Contains("-D");
-                    CompressStandalone = args.Contains("-C");
-
-                    MainChunk = new SourceChunk(args[0]);
-                }
-
-                Directory.SetCurrentDirectory(BasePath);
-
-                MainChunk.Run();
-
-                watch.Stop();
-                Console.WriteLine($"\nProgram Exited in {watch.ElapsedMilliseconds}ms");
-                Exit(ExitCode.Normal);
+                Exit(ExitCode.NoInputFile);
             }
+
+            BasePath = Directory.GetCurrentDirectory();
+
+            Debug = args.Contains("-D");
+            CompressStandalone = args.Contains("-C");
+
+            MainChunk = new(args[0]);
+
+            Directory.SetCurrentDirectory(BasePath);
+
+            MainChunk.Run();
+
+            watch.Stop();
+            Console.WriteLine($"\nProgram Exited in {watch.ElapsedMilliseconds}ms");
+            Exit(ExitCode.Normal);
+        }
         // }
         // catch (Exception e)
         // {
-            // var line = MainChunk.Lines[MainChunk.Parser.lineNumber - 1];
-            // var message =
-            //     $"An Exception occured during runtime.\nMessage: {e.Message}\nFile: {Path.GetFileNameWithoutExtension(MainChunk._file)}_p.sso\nLine: {MainChunk.Parser.lineNumber}\nExpression: {string.Join(' ', line.Select(t => t.Text))}";
+        // var line = MainChunk.Lines[MainChunk.Parser.lineNumber - 1];
+        // var message =
+        //     $"An Exception occured during runtime.\nMessage: {e.Message}\nFile: {Path.GetFileNameWithoutExtension(MainChunk._file)}_p.sso\nLine: {MainChunk.Parser.lineNumber}\nExpression: {string.Join(' ', line.Select(t => t.Text))}";
 
-            // Console.ForegroundColor = ConsoleColor.Red;
-            // Console.WriteLine(message);
+        // Console.ForegroundColor = ConsoleColor.Red;
+        // Console.WriteLine(message);
 
-            // Exit(ExitCode.RuntimeError);
+        // Exit(ExitCode.RuntimeError);
 
         //     throw e;
         // }

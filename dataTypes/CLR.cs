@@ -157,12 +157,13 @@ public struct CLR : IVariable
                                 allOk = false;
                             }
                         }
-
-                        if (
+                        else if (
                             invokeParams[index]
                                 .GetType()
                                 .GetInterfaces()
-                                .Contains(typeof(IConvertible)) && !param.IsGenericParameter
+                                .Contains(typeof(IConvertible))
+                            && !param.IsGenericParameter
+                            && allOk
                         )
                             invokeParams[index] = Convert.ChangeType(invokeParams[index], param);
                         else if (param.IsGenericParameter)

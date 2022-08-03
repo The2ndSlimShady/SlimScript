@@ -87,6 +87,16 @@ internal class Lexer
                         $"{Path.GetFileNameWithoutExtension(chunk._file) ?? string.Empty}.csso",
                         Program.Compress(Encoding.UTF8.GetBytes(compressed?.ToString() ?? ""))
                     );
+
+                if (Program.CompressStandalone)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine(
+                        $"Successfully created and compressed standalone script file {Path.GetFileNameWithoutExtension(chunk._file) ?? string.Empty}.csso"
+                    );
+
+                    Program.Exit(ExitCode.Normal);
+                }
             }
 
             return Lines;

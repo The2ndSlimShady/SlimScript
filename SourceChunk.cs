@@ -35,18 +35,26 @@ public class SourceChunk
 
     public SourceChunk(string sourceFile)
     {
-        _file = sourceFile;
         var dirName = new FileInfo(sourceFile).DirectoryName ?? "./";
         Directory.SetCurrentDirectory(dirName);
 
-        var source = File.ReadAllLines(new FileInfo(sourceFile).Name);
+        string[] source;
+        if (Path.GetExtension(sourceFile) == ".csso")
+        {
+            var tmpStr = Encoding.UTF8.GetString(Program.Decompress(File.ReadAllBytes(sourceFile)));
+            source = tmpStr.Split(Environment.NewLine, StringSplitOptions.TrimEntries);
+        }
+        else
+            source = File.ReadAllLines(new FileInfo(sourceFile).Name);
+
+        _file = sourceFile;
 
         Stack = new();
         Parent = null;
-        
-        #if DEBUG
+
+#if DEBUG
         Console.WriteLine($"Pre-Processing Source Code...");
-        #endif
+#endif
 
         var processedSource = PreProcessor.Process(source, this);
         Lines = Lexer.Lex(processedSource, this);
@@ -57,15 +65,15 @@ public class SourceChunk
     {
         Stack = new();
         Parent = null;
-        #if DEBUG
+#if DEBUG
         Console.WriteLine($"Pre-Processing Source Code...");
-        #endif
+#endif
         var processedSource = PreProcessor.Process(source, this);
         Lines = Lexer.Lex(processedSource, this);
         Parser = new(this);
         _file = "???";
     }
-    
+
     public IVariable Run()
     {
         var result = Parser.Parse(Lines);
