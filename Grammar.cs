@@ -45,6 +45,7 @@ internal class Grammar
         "typeof",
         "tostring",
         "tonumber",
-        "clrname"
+        "clrname",
+        "input"
     };
 }
