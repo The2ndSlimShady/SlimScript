@@ -26,7 +26,12 @@ internal abstract class Operator
 
             Token param = parameters[i];
 
-            if (param.Type == TokenType.Number || param.Type == TokenType.Word)
+            if (
+                param.Type == TokenType.Number
+                || param.Type == TokenType.Word
+                || param.Type == TokenType.Bool
+                || param.Type == TokenType.Null
+            )
                 realParams.Add(Variable.Create(new[] { param }, chunk));
             else if (param.Text.Contains('['))
             {

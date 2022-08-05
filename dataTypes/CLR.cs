@@ -142,15 +142,25 @@ public struct CLR : IVariable
                             {
                                 allOk = Variable.ClrToVar(paramType).GetType() == param;
 
-                                var temp = allOk
-                                    ? Variable.ClrToVar(paramType)
-                                    : Convert.ChangeType(invokeParams[index], param);
+                                object temp;
 
-                                paramType = temp?.GetType();
+                                if (allOk)
+                                    temp = Variable.ClrToVar(paramType);
+                                else
+                                {
+                                    if (invokeParams[index].GetType().IsEnum)
+                                        temp = invokeParams[index];
+                                    else
+                                        temp = Convert.ChangeType(invokeParams[index], param);
+                                }
 
-                                allOk = paramType == param;
+                                allOk = temp?.GetType() == param;
 
-                                invokeParams[index] = allOk ? temp : invokeParams[index];
+                                if (allOk)
+                                {
+                                    paramType = temp?.GetType();
+                                    invokeParams[index] = temp;
+                                }
                             }
                             catch (Exception)
                             {
@@ -159,11 +169,13 @@ public struct CLR : IVariable
                         }
                         else if (
                             invokeParams[index]
-                                .GetType()
+                                ?.GetType()
                                 .GetInterfaces()
                                 .Contains(typeof(IConvertible))
-                            && !param.IsGenericParameter
-                            && allOk
+                            ?? false
+                                && !param.IsGenericParameter
+                                && allOk
+                                && !((Type)invokeParams[index]).IsEnum
                         )
                             invokeParams[index] = Convert.ChangeType(invokeParams[index], param);
                         else if (param.IsGenericParameter)
@@ -179,14 +191,12 @@ public struct CLR : IVariable
                         method = theVal
                             ?.GetType()
                             .GetRuntimeMethods()
-                            .Where(m => m.Name == expressions[i + 2])
-                            .Where(m => selectMethod(m))
+                            .Where(m => m.Name == expressions[i + 2] && selectMethod(m))
                             .Last();
                     else
                         method = (theVal as Type)
                             ?.GetRuntimeMethods()
-                            .Where(m => m.Name == expressions[i + 2])
-                            .Where(m => selectMethod(m))
+                            .Where(m => m.Name == expressions[i + 2] && selectMethod(m))
                             .Last();
                 }
                 else
@@ -209,31 +219,61 @@ public struct CLR : IVariable
             }
             else if (expressions[i + 1] == ":")
             {
-                object? tmpVal = null;
-
-                if (theVal?.GetType() == typeof(string).GetType())
-                    tmpVal = (theVal as Type)
-                        ?.GetRuntimeProperty(expressions[i + 2])
-                        ?.GetValue(theVal);
-                else
-                    tmpVal = theVal
-                        ?.GetType()
-                        .GetRuntimeProperty(expressions[i + 2])
-                        ?.GetValue(theVal);
-
-                if (tmpVal != null)
-                    theVal = tmpVal;
-                else
+                if (parameters.Length == 1)
                 {
+                    object? tmpVal = null;
+
                     if (theVal?.GetType() == typeof(string).GetType())
-                        theVal = (theVal as Type)
-                            ?.GetRuntimeField(expressions[i + 2])
+                        tmpVal = (theVal as Type)
+                            ?.GetRuntimeProperty(expressions[i + 2])
                             ?.GetValue(theVal);
                     else
-                        theVal = theVal
+                        tmpVal = theVal
                             ?.GetType()
-                            .GetRuntimeField(expressions[i + 2])
+                            .GetRuntimeProperty(expressions[i + 2])
                             ?.GetValue(theVal);
+
+                    if (tmpVal != null)
+                        theVal = tmpVal;
+                    else
+                    {
+                        if (theVal?.GetType() == typeof(string).GetType())
+                            theVal = (theVal as Type)
+                                ?.GetRuntimeField(expressions[i + 2])
+                                ?.GetValue(theVal);
+                        else
+                            theVal = theVal
+                                ?.GetType()
+                                .GetRuntimeField(expressions[i + 2])
+                                ?.GetValue(theVal);
+                    }
+                }
+                else
+                {
+                    object? tmpProp = null;
+
+                    if (theVal?.GetType() == typeof(string).GetType())
+                        tmpProp = (theVal as Type)?.GetRuntimeProperty(expressions[i + 2]);
+                    else
+                        tmpProp = theVal?.GetType().GetRuntimeProperty(expressions[i + 2]);
+
+                    if (tmpProp != null)
+                        (tmpProp as PropertyInfo)?.SetValue(
+                            theVal,
+                            Variable.VarToClr(Variable.Create(parameters[1..], chunk))
+                        );
+                    else
+                    {
+                        if (theVal?.GetType() == typeof(string).GetType())
+                            tmpProp = (theVal as Type)?.GetRuntimeField(expressions[i + 2]);
+                        else
+                            tmpProp = theVal?.GetType().GetRuntimeField(expressions[i + 2]);
+
+                        (tmpProp as FieldInfo)?.SetValue(
+                            theVal,
+                            Variable.VarToClr(Variable.Create(parameters, chunk))
+                        );
+                    }
                 }
 
                 i++;

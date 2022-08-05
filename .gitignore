@@ -6,3 +6,4 @@ publish/
 
 FodyWeavers.xml
 FodyWeavers.xsd
+*.txt

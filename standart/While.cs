@@ -73,7 +73,11 @@ internal class While : Standart
             if (!condition.Val)
                 break;
 
-            SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
+            SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk)
+            {
+                ChunkType = ChunkType.Loop
+            };
+
             var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
 
             result = chunk.Run(lineNum);
@@ -83,6 +87,9 @@ internal class While : Standart
                 ret = true;
                 break;
             }
+
+            if ((result as Word?)?.Val == "break")
+                break;
         }
 
         _line.Clear();

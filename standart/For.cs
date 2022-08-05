@@ -40,7 +40,9 @@ internal class For : Standart
 
                 if (item.Text.Contains("||"))
                 {
-                    tokens.Last().Add(new(item.Text.Replace(",", string.Empty).Replace("||", string.Empty)));
+                    tokens
+                        .Last()
+                        .Add(new(item.Text.Replace(",", string.Empty).Replace("||", string.Empty)));
                     tokens.Add(new());
                     continue;
                 }
@@ -49,10 +51,7 @@ internal class For : Standart
             }
 
             if (tokens.Count < 3)
-                chunk.Error(
-                    $"Cannot create for loop from given arguments.",
-                    ExitCode.GrammarError
-                );
+                chunk.Error($"Cannot create for loop from given arguments.", ExitCode.GrammarError);
 
             _loopData.name = tokens[0].ToArray();
 
@@ -104,7 +103,7 @@ internal class For : Standart
 
         for (; (condt as Bool?)?.Val ?? false; )
         {
-            SourceChunk chunk = new(_line.ToList(), parentChunk);
+            SourceChunk chunk = new(_line.ToList(), parentChunk) { ChunkType = ChunkType.Loop };
 
             var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
             result = chunk.Run(lineNum);
@@ -114,6 +113,9 @@ internal class For : Standart
                 ret = true;
                 break;
             }
+
+            if ((result as Word?)?.Val == "break")
+                break;
 
             chunk = new(
                 new()

@@ -23,7 +23,7 @@ internal class Program
     public static void Main(string[] args)
     {
         watch.Start();
-        Convert.ChangeType(3, typeof(FileMode));
+
         // try
         // {
         if (args.Length != 0 && args[0] == "-i")
@@ -91,7 +91,7 @@ internal class Program
             if (input == "qqq")
                 break;
 
-            MainChunk.RunInteractive(input, line);
+            MainChunk.RunInteractive(input);
 
             line++;
         }

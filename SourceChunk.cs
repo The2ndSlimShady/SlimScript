@@ -15,7 +15,9 @@ public class SourceChunk
 
     internal string _file;
 
-    internal SourceChunk()
+    internal ChunkType ChunkType { get; set; } = ChunkType.Normal;
+
+    public SourceChunk()
     {
         Stack = new();
         Parent = null;
@@ -90,12 +92,12 @@ public class SourceChunk
 
     internal void Return() => Parser.turn = true;
 
-    internal IVariable RunInteractive(string source, int line)
+    public IVariable RunInteractive(string source)
     {
         var processed = PreProcessor.ProcessLine(source);
         Lines.Add(Lexer.LexLine(processed));
 
-        var result = Parser.ParseLine(Lines[line]);
+        var result = Parser.ParseLine(Lines.Last());
 
         return result;
     }
@@ -205,4 +207,10 @@ public class SourceChunk
 
         Program.Exit(code);
     }
+}
+
+internal enum ChunkType
+{
+    Loop,
+    Normal
 }

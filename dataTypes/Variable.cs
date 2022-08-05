@@ -27,6 +27,7 @@ public class Variable
                 || param.Type == TokenType.Word
                 || param.Type == TokenType.Bool
                 || param.Type == TokenType.Function
+                || param.Type == TokenType.Null
             )
                 realParam = param;
             else if (param.Type == TokenType.CLR)

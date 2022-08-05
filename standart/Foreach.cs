@@ -77,7 +77,10 @@ internal class Foreach : Standart
         {
             var var = Variable.ClrToVar(nonCastVar);
 
-            SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
+            SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk)
+            {
+                ChunkType = ChunkType.Loop
+            };
 
             var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
 
@@ -92,6 +95,9 @@ internal class Foreach : Standart
                 ret = true;
                 break;
             }
+            
+            if ((result as Word?)?.Val == "break")
+                break;
         }
 
         _line.Clear();

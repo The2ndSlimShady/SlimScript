@@ -28,6 +28,9 @@ internal class Parser
 
             List<Token>? line = lines[i];
             result = ParseLine(line);
+
+            if (Chunk?.ChunkType == ChunkType.Loop && (result as Word?)?.Val == "break")
+                break;
         }
 
         return result;
@@ -54,21 +57,21 @@ internal class Parser
         string? rule = null;
         object? obj;
 
-        try
-        {
+        // try
+        // {
             rule = IdentifyAndGet(line, Chunk);
 
             if (rule == "CLR")
                 return Variable.Create(line.ToArray(), Chunk);
 
             obj = Variable.CreateType(rule);
-        }
-        catch (Exception)
-        {
-            Chunk?.Error($"Cannot execute command '{rule?.ToLower()}'.", ExitCode.RuntimeError);
+        // }
+        // catch (Exception)
+        // {
+            // Chunk?.Error($"Cannot execute command '{rule?.ToLower()}'.", ExitCode.RuntimeError);
 
-            return new Null();
-        }
+        //     return new Null();
+        // }
 
         if (obj.GetType().IsSubclassOf(typeof(Standart)))
             return (obj as Standart).Run(line, Chunk);
