@@ -171,7 +171,7 @@ internal class PreProcessor
                     {
 #if !DEBUG
                         file =
-                            GlobalSettings.GetPathToSystemFiles("lib\\{fileName}");
+                            GlobalSettings.GetPathToSystemFiles($"lib\\{fileName}");
 #else
                         file = $"{Program.BasePath}\\lib\\{fileName}";
 #endif

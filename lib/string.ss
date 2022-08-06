@@ -12,7 +12,6 @@ func string.length str begin
     return variable->ClrToVar builder:Length
 end
 
-
 func string.indexOf str val begin
     define builder as sbuilder_t->new str
     define clrStr as builder->ToString
@@ -21,7 +20,6 @@ func string.indexOf str val begin
 
     return variable->ClrToVar clrStr->IndexOf val
 end
-
 
 func string.lastIndexOf str val begin
     define builder as sbuilder_t->new str
@@ -32,7 +30,6 @@ func string.lastIndexOf str val begin
     return variable->ClrToVar clrStr->LastIndexOf val
 end
 
-
 func string.subString str startIndex length begin
     define builder as sbuilder_t->new str
     define clrStr as builder->ToString
@@ -41,7 +38,6 @@ func string.subString str startIndex length begin
 
     return variable->ClrToVar clrStr->Substring startIndex length
 end
-
 
 func string.endsWith str ch begin
     if = 0 do string.length str then
@@ -53,7 +49,6 @@ func string.endsWith str ch begin
     return = ch index - lengthOf_Str 1 of str
 end
 
-
 func string.startsWith str ch begin
     if = 0 do string.length str then
         return false
@@ -62,7 +57,6 @@ func string.startsWith str ch begin
     return = ch index 0 of str
 end
 
-
 func string.isEmpty str begin
     define firstBool as variable->ClrToVar string_t->IsNullOrEmpty str
     define secondBool as variable->ClrToVar string_t->IsNullOrWhiteSpace str
@@ -70,15 +64,12 @@ func string.isEmpty str begin
     return both firstBool secondBool
 end
 
-
 func string.concat arr begin
     define nigga as string_t->Concat arr
-    write nigga
 end
 
 func string.join seperator arr begin
     define nigga as string_t->Join seperator arr
-    write nigga
 end
 
 func string.toLower str begin

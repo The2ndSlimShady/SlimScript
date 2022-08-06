@@ -9,10 +9,10 @@ internal class Program
     public static bool Debug = false;
     public static bool CompressStandalone = false;
 
-    public static string BasePath { get; set; }
+    public static string? BasePath { get; set; }
 
     public static ExitCode ExitCode { get; set; }
-    public static SourceChunk MainChunk { get; set; }
+    public static SourceChunk? MainChunk { get; set; }
     public static bool interactive = false;
 
     private static Stopwatch watch = new();
@@ -21,59 +21,59 @@ internal class Program
     {
         watch.Start();
 
-        // try
-        // {
-        if (args.Length != 0 && args[0] == "-i")
-            RunInteractive();
-        else
+        try
         {
-            if (args.Length == 0 || !File.Exists(args[0]))
+            if (args.Length != 0 && args[0] == "-i")
+                RunInteractive();
+            else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Write.StandartOutput.WriteLine("No Input File...");
+                if (args.Length == 0 || !File.Exists(args[0]))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Write.StandartOutput.WriteLine("No Input File...");
 
-                Exit(ExitCode.NoInputFile);
-            }
+                    Exit(ExitCode.NoInputFile);
+                }
 
-            BasePath = Directory.GetCurrentDirectory();
+                BasePath = Directory.GetCurrentDirectory();
 
-            Debug = args.Contains("-D");
-            CompressStandalone = args.Contains("-C");
+                Debug = args.Contains("-D");
+                CompressStandalone = args.Contains("-C");
 
-            MainChunk = new(args[0]);
+                MainChunk = new(args[0]);
 
-            Directory.SetCurrentDirectory(BasePath);
+                Directory.SetCurrentDirectory(BasePath);
 
-            MainChunk.Run();
+                MainChunk.Run();
 
-            if (MainChunk.VarExists("main"))
-            {
-                var indexOfBegin = System.Array.IndexOf(args, "%p");
-                indexOfBegin = indexOfBegin == -1 ? 0 : indexOfBegin;
+                if (MainChunk.VarExists("main"))
+                {
+                    var indexOfBegin = System.Array.IndexOf(args, "%p");
+                    indexOfBegin = indexOfBegin == -1 ? 0 : indexOfBegin;
 
-                ((Function?)MainChunk.GetVar("main"))?.Run(
-                    Variable.ClrToVar(args[(indexOfBegin + 1)..])
+                    ((Function?)MainChunk.GetVar("main"))?.Run(
+                        Variable.ClrToVar(args[(indexOfBegin + 1)..])
+                    );
+                }
+
+                watch.Stop();
+                Write.StandartOutput.WriteLine(
+                    $"\nProgram Exited in {watch.ElapsedMilliseconds}ms"
                 );
+                Exit(ExitCode.Normal);
             }
-
-            watch.Stop();
-            Write.StandartOutput.WriteLine($"\nProgram Exited in {watch.ElapsedMilliseconds}ms");
-            Exit(ExitCode.Normal);
         }
-        // }
-        // catch (Exception e)
-        // {
-        // var line = MainChunk.Lines[MainChunk.Parser.lineNumber - 1];
-        // var message =
-        //     $"An Exception occured during runtime.\nMessage: {e.Message}\nFile: {Path.GetFileNameWithoutExtension(MainChunk._file)}_p.sso\nLine: {MainChunk.Parser.lineNumber}\nExpression: {string.Join(' ', line.Select(t => t.Text))}";
+        catch (Exception e)
+        {
+            var line = MainChunk?.Lines[MainChunk.Parser.lineNumber - 1];
+            var message =
+                $"An Exception occured during runtime.\nMessage: {e.Message}\nFile: {Path.GetFileNameWithoutExtension(MainChunk?._file)}_p.sso\nLine: {MainChunk?.Parser.lineNumber}\nExpression: {string.Join(' ', line?.Select(t => t.Text) ?? new[] { "" })}";
 
-        // Console.ForegroundColor = ConsoleColor.Red;
-        // Write.StandartOutput.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Write.StandartOutput.WriteLine(message);
 
-        // Exit(ExitCode.RuntimeError);
-
-        //     throw e;
-        // }
+            Exit(ExitCode.RuntimeError);
+        }
     }
 
     private static void RunInteractive()

@@ -11,9 +11,17 @@ public class GlobalSettings
 
     public static string GetPathToSystemFiles(string path) => Path.Combine(SystemFilesPath, path);
 
-    public static void ChangeStandartOutput(TextWriter writer) => Write.StandartOutput = writer;
+    public static TextWriter StandartOutput
+    {
+        get => Write.StandartOutput;
+        set => Write.StandartOutput = value;
+    }
 
-    public static void ChangeStandartInput(TextReader reader) => Input.StandartInput = reader;
+    public static TextReader StandartInput
+    {
+        get => Input.StandartInput;
+        set => Input.StandartInput = value;
+    }
 
 #if !DEBUG
     public static readonly AppInfo AppInfo = JsonSerializer.Deserialize<AppInfo>(
@@ -42,7 +50,7 @@ public struct VersionNumber
 public struct AppInfo
 {
     public VersionNumber VersionNumber { get; set; }
-    public string AppName { get; set; }
+    public string Name { get; set; }
     public string Description { get; set; }
 
     /// <summary>
@@ -54,7 +62,7 @@ public struct AppInfo
     public override string ToString()
     {
         StringBuilder sb = new();
-        sb.AppendLine($"AppName: {AppName}");
+        sb.AppendLine($"Name: {Name}");
         sb.AppendLine($"Description: {Description}");
         sb.AppendLine($"Version: {VersionNumber}");
         sb.AppendLine($"Contributors:");
