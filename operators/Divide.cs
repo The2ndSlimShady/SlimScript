@@ -20,7 +20,7 @@ internal class Divide : Operator
         else
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(
+            Write.StandartOutput.WriteLine(
                 $"Plus operator does not exist on type '{realParams[0]}'. line {chunk.Parser.lineNumber}"
             );
 

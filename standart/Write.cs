@@ -10,7 +10,7 @@ internal class Write : Standart
 
         string writeStr = string.Join("", args.Select(t => t.GetString()));
 
-        Console.WriteLine(writeStr);
+        StandartOutput.WriteLine(writeStr);
 
         return new Word(new($"\"{writeStr}\""));
     }

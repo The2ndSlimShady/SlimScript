@@ -158,7 +158,7 @@ public class Variable
     public static object? VarToClr(IVariable variable)
     {
         if (variable.Token.Type == TokenType.Array)
-            return new ArrayList((variable as Array)?.Val.Select(v => v.Value).ToArray());
+            return (variable as Array)?.Val.Select(v => v.Value).ToArray();
         else if (variable.Token.Type == TokenType.Bool)
             return (variable as Bool?)?.Val;
         else if (variable.Token.Type == TokenType.Null)
@@ -172,7 +172,7 @@ public class Variable
         else
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Cannot convert type {variable.Token} to clr type.");
+            Write.StandartOutput.WriteLine($"Cannot convert type {variable.Token} to clr type.");
             Program.Exit(ExitCode.RuntimeError);
 
             return null;

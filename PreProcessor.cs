@@ -171,14 +171,14 @@ internal class PreProcessor
                     {
 #if !DEBUG
                         file =
-                            $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SlimScript\\lib\\{fileName}";
+                            GlobalSettings.GetPathToSystemFiles("lib\\{fileName}");
 #else
                         file = $"{Program.BasePath}\\lib\\{fileName}";
 #endif
                         if (!File.Exists(file))
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine(
+                            Write.StandartOutput.WriteLine(
                                 $"Cannot find file on path '{file}'.\nExpression: @{realItem}\nLine {i + 1}"
                             );
                             Program.Exit(ExitCode.PreProcessorError);
@@ -208,7 +208,7 @@ internal class PreProcessor
                     if (!inIf)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine(
+                        Write.StandartOutput.WriteLine(
                             $"Cannot start if-else block with {line[0]}.\nExpression: @{realItem}\nLine {i + 1}"
                         );
                         Program.Exit(ExitCode.PreProcessorError);
@@ -226,7 +226,7 @@ internal class PreProcessor
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine(
+                        Write.StandartOutput.WriteLine(
                             $"Cannot define '{line[1]}'. It's already defined.\nExpression: @{realItem}\nLine {i + 1}"
                         );
                         Program.Exit(ExitCode.PreProcessorError);
@@ -239,7 +239,7 @@ internal class PreProcessor
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine(
+                        Write.StandartOutput.WriteLine(
                             $"Cannot undef unexistent define.\nExpression: @{realItem}\nLine {i + 1}"
                         );
                         Program.Exit(ExitCode.PreProcessorError);
@@ -248,7 +248,7 @@ internal class PreProcessor
 
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(
+                    Write.StandartOutput.WriteLine(
                         $"Cannot determine given directive '{line[0]}'.\nExpression: @{realItem}\nLine {i + 1}"
                     );
                     Program.Exit(ExitCode.PreProcessorError);

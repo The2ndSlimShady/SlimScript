@@ -1,11 +1,8 @@
-﻿using System.Reflection;
+﻿using System.Linq;
 using System.Diagnostics;
-using System.Text;
-using System;
 using System.IO;
 using System.IO.Compression;
-
-namespace SlimScript;
+using SlimScript;
 
 internal class Program
 {
@@ -33,7 +30,7 @@ internal class Program
             if (args.Length == 0 || !File.Exists(args[0]))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("No Input File...");
+                Write.StandartOutput.WriteLine("No Input File...");
 
                 Exit(ExitCode.NoInputFile);
             }
@@ -49,8 +46,18 @@ internal class Program
 
             MainChunk.Run();
 
+            if (MainChunk.VarExists("main"))
+            {
+                var indexOfBegin = System.Array.IndexOf(args, "%p");
+                indexOfBegin = indexOfBegin == -1 ? 0 : indexOfBegin;
+
+                ((Function?)MainChunk.GetVar("main"))?.Run(
+                    Variable.ClrToVar(args[(indexOfBegin + 1)..])
+                );
+            }
+
             watch.Stop();
-            Console.WriteLine($"\nProgram Exited in {watch.ElapsedMilliseconds}ms");
+            Write.StandartOutput.WriteLine($"\nProgram Exited in {watch.ElapsedMilliseconds}ms");
             Exit(ExitCode.Normal);
         }
         // }
@@ -61,7 +68,7 @@ internal class Program
         //     $"An Exception occured during runtime.\nMessage: {e.Message}\nFile: {Path.GetFileNameWithoutExtension(MainChunk._file)}_p.sso\nLine: {MainChunk.Parser.lineNumber}\nExpression: {string.Join(' ', line.Select(t => t.Text))}";
 
         // Console.ForegroundColor = ConsoleColor.Red;
-        // Console.WriteLine(message);
+        // Write.StandartOutput.WriteLine(message);
 
         // Exit(ExitCode.RuntimeError);
 
@@ -80,7 +87,7 @@ internal class Program
         while (true)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write("\n>>> ");
+            Write.StandartOutput.Write("\n>>> ");
 
             Console.ResetColor();
             string input = Console.ReadLine() ?? "";
@@ -125,7 +132,11 @@ internal class Program
         ExitCode = code;
 
         Console.ResetColor();
-        Console.WriteLine($"\nExit Code: {(int)code} <{code}>");
+        Write.StandartOutput.WriteLine($"\nExit Code: {(int)code} <{code}>");
+
+        Write.StandartOutput.Flush();
+        Write.StandartOutput.Close();
+
         Environment.Exit((int)code);
     }
 }

@@ -8,7 +8,7 @@ internal class Lexer
     public static List<List<Token>> Lex(string[] source, SourceChunk chunk)
     {
 #if DEBUG
-        Console.WriteLine($"Lexing Source Code...\n");
+        Write.StandartOutput.WriteLine($"Lexing Source Code...\n");
 #endif
 
         try
@@ -91,7 +91,7 @@ internal class Lexer
                 if (Program.CompressStandalone)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine(
+                    Write.StandartOutput.WriteLine(
                         $"Successfully created and compressed standalone script file {Path.GetFileNameWithoutExtension(chunk._file) ?? string.Empty}.csso"
                     );
 
@@ -104,7 +104,7 @@ internal class Lexer
         catch (Exception e)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            System.Console.WriteLine(
+            Write.StandartOutput.WriteLine(
                 $"An Error occured during Lexical Analysis.\nMessage:{e.Message}"
             );
             Program.Exit(ExitCode.LexerError);

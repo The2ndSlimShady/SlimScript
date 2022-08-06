@@ -72,7 +72,13 @@ end
 
 
 func string.concat arr begin
-    return variable->ClrToVar string_t->Concat arr
+    define nigga as string_t->Concat arr
+    write nigga
+end
+
+func string.join seperator arr begin
+    define nigga as string_t->Join seperator arr
+    write nigga
 end
 
 func string.toLower str begin

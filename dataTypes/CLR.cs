@@ -188,22 +188,35 @@ public struct CLR : IVariable
                 if (expressions[i + 2] != "new")
                 {
                     if (theVal?.GetType() != typeof(string).GetType())
-                        method = theVal
-                            ?.GetType()
-                            .GetRuntimeMethods()
-                            .Where(m => m.Name == expressions[i + 2] && selectMethod(m))
-                            .Last();
+                        method = theVal?.GetType().GetRuntimeMethod(expressions[i + 2], paramTypes);
                     else
-                        method = (theVal as Type)
-                            ?.GetRuntimeMethods()
-                            .Where(m => m.Name == expressions[i + 2] && selectMethod(m))
-                            .Last();
+                        method = (theVal as Type)?.GetRuntimeMethod(expressions[i + 2], paramTypes);
+
+                    if (method == null)
+                    {
+                        if (theVal?.GetType() != typeof(string).GetType())
+                            method = theVal
+                                ?.GetType()
+                                .GetRuntimeMethods()
+                                .Where(m => m.Name == expressions[i + 2] && selectMethod(m))
+                                .Last();
+                        else
+                            method = (theVal as Type)
+                                ?.GetRuntimeMethods()
+                                .Where(m => m.Name == expressions[i + 2] && selectMethod(m))
+                                .Last();
+                    }
                 }
                 else
-                    method = (theVal as Type)
-                        ?.GetConstructors()
-                        .Where(ctor => selectMethod(ctor))
-                        .Last();
+                {
+                    method = (theVal as Type)?.GetConstructor(paramTypes);
+                    
+                    if (method == null)
+                        method = (theVal as Type)
+                            ?.GetConstructors()
+                            .Where(ctor => selectMethod(ctor))
+                            .Last();
+                }
 
                 if (method?.IsGenericMethod ?? false)
                     method = (method as MethodInfo)?.MakeGenericMethod(genericParams.ToArray());
@@ -219,60 +232,96 @@ public struct CLR : IVariable
             }
             else if (expressions[i + 1] == ":")
             {
-                if (parameters.Length == 1)
+                if (expressions[i + 2] == "thisGet" || expressions[i + 2] == "thisSet")
                 {
-                    object? tmpVal = null;
+                    object?[]? invokeParams = Operator
+                        .ReadyParams(parameters, chunk, 0)
+                        .Select(var => Variable.VarToClr(var))
+                        .ToArray();
+
+                    var index = invokeParams[0];
+                    var val = invokeParams.Length != 1 ? invokeParams[1] : null;
+
+                    var paramTypes = index?.GetType();
+
+                    Type? tmpVal = null;
 
                     if (theVal?.GetType() == typeof(string).GetType())
-                        tmpVal = (theVal as Type)
-                            ?.GetRuntimeProperty(expressions[i + 2])
-                            ?.GetValue(theVal);
+                        tmpVal = theVal as Type;
                     else
-                        tmpVal = theVal
-                            ?.GetType()
-                            .GetRuntimeProperty(expressions[i + 2])
-                            ?.GetValue(theVal);
+                        tmpVal = theVal?.GetType();
 
-                    if (tmpVal != null)
-                        theVal = tmpVal;
+                    var indexer = tmpVal
+                        ?.GetProperties()
+                        .First(
+                            x =>
+                                x.GetIndexParameters()
+                                    .Select(y => y.ParameterType)
+                                    .SequenceEqual(new[] { paramTypes })
+                        );
+
+                    if (expressions[i + 2] == "thisGet")
+                        theVal = indexer?.GetValue(theVal, new[] { index });
                     else
-                    {
-                        if (theVal?.GetType() == typeof(string).GetType())
-                            theVal = (theVal as Type)
-                                ?.GetRuntimeField(expressions[i + 2])
-                                ?.GetValue(theVal);
-                        else
-                            theVal = theVal
-                                ?.GetType()
-                                .GetRuntimeField(expressions[i + 2])
-                                ?.GetValue(theVal);
-                    }
+                        indexer?.SetValue(theVal, val, new[] { index });
                 }
                 else
                 {
-                    object? tmpProp = null;
+                    if (parameters.Length == 1)
+                    {
+                        object? tmpVal = null;
 
-                    if (theVal?.GetType() == typeof(string).GetType())
-                        tmpProp = (theVal as Type)?.GetRuntimeProperty(expressions[i + 2]);
-                    else
-                        tmpProp = theVal?.GetType().GetRuntimeProperty(expressions[i + 2]);
+                        if (theVal?.GetType() == typeof(string).GetType())
+                            tmpVal = (theVal as Type)
+                                ?.GetRuntimeProperty(expressions[i + 2])
+                                ?.GetValue(theVal);
+                        else
+                            tmpVal = theVal
+                                ?.GetType()
+                                .GetRuntimeProperty(expressions[i + 2])
+                                ?.GetValue(theVal);
 
-                    if (tmpProp != null)
-                        (tmpProp as PropertyInfo)?.SetValue(
-                            theVal,
-                            Variable.VarToClr(Variable.Create(parameters[1..], chunk))
-                        );
+                        if (tmpVal != null)
+                            theVal = tmpVal;
+                        else
+                        {
+                            if (theVal?.GetType() == typeof(string).GetType())
+                                theVal = (theVal as Type)
+                                    ?.GetRuntimeField(expressions[i + 2])
+                                    ?.GetValue(theVal);
+                            else
+                                theVal = theVal
+                                    ?.GetType()
+                                    .GetRuntimeField(expressions[i + 2])
+                                    ?.GetValue(theVal);
+                        }
+                    }
                     else
                     {
-                        if (theVal?.GetType() == typeof(string).GetType())
-                            tmpProp = (theVal as Type)?.GetRuntimeField(expressions[i + 2]);
-                        else
-                            tmpProp = theVal?.GetType().GetRuntimeField(expressions[i + 2]);
+                        object? tmpProp = null;
 
-                        (tmpProp as FieldInfo)?.SetValue(
-                            theVal,
-                            Variable.VarToClr(Variable.Create(parameters, chunk))
-                        );
+                        if (theVal?.GetType() == typeof(string).GetType())
+                            tmpProp = (theVal as Type)?.GetRuntimeProperty(expressions[i + 2]);
+                        else
+                            tmpProp = theVal?.GetType().GetRuntimeProperty(expressions[i + 2]);
+
+                        if (tmpProp != null)
+                            (tmpProp as PropertyInfo)?.SetValue(
+                                theVal,
+                                Variable.VarToClr(Variable.Create(parameters[1..], chunk))
+                            );
+                        else
+                        {
+                            if (theVal?.GetType() == typeof(string).GetType())
+                                tmpProp = (theVal as Type)?.GetRuntimeField(expressions[i + 2]);
+                            else
+                                tmpProp = theVal?.GetType().GetRuntimeField(expressions[i + 2]);
+
+                            (tmpProp as FieldInfo)?.SetValue(
+                                theVal,
+                                Variable.VarToClr(Variable.Create(parameters[1..], chunk))
+                            );
+                        }
                     }
                 }
 

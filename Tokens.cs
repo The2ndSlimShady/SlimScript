@@ -40,7 +40,7 @@ public struct Token
                 Type = TokenType.Unidentified;
 
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\nUnidentified Token: {Text}.");
+                Write.StandartOutput.WriteLine($"\nUnidentified Token: {Text}.");
                 Program.Exit(ExitCode.UnidentifiedToken);
             }
         }

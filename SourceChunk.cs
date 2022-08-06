@@ -55,7 +55,7 @@ public class SourceChunk
         Parent = null;
 
 #if DEBUG
-        Console.WriteLine($"Pre-Processing Source Code...");
+        Write.StandartOutput.WriteLine($"Pre-Processing Source Code...");
 #endif
 
         var processedSource = PreProcessor.Process(source, this);
@@ -68,7 +68,7 @@ public class SourceChunk
         Stack = new();
         Parent = null;
 #if DEBUG
-        Console.WriteLine($"Pre-Processing Source Code...");
+        Write.StandartOutput.WriteLine($"Pre-Processing Source Code...");
 #endif
         var processedSource = PreProcessor.Process(source, this);
         Lines = Lexer.Lex(processedSource, this);
@@ -203,7 +203,7 @@ public class SourceChunk
             $"{message}\nFile: {Path.GetFileNameWithoutExtension(ch._file)}_p.sso\nLine: {Parser.lineNumber}\nExpression: {string.Join(' ', line.Select(t => t.Text))}";
 
         Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine(message);
+        Write.StandartOutput.WriteLine(message);
 
         Program.Exit(code);
     }

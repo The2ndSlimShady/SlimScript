@@ -1,0 +1,13 @@
+{
+    "VersionNumber": {
+        "MajorVersion": 1,
+        "MinorVersion": 0,
+        "PatchVersion": 0
+    },
+    "AppName": "SlimScript",
+    "Description": "Small Embeddable Scripting Language for C#",
+    "Contributors": {
+        "The2ndSlimShady": "github.com/The2ndSlimShady/",
+        "OzgurCem": "github.com/OzgurCem"
+    }
+}
