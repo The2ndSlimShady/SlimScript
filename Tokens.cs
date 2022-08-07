@@ -62,6 +62,16 @@ public struct Token
 
     public override int GetHashCode() => base.GetHashCode();
 
+    public override bool Equals(object? obj)
+    {
+        if (obj == null)
+            return false;
+        else if (obj is not Token)
+            return false;
+        else
+            return (Token)obj == this;
+    }
+
     public static bool operator ==(Token left, Token right) => !(left != right);
 
     public static bool operator !=(Token left, Token right) =>

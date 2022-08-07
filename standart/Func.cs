@@ -66,19 +66,19 @@ internal class Func : Standart
 
     private static IVariable Create(SourceChunk parentChunk)
     {
-        _line = _line.Where(l => l.Count != 0).ToList();
+        _line = _line?.Where(l => l.Count != 0).ToList();
 
-        SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
+        SourceChunk chunk = new(_line?.Select(s => s).ToList() ?? new() { new() }, parentChunk);
         Function func = new(chunk, parentChunk, _params, _params.Length, _name);
 
         parentChunk.CreateVar(_name, func);
 
-        _line.Clear();
+        _line?.Clear();
         _line = null;
         _name = "";
         _currentLevel = 0;
         _params = System.Array.Empty<string>();
 
-        return parentChunk.GetVar(func.Name);
+        return parentChunk.GetVar(func.Name) ?? new Null();
     }
 }

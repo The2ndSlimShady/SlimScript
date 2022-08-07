@@ -33,21 +33,21 @@ public struct Number : IVariable
 
             var obj = Variable.CreateType(rule);
 
-            Number value;
+            Number? value;
 
-            if (obj.GetType().BaseType == typeof(Operator))
+            if (obj?.GetType().BaseType == typeof(Operator))
             {
-                value = (Number)(obj as Operator).Apply(tokens, chunk);
+                value = (Number?)(obj as Operator)?.Apply(tokens, chunk);
 
-                Val = value.Val;
-                Token = value.Token;
+                Val = value?.Val ?? 0;
+                Token = value?.Token ?? new("0");
             }
-            else if (obj.GetType().BaseType == typeof(Standart))
+            else if (obj?.GetType().BaseType == typeof(Standart))
             {
-                value = (Number)(obj as Standart).Run(tokens.ToList(), chunk);
+                value = (Number?)(obj as Standart)?.Run(tokens.ToList(), chunk);
 
-                Val = value.Val;
-                Token = value.Token;
+                Val = value?.Val ?? 0;
+                Token = value?.Token ?? new("0");
             }
             else
             {

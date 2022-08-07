@@ -7,7 +7,7 @@ public class Variable
 {
     internal static IVariable Create(Token[] parameters, SourceChunk chunk)
     {
-        object realParam = null;
+        object? realParam = null;
 
         if (parameters[0].Text.StartsWith('['))
             return new Array(parameters, chunk);
@@ -37,11 +37,11 @@ public class Variable
             else if (param.Type == TokenType.Standart)
                 realParam = (
                     CreateType(Parser.IdentifyAndGet(parameters[i..].ToList(), chunk)) as Standart
-                ).Run(parameters[i..].ToList(), chunk);
+                )?.Run(parameters[i..].ToList(), chunk);
             else if (param.Type == TokenType.Operator)
                 realParam = (
                     CreateType(Parser.IdentifyAndGet(parameters[i..].ToList(), chunk)) as Operator
-                ).Apply(parameters[i..], chunk);
+                )?.Apply(parameters[i..], chunk);
             else
             {
                 chunk.Error(
@@ -84,7 +84,7 @@ public class Variable
         return (
             Activator
                 .CreateInstance(
-                    Assembly.GetExecutingAssembly().GetName().Name,
+                    Assembly.GetExecutingAssembly().GetName().Name ?? "",
                     $"SlimScript.{type}"
                 )
                 ?.Unwrap()

@@ -44,14 +44,14 @@ internal class Parser
         {
             var exprBlock = Variable.CreateType(block.block);
 
-            if (!exprBlock.GetType().IsSubclassOf(typeof(Standart)))
+            if (!exprBlock?.GetType().IsSubclassOf(typeof(Standart)) ?? false)
             {
                 Chunk?.Error($"Error at line '{lineNumber}'.", ExitCode.GrammarError);
 
                 return new Number(new Token("-1"));
             }
 
-            return (exprBlock as Standart)?.Run(line, Chunk) ?? new Null();
+            return (exprBlock as Standart)?.Run(line, Chunk ?? new()) ?? new Null();
         }
 
         string? rule = null;
@@ -59,25 +59,25 @@ internal class Parser
 
         // try
         // {
-            rule = IdentifyAndGet(line, Chunk);
+        rule = IdentifyAndGet(line, Chunk ?? new());
 
-            if (rule == "CLR")
-                return Variable.Create(line.ToArray(), Chunk);
+        if (rule == "CLR")
+            return Variable.Create(line.ToArray(), Chunk ?? new());
 
-            obj = Variable.CreateType(rule);
+        obj = Variable.CreateType(rule);
         // }
         // catch (Exception)
         // {
-            // Chunk?.Error($"Cannot execute command '{rule?.ToLower()}'.", ExitCode.RuntimeError);
+        // Chunk?.Error($"Cannot execute command '{rule?.ToLower()}'.", ExitCode.RuntimeError);
 
         //     return new Null();
         // }
 
-        if (obj.GetType().IsSubclassOf(typeof(Standart)))
-            return (obj as Standart).Run(line, Chunk);
+        if (obj?.GetType().IsSubclassOf(typeof(Standart)) ?? false)
+            return (obj as Standart)?.Run(line, Chunk ?? new()) ?? new Null();
         else
         {
-            Chunk.Error(
+            Chunk?.Error(
                 $"Given expression '{rule}' is not a Standart function.",
                 ExitCode.GrammarError
             );

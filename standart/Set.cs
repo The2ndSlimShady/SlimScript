@@ -19,7 +19,7 @@ internal class Set : Standart
 
             chunk.SetVar(name.Text, variable);
 
-            return chunk.GetVar(name.Text);
+            return chunk.GetVar(name.Text) ?? new Null();
         }
         else
         {
@@ -54,7 +54,7 @@ internal class Set : Standart
 
             chunk.SetVar(array.Name, array);
 
-            return chunk.GetVar(array.Name);
+            return chunk.GetVar(array.Name) ?? new Null();
         }
     }
 }

@@ -12,6 +12,6 @@ public class Identifier
         if (variable == null)
             chunk.Error($"Cannot get value of unexistent variable '{identifier.Text}'.", ExitCode.NullReferenceError);
 
-        return variable;
+        return variable ?? new Null();
     }
 }

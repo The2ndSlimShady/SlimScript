@@ -21,6 +21,6 @@ internal class Append : Standart
 
         chunk.SetVar(array.Name, array);
 
-        return chunk.GetVar(array.Name);
+        return chunk.GetVar(array.Name) ?? new Null();
     }
 }

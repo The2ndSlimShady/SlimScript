@@ -1,10 +1,6 @@
 @module io.file
 
--- !!!! NOTE !!!!
--- ONLY INCLUDE THIS FILE MANUALLY WHEN YOU REALLY NEED TO. 
--- IT'S AUTOMATICALLY INCLUDED IN IO LIBRARY
---
--- BE SURE TO INCLUDE 'SYSTEM' BEFORE INCLUDING THIS MODULE
+@include system
 
 define file_t as {System::IO::File}
 define file_mode_t as {System::IO::FileMode}
@@ -35,7 +31,6 @@ func file.openOrCreate path accessMode appendTo begin
     return file_stream_t->new path fileMode fileAccess
 end
 
-
 -- Creates a file or overwrites a file if already exists.
 func file.create path accessMode begin
     define fileAccess as enum_t->Parse file_access_t accessMode
@@ -43,7 +38,6 @@ func file.create path accessMode begin
 
     return file_stream_t->new path fileMode fileAccess
 end
-
 
 -- Writes all changes to file and closes the stream
 func file.close file begin
@@ -73,7 +67,23 @@ func file.readLine reader begin
     end
 end
 
-func file.writeLine writer str begin
+func file.writeLine writer str noFlush begin
     writer->WriteLine str
-    writer->Flush
+
+
+    if not noFlush then 
+        writer->Flush
+    end
+end
+
+func file.exists path begin
+    return variable->ClrToVar file_t->Exists path
+end
+
+func file.readAllLines path begin
+    return variable->ClrToVar file_t->ReadAllLines path
+end
+
+func file.writeAllLines path lines begin
+    file_t->WriteAllLines path variable->VarToClr 
 end

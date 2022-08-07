@@ -36,7 +36,7 @@ internal class Delete : Standart
 
             chunk.SetVar(array.Name, array);
 
-            return chunk.GetVar(array.Name);
+            return chunk.GetVar(array.Name) ?? new Null();
         }
 
         if (name.Type != TokenType.Identifier)

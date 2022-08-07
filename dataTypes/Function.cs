@@ -50,7 +50,7 @@ public struct Function : IVariable
         return tempChunk.Run(Val.begin);
     }
 
-    public IVariable Run(IVariable[] parameters) => Run(parameters, Val.Val.Parent);
+    public IVariable Run(IVariable[] parameters) => Run(parameters, Val.Val?.Parent ?? new());
 
     public IVariable Run(params object[] parameters)
     {
@@ -61,6 +61,6 @@ public struct Function : IVariable
 
         return Run(vars.ToArray());
     }
-    
+
     public override string ToString() => (this as IVariable).GetString();
 }

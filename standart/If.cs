@@ -94,11 +94,11 @@ internal class If : Standart
 
     private static IVariable Create(SourceChunk parentChunk)
     {
-        _line = _line.Where(l => l.Count != 0).ToList();
+        _line = _line?.Where(l => l.Count != 0).ToList();
 
-        SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk);
+        SourceChunk chunk = new(_line?.Select(s => s).ToList() ?? new() { new() }, parentChunk);
 
-        _line.Clear();
+        _line?.Clear();
         _line = null;
         _currentLevel = 0;
         _condition = false;

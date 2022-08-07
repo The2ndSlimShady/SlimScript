@@ -20,7 +20,7 @@ internal class Not : Operator
 
         var val = !((Bool)arg).Val;
         arg.Value = val;
-        arg.Token = new Token(arg.Value.ToString()??"null".ToLower());
+        arg.Token = new Token(arg.Value.ToString()?.ToLower()??"null");
 
         return arg;
     }

@@ -29,14 +29,14 @@ public struct Word : IVariable
 
             var obj = Variable.CreateType(rule);
 
-            Word value;
+            Word? value;
 
-            if (obj.GetType().BaseType == typeof(Operator))
+            if (obj?.GetType().BaseType == typeof(Operator))
             {
-                value = (Word)(obj as Operator).Apply(tokens, chunk);
+                value = (Word?)(obj as Operator)?.Apply(tokens, chunk);
 
-                Val = value.Val;
-                Token = value.Token;
+                Val = value?.Val ?? string.Empty;
+                Token = value?.Token ?? new("\"\"");
             }
             else
             {
@@ -73,4 +73,6 @@ public struct Word : IVariable
 
     public IEnumerator<Word> GetEnumerator() =>
         Val.Select(c => (Word)Variable.ClrToVar(c)).GetEnumerator();
+
+    public override string ToString() => Val;
 }

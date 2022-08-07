@@ -62,7 +62,7 @@ internal class While : Standart
 
     private static IVariable Create(SourceChunk parentChunk)
     {
-        _line = _line.Where(l => l.Count != 0).ToList();
+        _line = _line?.Where(l => l.Count != 0).ToList();
         IVariable result = new Word(new("\"null\""));
         bool ret = false;
 
@@ -73,10 +73,11 @@ internal class While : Standart
             if (!condition.Val)
                 break;
 
-            SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk)
-            {
-                ChunkType = ChunkType.Loop
-            };
+            SourceChunk chunk =
+                new(_line?.Select(s => s).ToList() ?? new List<List<Token>> { new() }, parentChunk)
+                {
+                    ChunkType = ChunkType.Loop
+                };
 
             var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
 
@@ -92,7 +93,7 @@ internal class While : Standart
                 break;
         }
 
-        _line.Clear();
+        _line?.Clear();
         _line = null;
         _currentLevel = 0;
         _conditionTokens = System.Array.Empty<Token>();

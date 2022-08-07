@@ -142,13 +142,13 @@ public struct CLR : IVariable
                             {
                                 allOk = Variable.ClrToVar(paramType).GetType() == param;
 
-                                object temp;
+                                object? temp;
 
                                 if (allOk)
                                     temp = Variable.ClrToVar(paramType);
                                 else
                                 {
-                                    if (invokeParams[index].GetType().IsEnum)
+                                    if (invokeParams[index]?.GetType().IsEnum ?? false)
                                         temp = invokeParams[index];
                                     else
                                         temp = Convert.ChangeType(invokeParams[index], param);
@@ -210,7 +210,7 @@ public struct CLR : IVariable
                 else
                 {
                     method = (theVal as Type)?.GetConstructor(paramTypes);
-                    
+
                     if (method == null)
                         method = (theVal as Type)
                             ?.GetConstructors()
@@ -222,7 +222,7 @@ public struct CLR : IVariable
                     method = (method as MethodInfo)?.MakeGenericMethod(genericParams.ToArray());
 
                 if (method?.IsConstructor ?? false)
-                    theVal = Activator.CreateInstance(theVal as Type, invokeParams);
+                    theVal = Activator.CreateInstance(theVal as Type ?? typeof(Null), invokeParams);
                 else if ((method as MethodInfo)?.ReturnType == typeof(void))
                     method?.Invoke(theVal, invokeParams);
                 else

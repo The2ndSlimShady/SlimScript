@@ -13,6 +13,6 @@ internal class Define : Standart
         IVariable variable = Variable.Create(line.ToArray()[3..], chunk);
         chunk.CreateVar(name.Text, variable);
 
-        return chunk.GetVar(variable.Name);
+        return chunk.GetVar(variable.Name) ?? new Null();
     }
 }

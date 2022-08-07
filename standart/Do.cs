@@ -9,9 +9,9 @@ internal class Do : Standart
         if (name.Type != TokenType.Identifier)
             chunk.Error($"Cannot execute non-function variable '{name.Text}'. Given token is not an identifier.", ExitCode.GrammarError);
 
-        var variable = (Function)chunk.GetVar(name.Text);
+        Function? variable = (Function?)chunk.GetVar(name.Text);
         var parameters = Operator.ReadyParams(line.ToArray()[1..], chunk, 0).ToArray();
 
-        return variable.Run(parameters, chunk);
+        return variable?.Run(parameters, chunk) ?? new Null();
     }
 }

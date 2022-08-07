@@ -85,7 +85,7 @@ internal class For : Standart
 
     private static IVariable Create(SourceChunk parentChunk)
     {
-        _line = _line.Where(l => l.Count != 0).ToList();
+        _line = _line?.Where(l => l.Count != 0).ToList();
         IVariable result = new Word(new("\"null\""));
         bool ret = false;
 
@@ -103,7 +103,8 @@ internal class For : Standart
 
         for (; (condt as Bool?)?.Val ?? false; )
         {
-            SourceChunk chunk = new(_line.ToList(), parentChunk) { ChunkType = ChunkType.Loop };
+            SourceChunk chunk =
+                new(_line?.ToList() ?? new() { new() }, parentChunk) { ChunkType = ChunkType.Loop };
 
             var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
             result = chunk.Run(lineNum);
@@ -138,7 +139,7 @@ internal class For : Standart
             condt = Variable.Create(_loopData.condition, parentChunk);
         }
 
-        _line.Clear();
+        _line?.Clear();
         _line = null;
         _currentLevel = 0;
         _loopData = (

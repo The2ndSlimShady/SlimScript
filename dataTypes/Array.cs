@@ -27,7 +27,7 @@ public class Array : IVariable
         set => Val = (List<IVariable>)value;
     }
 
-    internal Array(Token[] items, SourceChunk chunk)
+    internal Array(Token[] items, SourceChunk? chunk)
     {
         Val = new();
         Token = new() { Type = TokenType.Array };
@@ -84,7 +84,7 @@ public class Array : IVariable
 
         foreach (List<Token> item in realItems)
         {
-            var variable = Variable.Create(item.ToArray(), chunk);
+            var variable = Variable.Create(item.ToArray(), chunk ?? new SourceChunk());
             Val?.Add(variable);
         }
     }

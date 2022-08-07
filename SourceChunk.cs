@@ -114,7 +114,7 @@ public class SourceChunk
                 return Variable.Copy(variable, this);
             }
             else
-                return Parent.GetVar(name);
+                return Parent?.GetVar(name);
         }
         else
         {

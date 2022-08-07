@@ -1,3 +1,5 @@
+using System;
+
 namespace SlimScript;
 
 public struct Bool : IVariable
@@ -12,7 +14,6 @@ public struct Bool : IVariable
     {
         get => Val;
         set { Val = (bool)value; }
-
     }
 
     internal Bool(Token[] tokens, SourceChunk chunk)
@@ -34,25 +35,28 @@ public struct Bool : IVariable
 
             var obj = Variable.CreateType(rule);
 
-            Bool value;
+            Bool? value;
 
-            if (obj.GetType().BaseType == typeof(Operator))
+            if (obj?.GetType().BaseType == typeof(Operator))
             {
-                value = (Bool)(obj as Operator).Apply(tokens, chunk);
+                value = (Bool?)(obj as Operator)?.Apply(tokens, chunk);
 
-                Val = value.Val;
-                Token = value.Token;
+                Val = value?.Val ?? false;
+                Token = value?.Token ?? new("false");
             }
-            else if (obj.GetType().BaseType == typeof(Standart))
+            else if (obj?.GetType().BaseType == typeof(Standart))
             {
-                value = (Bool)(obj as Standart).Run(tokens.ToList(), chunk);
+                value = (Bool?)(obj as Standart)?.Run(tokens.ToList(), chunk);
 
-                Val = value.Val;
-                Token = value.Token;
+                Token = value?.Token ?? new("false");
+                Val = value?.Val ?? false;
             }
             else
             {
-                chunk.Error($"Cannot create Bool from return of {tokens[0].Type}.", ExitCode.DisordantTokenError);
+                chunk.Error(
+                    $"Cannot create Bool from return of {tokens[0].Type}.",
+                    ExitCode.DisordantTokenError
+                );
                 Token = new("false");
             }
         }

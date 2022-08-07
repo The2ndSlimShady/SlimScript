@@ -32,7 +32,7 @@ internal class Foreach : Standart
 
             _loopData.name = nameTokens[0].Text;
 
-            var arr = Variable.Create(line.ToArray()[3..], chunk);
+            var arr = Variable.Create(line.ToArray()[3..^1], chunk);
 
             if (!arr.Value.GetType().IsAssignableTo(typeof(IEnumerable)))
                 chunk.Error(
@@ -69,7 +69,7 @@ internal class Foreach : Standart
 
     private static IVariable Create(SourceChunk parentChunk)
     {
-        _line = _line.Where(l => l.Count != 0).ToList();
+        _line = _line?.Where(l => l.Count != 0).ToList();
         IVariable result = new Null();
         bool ret = false;
 
@@ -77,10 +77,11 @@ internal class Foreach : Standart
         {
             var var = Variable.ClrToVar(nonCastVar);
 
-            SourceChunk chunk = new(_line.Select(s => s).ToList(), parentChunk)
-            {
-                ChunkType = ChunkType.Loop
-            };
+            SourceChunk chunk =
+                new(_line?.Select(s => s).ToList() ?? new() { new() }, parentChunk)
+                {
+                    ChunkType = ChunkType.Loop
+                };
 
             var lineNum = parentChunk.Parser.lineNumber - chunk.Lines.Count - 1;
 
@@ -95,12 +96,12 @@ internal class Foreach : Standart
                 ret = true;
                 break;
             }
-            
+
             if ((result as Word?)?.Val == "break")
                 break;
         }
 
-        _line.Clear();
+        _line?.Clear();
         _line = null;
         _currentLevel = 0;
         _loopData = ("", new Array());

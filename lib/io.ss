@@ -6,10 +6,10 @@
 -- FILE MODULE
 --
 
-@include io-file
+@include io/file
 
 --
 -- DIRECTORY MODULE
 --
 
-@include io-directory
+@include io/directory

@@ -10,7 +10,7 @@ internal abstract class Operator
         int capacity = 2
     )
     {
-        List<IVariable> realParams;
+        List<IVariable?> realParams;
 
         bool infinite = capacity == 0;
 
@@ -56,7 +56,7 @@ internal abstract class Operator
                     (
                         Variable.CreateType(Parser.IdentifyAndGet(parameters[i..].ToList(), chunk))
                         as Standart
-                    ).Run(parameters[i..].ToList(), chunk)
+                    )?.Run(parameters[i..].ToList(), chunk)
                 );
 
                 i = parameters.Length;
@@ -67,7 +67,7 @@ internal abstract class Operator
                     (
                         Variable.CreateType(Parser.IdentifyAndGet(parameters[i..].ToList(), chunk))
                         as Operator
-                    ).Apply(parameters[i..], chunk)
+                    )?.Apply(parameters[i..], chunk)
                 );
 
                 i = parameters.Length;
@@ -81,6 +81,6 @@ internal abstract class Operator
             }
         }
 
-        return realParams;
+        return realParams.Select(var => var ?? new Null()).ToList();
     }
 }
