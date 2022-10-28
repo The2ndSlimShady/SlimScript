@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Data.SqlTypes;
+using System.Text;
+using System.Linq;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -15,7 +17,7 @@ internal class Program
     public static SourceChunk? MainChunk { get; set; }
     public static bool interactive = false;
 
-    private static Stopwatch watch = new();
+    private static readonly Stopwatch watch = new();
 
     public static void Main(string[] args)
     {
@@ -25,6 +27,8 @@ internal class Program
         {
             if (args.Length != 0 && args[0] == "-i")
                 RunInteractive();
+            if (args.Length != 0 && (args[0] == "-h" || args[0] == "--help"))
+                PrintHelp();
             else
             {
                 if (args.Length == 0 || !File.Exists(args[0]))
@@ -74,6 +78,29 @@ internal class Program
 
             Exit(ExitCode.RuntimeError);
         }
+    }
+    
+    private static void PrintHelp()
+    {
+        StringBuilder sb = new();
+        sb.Append($"\n{GlobalSettings.AppInfo}\n");
+        sb.AppendLine("Usage:");
+        sb.AppendLine("\tSlimScript <file>");
+        sb.AppendLine("\tSlimScript <file> <flags>");
+        sb.AppendLine("\tSlimScript <file> <flags> %p <arguments>");
+        sb.AppendLine("\tSlimScript -i");
+        sb.AppendLine("\tSlimScript -h --help");
+
+        sb.AppendLine("\nAvailable Flags:");
+        sb.AppendLine("\t-D              Run With Debug Mode. Generates pre-processor and lexer outputs. (SlimScript <file> -D)");
+        sb.AppendLine("\t-C              Generates Compressed Standalone Script File That Has No\n\t\t\tDependencies On Any Other File.                                 (SlimScript <file> -C)");
+        sb.AppendLine("\t-i              Run Interactive Mode                                            (SlimScript -i)");
+        sb.AppendLine("\t-h --help       Show This Output.                                               (SlimScript -h --help)");
+        
+        sb.AppendLine("\n\tPassing Arguments:");
+        sb.AppendLine("\t\t\tSlimScript <file> <flags> %p <arguments>       Arguments are passed to main function as an array.");
+        
+        GlobalSettings.StandartOutput.Write($"{sb}\n");
     }
 
     private static void RunInteractive()
