@@ -7,4 +7,5 @@ define directory_info_t as {System::IO::DirectoryInfo}
 
 -- Returns the directory info of path if exists, creates new otherwise.
 func directory.openOrCreate path begin
+    
 end

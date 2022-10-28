@@ -53,10 +53,11 @@ internal class Program
                 if (MainChunk.VarExists("main"))
                 {
                     var indexOfBegin = System.Array.IndexOf(args, "%p");
-                    indexOfBegin = indexOfBegin == -1 ? 0 : indexOfBegin;
-
+                    
+                    if (indexOfBegin != -1)
                     ((Function?)MainChunk.GetVar("main"))?.Run(
-                        Variable.ClrToVar(args[(indexOfBegin + 1)..])
+                        args[(indexOfBegin + 1)..],
+                        args[(indexOfBegin + 1)..].Length
                     );
                 }
 
@@ -92,7 +93,7 @@ internal class Program
         sb.AppendLine("\tSlimScript -h --help");
 
         sb.AppendLine("\nAvailable Flags:");
-        sb.AppendLine("\t-D              Run With Debug Mode. Generates pre-processor and lexer outputs. (SlimScript <file> -D)");
+        sb.AppendLine("\t-D              Run With Debug Mode. Generates lexer output (for curious ones). (SlimScript <file> -D)");
         sb.AppendLine("\t-C              Generates Compressed Standalone Script File That Has No\n\t\t\tDependencies On Any Other File.                                 (SlimScript <file> -C)");
         sb.AppendLine("\t-i              Run Interactive Mode                                            (SlimScript -i)");
         sb.AppendLine("\t-h --help       Show This Output.                                               (SlimScript -h --help)");
@@ -100,7 +101,7 @@ internal class Program
         sb.AppendLine("\n\tPassing Arguments:");
         sb.AppendLine("\t\t\tSlimScript <file> <flags> %p <arguments>       Arguments are passed to main function as an array.");
         
-        GlobalSettings.StandartOutput.Write($"{sb}\n");
+        Write.StandartOutput.Write($"{sb}\n");
     }
 
     private static void RunInteractive()

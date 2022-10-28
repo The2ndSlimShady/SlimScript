@@ -45,7 +45,7 @@ func file.close file begin
     file->Close
 end
 
--- Creates a read to read the file from the beginning
+-- Creates a reader to read the file from the beginning
 func file.createReader file begin
     define seek_origin_t as {System::IO::SeekOrigin}
     define origin as enum_t->Parse seek_origin_t "Begin"
@@ -53,10 +53,12 @@ func file.createReader file begin
     return stream_reader_t->new file
 end
 
+-- Creates a writer to write to given file
 func file.createWriter file begin
     return stream_writer_t->new file
 end
 
+-- Reads a line from given reader
 func file.readLine reader begin
     define result as variable->ClrToVar reader->ReadLine
 
@@ -67,23 +69,26 @@ func file.readLine reader begin
     end
 end
 
+-- Writes a line to given writer
 func file.writeLine writer str noFlush begin
     writer->WriteLine str
-
 
     if not noFlush then 
         writer->Flush
     end
 end
 
+-- Checks if file on given path exists
 func file.exists path begin
     return variable->ClrToVar file_t->Exists path
 end
 
+-- Reads all lines from file on given path and returns the lines as an array
 func file.readAllLines path begin
     return variable->ClrToVar file_t->ReadAllLines path
 end
 
+-- Writes given array as lines to file at given path
 func file.writeAllLines path lines begin
     file_t->WriteAllLines path variable->VarToClr 
 end

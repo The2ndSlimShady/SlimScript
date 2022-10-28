@@ -3,6 +3,7 @@ bin/
 obj/
 test/
 publish/
+docs/
 
 FodyWeavers.xml
 FodyWeavers.xsd

@@ -5,7 +5,8 @@ namespace SlimScript;
 
 internal class PreProcessor
 {
-    private static List<string> _includedModules = new();
+    private static readonly List<string> _includedModules = new();
+    private static readonly Dictionary<string, string> _macros = new();
 
     public static string[] Process(string[] source, SourceChunk chunk)
     {
@@ -40,7 +41,11 @@ internal class PreProcessor
 
                     if (!string.IsNullOrEmpty(val))
                     {
-                        processedSource.Add(val);
+                        if (_macros.ContainsKey(val))
+                            processedSource.Add(_macros[val]);
+                        else
+                            processedSource.Add(val);
+
                         token = new();
                     }
                 }
@@ -56,7 +61,14 @@ internal class PreProcessor
             }
 
             if (token.Length != 0)
-                processedSource.Add(token.ToString());
+            {
+                string val = token.ToString();
+
+                if (_macros.ContainsKey(val))
+                    processedSource.Add(_macros[val]);
+                else
+                    processedSource.Add(val);
+            }
 
             processedSource.Add("EOL");
             isString = false;
@@ -158,6 +170,9 @@ internal class PreProcessor
 
             if (!item.StartsWith('@'))
             {
+                // if (_macros.ContainsKey(item))
+                // prepreprocessed.Add(_macros[item]);
+                // else
                 prepreprocessed.Add(item);
                 continue;
             }
@@ -170,8 +185,7 @@ internal class PreProcessor
                     if (!File.Exists(file))
                     {
 #if !DEBUG
-                        file =
-                            GlobalSettings.GetPathToSystemFiles($"lib\\{fileName}");
+                        file = GlobalSettings.GetPathToSystemFiles($"lib\\{fileName}");
 #else
                         file = $"{Program.BasePath}\\lib\\{fileName}";
 #endif
@@ -246,6 +260,27 @@ internal class PreProcessor
                     }
                     break;
 
+                case "macro":
+                    if (line.Length < 3)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Write.StandartOutput.WriteLine(
+                            $"Cannot create macro with no values\nExpression: @{realItem}\nline {i + 1}"
+                        );
+                        Program.Exit(ExitCode.PreProcessorError);
+                    }
+                    if (!_macros.ContainsKey(line[1]))
+                        _macros.Add(line[1], string.Concat(line[2..]));
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Write.StandartOutput.WriteLine(
+                            $"Cannot create macro '{line[1]}'. It already exists.\nExpression: @{realItem}\nline {i + 1}"
+                        );
+                        Program.Exit(ExitCode.PreProcessorError);
+                    }
+                    break;
+
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;
                     Write.StandartOutput.WriteLine(
@@ -306,7 +341,7 @@ internal class PreProcessor
             }
             else
             {
-                if (item == '-' && line[j + 1] == '-')
+                if (item == '-' && j+1 < line.Length &&line[j + 1] == '-')
                     break;
                 if (item == '"')
                     isString = true;
