@@ -250,6 +250,8 @@ internal class PreProcessor
                 case "undef":
                     if (_includedModules.Contains(line[1]))
                         _includedModules.Remove(line[1]);
+                    else if (_macros.ContainsKey(line[1]))
+                        _macros.Remove(line[1]);
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;

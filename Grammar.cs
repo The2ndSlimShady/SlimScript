@@ -36,7 +36,6 @@ internal class Grammar
         "elif",
         "else",
         "while",
-        "get",
         "foreach",
         "index",
         "append",

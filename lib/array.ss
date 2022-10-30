@@ -42,7 +42,10 @@ func array.lastIndexOf arr val begin
 end
 
 func array.length arr begin
-    return variable->ClrToVar array_t->new:Count arr
+    define tmp_Arr as array_t->new arr
+    define len as variable->ClrToVar tmp_Arr:Count
+
+    return len
 end
 
 func array.takeRange arr startIndex count begin
