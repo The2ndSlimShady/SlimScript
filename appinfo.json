@@ -2,7 +2,8 @@
     "VersionNumber": {
         "MajorVersion": 1,
         "MinorVersion": 0,
-        "PatchVersion": 0
+        "PatchVersion": 0,
+        "Label": "alpha"
     },
     "Name": "SlimScript",
     "Description": "Small Embeddable Scripting Language for C#",

@@ -7,21 +7,10 @@ interact with .Net echosystem.
 ---------------------------------------------------
 <br/>
 
-## Jump To
-- [Docs](docs/BASICS.md)
-- [TODO](docs/TODO.md)
-
 ## Notes
 
-Slim Script has many flaws in its design and it may lack some features
-but it is a good place to start teaching someone programming because of 
-its easy design.
-
-### Debugging Note
-
-After some time using SlimScript, you might wonder why error outputs line numbers does not match with source codes 
-line numbers? Well thats because Interpreter uses the file post_lexer_humanized.sso as source code. If you're having trouble
-finding it, it should be placed at the same directory as input file. If it's still not there, try running SlimScript.exe with flag `-D`.
+SlimScript is a little embeddable Turing-complete scripting language for .NET (mainly C#). It's a bit slow because of 
+its dynamic design and the usage of reflection under the hood but still, its decent enough.
 
 ---------------------------------------------------
 <br/>
@@ -64,6 +53,8 @@ Or try the interactive mode!
 ```bash
   ./bin/<Debug/Release>/net6.0/SlimScript -i
 ```
+
+You can also get project installer from `Release` section.
 
 ----------------------------------------------------
 

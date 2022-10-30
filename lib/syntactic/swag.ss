@@ -31,7 +31,7 @@
 @macro prolly               if
 @macro maybe                elif
 @macro nrlly                else
-@macro ballin'              while
+@macro ballin              while
 @macro them                 foreach
 @macro dude                 index
 @macro beat                 append

@@ -43,8 +43,9 @@ public struct VersionNumber
     public int MajorVersion { get; set; }
     public int MinorVersion { get; set; }
     public int PatchVersion { get; set; }
+    public string Label { get; set; }
 
-    public override string ToString() => $"{MajorVersion}.{MinorVersion}.{PatchVersion}";
+    public override string ToString() => $"{MajorVersion}.{MinorVersion}.{PatchVersion}{(string.IsNullOrEmpty(Label) ? "" : $"-{Label}")}";
 }
 
 public struct AppInfo
