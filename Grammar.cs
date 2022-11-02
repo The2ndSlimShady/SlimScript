@@ -44,8 +44,10 @@ internal class Grammar
         "typeof",
         "tostring",
         "tonumber",
+        "tobool",
         "clrname",
         "input",
-        "break"
+        "break",
+        "import"
     };
 }

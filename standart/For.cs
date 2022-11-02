@@ -119,7 +119,7 @@ internal class For : Standart
                 break;
 
             chunk = new(
-                new()
+                new List<List<Token>>()
                 {
                     new()
                     {
@@ -138,6 +138,9 @@ internal class For : Standart
 
             condt = Variable.Create(_loopData.condition, parentChunk);
         }
+
+        _loopData.name = _loopData.name[1..].Prepend(new("delete")).ToArray();
+        Variable.Create(_loopData.name, parentChunk);
 
         _line?.Clear();
         _line = null;

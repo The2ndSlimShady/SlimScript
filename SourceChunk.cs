@@ -35,7 +35,7 @@ public class SourceChunk
         _file = "???";
     }
 
-    public SourceChunk(string sourceFile)
+    public SourceChunk(string sourceFile, SourceChunk? parent = null)
     {
         var dirName = new FileInfo(sourceFile).DirectoryName ?? "./";
         Directory.SetCurrentDirectory(dirName);
@@ -47,15 +47,16 @@ public class SourceChunk
             source = tmpStr.Split(Environment.NewLine, StringSplitOptions.TrimEntries);
         }
         else
-            source = File.ReadAllLines(new FileInfo(sourceFile).Name);
+            source = File.ReadAllLines(new FileInfo(Path.Combine(Directory.GetCurrentDirectory(), sourceFile)).Name);
 
         _file = sourceFile;
 
         Stack = new();
-        Parent = null;
+        Parent = parent;
 
 #if DEBUG
-        Write.StandartOutput.WriteLine($"Pre-Processing Source Code...");
+        if (Parent == null)
+            Write.StandartOutput.WriteLine($"Pre-Processing Source Code...");
 #endif
 
         var processedSource = PreProcessor.Process(source, this);
@@ -67,6 +68,7 @@ public class SourceChunk
     {
         Stack = new();
         Parent = null;
+
 #if DEBUG
         Write.StandartOutput.WriteLine($"Pre-Processing Source Code...");
 #endif

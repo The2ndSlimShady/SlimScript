@@ -4,6 +4,8 @@ internal abstract class Operator
 {
     public abstract IVariable Apply(Token[] parameters, SourceChunk chunk);
 
+    /// <param name="capacity">In case of operators like plus (+) etc. you might wanna set a limit to parameter count</param>
+    /// <returns></returns>
     public static List<IVariable> ReadyParams(
         Token[] parameters,
         SourceChunk chunk,
