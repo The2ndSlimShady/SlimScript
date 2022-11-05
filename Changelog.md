@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 <br><br>*****************************************
 
-## [1.0.2-alpha]
+## [1.0.2-alpha] 06-11-2022
 ### Unreleased
 - Exception handling, maybe?
 - Perhaps some code refactoring, I admit that I wrote dirty (very dirty) code.
