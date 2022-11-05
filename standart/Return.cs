@@ -11,6 +11,7 @@ internal class Return : Standart
         else
             variable = new Null();
 
+
         chunk.Return();
 
         return variable;

@@ -7,12 +7,6 @@ internal class Lexer
 {
     public static List<List<Token>> Lex(string[] source, SourceChunk chunk)
     {
-
-#if DEBUG
-        if (chunk.Parent == null)
-            Write.StandartOutput.WriteLine($"Lexing Source Code...\n");
-#endif
-
         try
         {
             int _line = 0;

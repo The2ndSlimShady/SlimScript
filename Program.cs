@@ -21,66 +21,84 @@ internal class Program
 
     public static void Main(string[] args)
     {
-        watch.Start();
-
-        try
+        // try
+        // {
+        if (args.Length != 0 && args[0] == "-i")
+            RunInteractive();
+        else if (args.Length != 0 && (args[0] == "-h" || args[0] == "--help"))
+            PrintHelp();
+        else
         {
-            if (args.Length != 0 && args[0] == "-i")
-                RunInteractive();
-            if (args.Length != 0 && (args[0] == "-h" || args[0] == "--help"))
-                PrintHelp();
-            else
+            if (args.Length == 0 || !File.Exists(args[0]))
             {
-                if (args.Length == 0 || !File.Exists(args[0]))
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Write.StandartOutput.WriteLine("No Input File...");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Write.StandartOutput.WriteLine("No Input File...");
 
-                    Exit(ExitCode.NoInputFile);
-                }
-
-                BasePath = Directory.GetCurrentDirectory();
-
-                Debug = args.Contains("-D");
-                CompressStandalone = args.Contains("-C");
-
-                MainChunk = new(args[0]);
-
-                Directory.SetCurrentDirectory(BasePath);
-
-                MainChunk.Run();
-
-                if (MainChunk.VarExists("main"))
-                {
-                    var indexOfBegin = System.Array.IndexOf(args, "%p");
-                    
-                    if (indexOfBegin != -1)
-                    ((Function?)MainChunk.GetVar("main"))?.Run(
-                        args[(indexOfBegin + 1)..],
-                        args[(indexOfBegin + 1)..].Length
-                    );
-                }
-
-                watch.Stop();
-                Write.StandartOutput.WriteLine(
-                    $"\nProgram Exited in {watch.ElapsedMilliseconds}ms"
-                );
-                Exit(ExitCode.Normal);
+                Exit(ExitCode.NoInputFile);
             }
-        }
-        catch (Exception e)
-        {
-            var line = MainChunk?.Lines[MainChunk.Parser.lineNumber - 1];
-            var message =
-                $"An Exception occured during runtime.\nMessage: {e.Message}\nFile: {Path.GetFileNameWithoutExtension(MainChunk?._file)}_p.sso\nLine: {MainChunk?.Parser.lineNumber}\nExpression: {string.Join(' ', line?.Select(t => t.Text) ?? new[] { "" })}";
 
-            Console.ForegroundColor = ConsoleColor.Red;
-            Write.StandartOutput.WriteLine(message);
+            BasePath = Directory.GetCurrentDirectory();
 
-            Exit(ExitCode.RuntimeError);
+            Debug = args.Contains("-D");
+            CompressStandalone = args.Contains("-C");
+
+            watch.Start();
+            MainChunk = new(args[0]);
+
+            Directory.SetCurrentDirectory(BasePath);
+
+            var indexOfArgsBegin = System.Array.IndexOf(args, "%p");
+            indexOfArgsBegin = indexOfArgsBegin == -1 ? -2 : indexOfArgsBegin;
+
+            try
+            {
+                MainChunk.CreateVar("os.args", Variable.ClrToVar(args[(indexOfArgsBegin + 1)..]));
+                MainChunk.CreateVar(
+                    "os.argc",
+                    Variable.ClrToVar(args.Length - (indexOfArgsBegin + 1))
+                );
+            }
+            catch (IndexOutOfRangeException)
+            {
+                MainChunk.CreateVar("os.args", new Null());
+
+                MainChunk.CreateVar("os.argc", Variable.ClrToVar(0));
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                MainChunk.CreateVar("os.args", new Null());
+
+                MainChunk.CreateVar("os.argc", Variable.ClrToVar(0));
+            }
+
+            MainChunk.Run();
+
+            if (MainChunk.VarExists("main"))
+            {
+                ((Function?)MainChunk.GetVar("main"))?.Run(
+                    MainChunk.GetVar("os.args") ?? new Null(),
+                    MainChunk.GetVar("os.argc") ?? Variable.ClrToVar(0)
+                );
+            }
+
+            watch.Stop();
+            Write.StandartOutput.WriteLine($"\nProgram Exited in {watch.ElapsedMilliseconds}ms");
+            Exit(ExitCode.Normal);
         }
+        // }
+        // catch (Exception e)
+        // {
+        //     var line = MainChunk?.Lines[MainChunk.Parser.lineNumber - 1];
+        //     var message =
+        //         $"An Exception occured during runtime.\nMessage: {e.Message}\nFile: {Path.GetFileNameWithoutExtension(MainChunk?._file)}_p.sso\nLine: {MainChunk?.Parser.lineNumber}\nExpression: {string.Join(' ', line?.Select(t => t.Text) ?? new[] { "" })}";
+
+        //     Console.ForegroundColor = ConsoleColor.Red;
+        //     Write.StandartOutput.WriteLine(message);
+
+        //     Exit(ExitCode.RuntimeError);
+        // }
     }
-    
+
     private static void PrintHelp()
     {
         StringBuilder sb = new();
@@ -93,15 +111,26 @@ internal class Program
         sb.AppendLine("\tSlimScript -h --help");
 
         sb.AppendLine("\nAvailable Flags:");
-        sb.AppendLine("\t-D              Run With Debug Mode. Generates lexer output (for curious ones). (SlimScript <file> -D)");
-        sb.AppendLine("\t-C              Generates Compressed Standalone Script File That Has No\n\t\t\tDependencies On Any Other File.                                 (SlimScript <file> -C)");
-        sb.AppendLine("\t-i              Run Interactive Mode                                            (SlimScript -i)");
-        sb.AppendLine("\t-h --help       Show This Output.                                               (SlimScript -h --help)");
-        
+        sb.AppendLine(
+            "\t-D              Run With Debug Mode. Generates lexer output (for curious ones). (SlimScript <file> -D)"
+        );
+        sb.AppendLine(
+            "\t-C              Generates Compressed Standalone Script File That Has No\n\t\t\tDependencies On Any Other File.                                 (SlimScript <file> -C)"
+        );
+        sb.AppendLine(
+            "\t-i              Run Interactive Mode                                            (SlimScript -i)"
+        );
+        sb.AppendLine(
+            "\t-h --help       Show This Output.                                               (SlimScript -h --help)"
+        );
+
         sb.AppendLine("\n\tPassing Arguments:");
-        sb.AppendLine("\t\t\tSlimScript <file> <flags> %p <arguments>       Arguments are passed to main function as an array.");
-        
-        Write.StandartOutput.Write($"{sb}\n");
+        sb.AppendLine(
+            "\t\t\tSlimScript <file> <flags> %p <arguments>       Arguments are passed to main function as an array."
+        );
+        sb.AppendLine();
+
+        Write.StandartOutput.Write(sb);
     }
 
     private static void RunInteractive()

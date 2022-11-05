@@ -5,75 +5,12 @@ namespace SlimScript;
 
 internal class PreProcessor
 {
-    private static readonly List<string> _includedModules = new();
+    private static readonly List<string> _defines = new();
     private static readonly Dictionary<string, string> _macros = new();
 
     public static string[] Process(string[] source, SourceChunk chunk)
     {
-        source = PrePreProcess(source, chunk);
-
-        List<string> processedSource = new();
-
-        bool isString = false;
-        StringBuilder token = new();
-
-        for (int i = 0; i < source.Length; i++)
-        {
-            string element = source[i];
-
-            if (element.StartsWith("--"))
-                continue;
-
-            for (int j = 0; j < element.Length; j++)
-            {
-                char item = element[j];
-
-                if (isString)
-                {
-                    token.Append(item);
-
-                    if (item == '"')
-                        isString = false;
-                }
-                else if (item == ' ')
-                {
-                    string val = token.ToString();
-
-                    if (!string.IsNullOrEmpty(val))
-                    {
-                        if (_macros.ContainsKey(val))
-                            processedSource.Add(_macros[val]);
-                        else
-                            processedSource.Add(val);
-
-                        token = new();
-                    }
-                }
-                else
-                {
-                    if (item == '-' && element[j + 1] == '-')
-                        break;
-                    if (item == '"')
-                        isString = true;
-
-                    token.Append(item);
-                }
-            }
-
-            if (token.Length != 0)
-            {
-                string val = token.ToString();
-
-                if (_macros.ContainsKey(val))
-                    processedSource.Add(_macros[val]);
-                else
-                    processedSource.Add(val);
-            }
-
-            processedSource.Add("EOL");
-            isString = false;
-            token = new();
-        }
+        var processedSource = PreProcess(source, chunk);
 
 #if DEBUG
         if (!Program.interactive && Program.Debug)
@@ -103,12 +40,16 @@ internal class PreProcessor
             );
         }
 #endif
-        return processedSource.ToArray();
+
+        return processedSource;
     }
 
-    private static string[] PrePreProcess(string[] source, SourceChunk chunk)
+    private static string[] PreProcess(string[] source, SourceChunk chunk)
     {
-        List<string> prepreprocessed = new();
+        if (Program.Debug)
+            _defines.Add("DEBUG");
+
+        List<string> preProcessed = new();
 
         bool inIf = false;
         bool ifCond = false;
@@ -117,10 +58,13 @@ internal class PreProcessor
         {
             string? item = source[i];
 
+            if (string.IsNullOrEmpty(item) || string.IsNullOrWhiteSpace(item))
+                continue;
+
             item = item.Trim();
 
             var realItem = item.Replace("@", string.Empty);
-            var line = ProcessLine(realItem).Where(s => s != "EOL").ToArray();
+            var line = ProcessLine(realItem, chunk).Where(s => s != "EOL").ToArray();
 
             if (inIf)
             {
@@ -170,10 +114,8 @@ internal class PreProcessor
 
             if (!item.StartsWith('@'))
             {
-                // if (_macros.ContainsKey(item))
-                // prepreprocessed.Add(_macros[item]);
-                // else
-                prepreprocessed.Add(item);
+                preProcessed.AddRange(ProcessLine(item, chunk));
+
                 continue;
             }
 
@@ -182,6 +124,7 @@ internal class PreProcessor
                 case "include":
                     string fileName = $"{line[1].Replace("\"", string.Empty)}.ss";
                     string file = $"{Directory.GetCurrentDirectory()}\\{fileName}";
+
                     if (!File.Exists(file))
                     {
 #if !DEBUG
@@ -200,14 +143,14 @@ internal class PreProcessor
                     }
 
                     var range = File.ReadAllLines(file);
-                    prepreprocessed.Add(string.Join(" ", Process(range, chunk)));
+                    preProcessed.AddRange(PreProcess(range, chunk));
                     break;
 
                 case "module":
-                    if (_includedModules.Contains(line[1]))
-                        return prepreprocessed.ToArray();
+                    if (_defines.Contains(line[1]))
+                        return preProcessed.ToArray();
                     else
-                        _includedModules.Add(line[1]);
+                        _defines.Add(line[1]);
                     break;
 
                 case "if":
@@ -235,8 +178,8 @@ internal class PreProcessor
                     break;
 
                 case "define":
-                    if (!_includedModules.Contains(line[1]))
-                        _includedModules.Add(line[1]);
+                    if (!_defines.Contains(line[1]))
+                        _defines.Add(line[1]);
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
@@ -248,8 +191,8 @@ internal class PreProcessor
                     break;
 
                 case "undef":
-                    if (_includedModules.Contains(line[1]))
-                        _includedModules.Remove(line[1]);
+                    if (_defines.Contains(line[1]))
+                        _defines.Remove(line[1]);
                     else if (_macros.ContainsKey(line[1]))
                         _macros.Remove(line[1]);
                     else
@@ -293,22 +236,24 @@ internal class PreProcessor
             }
         }
 
-        return prepreprocessed.ToArray();
+        return preProcessed.ToArray();
     }
 
     private static bool DetermineDirective(string[] line)
     {
         if (line[1] == "not")
         {
-            var cnd = _includedModules.Contains(line[2]);
+            var cnd = _defines.Contains(line[2]);
 
             return !cnd;
         }
         else
-            return _includedModules.Contains(line[1]);
+            return _defines.Contains(line[1]);
     }
 
-    public static string[] ProcessLine(string line)
+    public static string[] ProcessLine(string[] line, SourceChunk chunk) => ProcessLine(string.Join(' ', line), chunk);
+
+    public static string[] ProcessLine(string line, SourceChunk chunk)
     {
         List<string> processedSource = new();
 
@@ -337,13 +282,17 @@ internal class PreProcessor
 
                 if (!string.IsNullOrEmpty(val))
                 {
-                    processedSource.Add(val);
+                    if (_macros.ContainsKey(val))
+                        processedSource.Add(_macros[val]);
+                    else
+                        processedSource.Add(val);
+
                     token = new();
                 }
             }
             else
             {
-                if (item == '-' && j+1 < line.Length &&line[j + 1] == '-')
+                if (item == '-' && j + 1 < line.Length && line[j + 1] == '-')
                     break;
                 if (item == '"')
                     isString = true;
@@ -353,7 +302,23 @@ internal class PreProcessor
         }
 
         if (token.Length != 0)
-            processedSource.Add(token.ToString());
+        {
+            string val = token.ToString();
+
+            if (_macros.ContainsKey(val))
+                processedSource.Add(_macros[val]);
+            else
+                processedSource.Add(val);
+        }
+
+        if (isString)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Write.StandartOutput.WriteLine($"Unfinished string at expression: {line}\nFile: {chunk._file}");
+            Console.ResetColor();
+
+            Program.Exit(ExitCode.PreProcessorError);
+        }
 
         processedSource.Add("EOL");
 

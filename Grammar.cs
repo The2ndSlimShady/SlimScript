@@ -2,7 +2,7 @@ namespace SlimScript;
 
 internal class Grammar
 {
-    public static Dictionary<string, string> operators =
+    public static readonly Dictionary<string, string> operators =
         new()
         {
             { "+", "Plus" },
@@ -21,9 +21,9 @@ internal class Grammar
             { "any", "Any" }
         };
 
-    public static string[] keywords = { "as", "begin", "end", "to", "then", "in", "of" };
+    public static readonly string[] keywords = { "as", "begin", "end", "to", "then", "in", "of" };
 
-    public static string[] standarts =
+    public static readonly string[] standarts =
     {
         "define",
         "func",
@@ -49,5 +49,13 @@ internal class Grammar
         "input",
         "break",
         "import"
+    };
+
+    public static readonly string[] escape =
+    {
+        "`n", Environment.NewLine,
+        "`b", "\b",
+        "`t", "\t",
+        "`v", "\n\t"
     };
 }

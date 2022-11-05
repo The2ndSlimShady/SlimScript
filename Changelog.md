@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 <br><br>*****************************************
 
+## [1.0.2-alpha]
+### Unreleased
+- Exception handling, maybe?
+- Perhaps some code refactoring, I admit that I wrote dirty (very dirty) code.
+
+### Added
+- Escape Characters!!!!
+- `io/directory.ss` is updated. It's nearly completed!
+
+### Changed
+- Moved macro replacing from Pre-Process to Pre-Pre-Process. 
+- Ability to acces to command-line arguments without main function. If there is no arguments then os.args null, os.argc is 0. (os.args, os.argc)
+
+### Fixed
+- Array initialization was a bit problematic, can't explain shortly. Fixed it. Yeah.
+- Even if string is not finished with a " symbol, pre-processor will accept it as a string if it comes to an EOL. Fixed it now.
+
+### Removed
+
+<br><br>*****************************************
+
 ## [1.0.1-alpha] 02-11-2022
 ### Unreleased
 

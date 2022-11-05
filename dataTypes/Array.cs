@@ -32,18 +32,21 @@ public class Array : IVariable
         Val = new();
         Token = new() { Type = TokenType.Array };
 
-        if (items.Length <= 2)
-            return;
-
         List<List<Token>> realItems = new() { new() };
 
         for (int i = 0, j = 0; i < items.Length; i++)
         {
             Token t = items[i];
+            t.Text = t.Text.Trim();
 
             if (t.Text[0] == '[')
+            {
                 t.Text = t.Text[1..];
-            if (t.Text.Last() == ']')
+
+                if (t.Text.Length == 0)
+                    continue;
+            }
+            if (t.Text[^1] == ']')
             {
                 t.Text = t.Text[0..^1];
                 i = items.Length;
@@ -52,11 +55,9 @@ public class Array : IVariable
             if (t.Text == "" || string.IsNullOrWhiteSpace(t.Text))
                 continue;
 
-            t = new(t.Text);
-
-            if (t.Text == "," || t.Text.Contains(','))
+            if (t.Text.Contains(','))
             {
-                if (t.Text.Contains(','))
+                if (t.Text.Contains(',') && t.Text != ",")
                 {
                     string[] values = t.Text.Split(',');
 

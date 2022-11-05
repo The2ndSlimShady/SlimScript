@@ -47,32 +47,28 @@ public class SourceChunk
             source = tmpStr.Split(Environment.NewLine, StringSplitOptions.TrimEntries);
         }
         else
-            source = File.ReadAllLines(new FileInfo(Path.Combine(Directory.GetCurrentDirectory(), sourceFile)).Name);
+            source = File.ReadAllLines(
+                new FileInfo(Path.Combine(Directory.GetCurrentDirectory(), sourceFile)).Name
+            );
 
         _file = sourceFile;
 
         Stack = new();
         Parent = parent;
 
-#if DEBUG
-        if (Parent == null)
-            Write.StandartOutput.WriteLine($"Pre-Processing Source Code...");
-#endif
-
         var processedSource = PreProcessor.Process(source, this);
+
         Lines = Lexer.Lex(processedSource, this);
         Parser = new(this);
     }
 
-    public SourceChunk(string[] source, int origin)
+    public SourceChunk(string[] source)
     {
         Stack = new();
         Parent = null;
 
-#if DEBUG
-        Write.StandartOutput.WriteLine($"Pre-Processing Source Code...");
-#endif
         var processedSource = PreProcessor.Process(source, this);
+
         Lines = Lexer.Lex(processedSource, this);
         Parser = new(this);
         _file = "???";
@@ -94,9 +90,9 @@ public class SourceChunk
 
     internal void Return() => Parser.turn = true;
 
-    public IVariable RunInteractive(string source)
+    internal IVariable RunInteractive(string source)
     {
-        var processed = PreProcessor.ProcessLine(source);
+        var processed = PreProcessor.ProcessLine(source, this);
         Lines.Add(Lexer.LexLine(processed));
 
         var result = Parser.ParseLine(Lines.Last());

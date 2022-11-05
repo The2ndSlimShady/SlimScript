@@ -34,6 +34,8 @@ public struct Token
                 Type = TokenType.EOL;
             else if (Text.Contains("->") || Text.Contains(':'))
                 Type = TokenType.CLR;
+            else if (Text.Trim()[0] == '{' || Text.Trim()[0] == '[')
+                Type = TokenType.Symbol;
             else if (!string.IsNullOrEmpty(Text))
                 Type = TokenType.Identifier;
             else
@@ -85,6 +87,7 @@ public enum TokenType
     Operator,
     Bool,
     Identifier,
+    Symbol,
     EOL,
     Keyword,
     Unidentified,

@@ -33,6 +33,9 @@ internal class Parser
                 break;
         }
 
+        if (Chunk?.Parent == null && block.level != 0)
+            Chunk?.Error($"Unclosed block detected.", ExitCode.ParserError);
+
         return result;
     }
 

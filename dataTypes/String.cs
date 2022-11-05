@@ -1,10 +1,11 @@
+using System.Text;
 using System.Collections;
 
 namespace SlimScript;
 
 public struct Word : IVariable
 {
-    public Token Token { get; set; }
+    public Token Token { get; set; } = new Token() { Type = TokenType.Unidentified };
 
     public string Val = "";
 
@@ -13,15 +14,15 @@ public struct Word : IVariable
     public object Value
     {
         get => Val;
-        set { Val = (string)value; }
+        set => Val = (string)value;
     }
 
     public Word(Token[] tokens, SourceChunk chunk)
     {
         if (tokens[0].Type == TokenType.Word)
         {
-            Val = tokens[0].Text.Replace("\"", "");
-            Token = tokens[0];
+            Val = ReplaceEscapes(tokens[0].Text.Replace("\"", string.Empty));
+            Token = new(ReplaceEscapes(tokens[0].Text));
         }
         else
         {
@@ -35,8 +36,8 @@ public struct Word : IVariable
             {
                 value = (Word?)(obj as Operator)?.Apply(tokens, chunk);
 
-                Val = value?.Val ?? string.Empty;
-                Token = value?.Token ?? new("\"\"");
+                Val = ReplaceEscapes(value?.Val ?? string.Empty);
+                Token = new(ReplaceEscapes(value?.Token.Text ?? "\"\""));
             }
             else
             {
@@ -52,8 +53,16 @@ public struct Word : IVariable
 
     public Word(Token token)
     {
-        Val = token.Text.Replace("\"", "");
-        Token = token;
+        Val = ReplaceEscapes(token.Text.Replace("\"", ""));
+        Token = new(ReplaceEscapes(token.Text));
+    }
+
+    private string ReplaceEscapes(string value)
+    {
+        for (int i = 0; i < Grammar.escape.Length - 1; i += 2)
+            value = value.Replace(Grammar.escape[i], Grammar.escape[i + 1]);
+
+        return value;
     }
 
     public static Word operator +(Word left, Word Right)
