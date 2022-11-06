@@ -14,6 +14,15 @@ func directory.openOrCreate path begin
     end
 end
 
+-- Creates and returns the DirectoryInfo of given path. If it already exists an error is thrown.
+func directory.create path begin
+    if do directory.exists path then
+        error "Cannot create directory at given path. It already exists." path
+    else
+        return directory_t->CreateDirectory path
+    end
+end
+
 -- Deletes the empty directory at given path. If its not empty, an error is thrown.
 func directory.deleteEmpty path begin
     if do directory.exists path then
@@ -65,6 +74,31 @@ end
 -- Returns true if directory exists
 func directory.exists path begin
     return variable->ClrToVar directory_t->Exists path
+end
+
+-- Moves a directory and all of it's components to given path
+func directory.move source target begin
+    if not do directory.exists source then
+        error "Cannot move given directory. It does not exists." source
+    elif do directory.exists target then
+        error "Cannot move given directory to target. A directory with the same name already exists." target
+    else
+        directory_t->Move source target  
+    end
+end
+
+-- Sets the executing directory of program
+func directory.setCurrentDirectory path begin
+    if not do directory.exists path then
+        error "Cannot change current dir to given dir. It doesn't exists" path
+    else
+        directory_t->SetCurrentDirectory path
+    end
+end
+
+-- Returns the executing directory of program
+func directory.getCurrentDirectory begin
+    return directory_t->GetCurrentDirectory
 end
 
 -- Returns true if given directory is empty

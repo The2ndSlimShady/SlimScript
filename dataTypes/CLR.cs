@@ -239,10 +239,7 @@ public struct CLR : IVariable
                         .Select(var => Variable.VarToClr(var))
                         .ToArray();
 
-                    var index = invokeParams[0];
                     var val = invokeParams.Length != 1 ? invokeParams[1] : null;
-
-                    var paramTypes = index?.GetType();
 
                     Type? tmpVal = null;
 
@@ -253,12 +250,9 @@ public struct CLR : IVariable
 
                     var indexer = tmpVal
                         ?.GetProperties()
-                        .First(
-                            x =>
-                                x.GetIndexParameters()
-                                    .Select(y => y.ParameterType)
-                                    .SequenceEqual(new[] { paramTypes })
-                        );
+                        .Single(p => p.GetIndexParameters().Length != 0);
+
+                    var index = Convert.ChangeType(invokeParams[0], indexer?.GetIndexParameters()[0].ParameterType ?? typeof(int));
 
                     if (expressions[i + 2] == "thisGet")
                         theVal = indexer?.GetValue(theVal, new[] { index });

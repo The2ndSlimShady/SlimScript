@@ -32,60 +32,62 @@ public class Array : IVariable
         Val = new();
         Token = new() { Type = TokenType.Array };
 
-        List<List<Token>> realItems = new() { new() };
+        List<List<Token>> realItems = new(){new()};
 
         for (int i = 0, j = 0; i < items.Length; i++)
         {
             Token t = items[i];
-            t.Text = t.Text.Trim();
+            string text = t.Text.Trim();
 
             if (t.Text[0] == '[')
-            {
-                t.Text = t.Text[1..];
-
-                if (t.Text.Length == 0)
-                    continue;
-            }
+                text = text[1..];
             if (t.Text[^1] == ']')
-            {
-                t.Text = t.Text[0..^1];
-                i = items.Length;
-            }
+                text = text[..^1];
 
-            if (t.Text == "" || string.IsNullOrWhiteSpace(t.Text))
+            if (string.IsNullOrEmpty(text))
                 continue;
 
-            if (t.Text.Contains(','))
+            if (text.Contains(','))
             {
-                if (t.Text.Contains(',') && t.Text != ",")
-                {
-                    string[] values = t.Text.Split(',');
+                string[] values = text.Split(',');
 
-                    foreach (string value in values)
+                if (values.All(s => s.Length == 0))
+                {
+                    j++;
+                    realItems.Add(new());
+                    continue;
+                }
+                else
+                {
+                    for (int valIndex = 0; valIndex < values.Length; valIndex++)
                     {
-                        if (!string.IsNullOrEmpty(value) || !string.IsNullOrWhiteSpace(value))
+                        if (values[valIndex].Length == 0)
                         {
-                            realItems[j].Add(new(value));
                             j++;
                             realItems.Add(new());
                             continue;
                         }
-                    }
-                }
 
-                j++;
-                realItems.Add(new());
-                continue;
+                        realItems[j].Add(new(values[valIndex]));
+
+                        if (valIndex != values.Length - 1)
+                        {
+                            j++;
+                            realItems.Add(new());
+                        }
+                    }
+                    continue;
+                }
             }
 
-            realItems[j].Add(t);
+            realItems[j].Add(new(text));
         }
 
-        realItems = realItems.Where(i => i.Count != 0).ToList();
-
-        foreach (List<Token> item in realItems)
+        for (int i = 0; i < realItems.Count; i++)
         {
-            var variable = Variable.Create(item.ToArray(), chunk ?? new SourceChunk());
+            var varToCreate = realItems[i];
+
+            var variable = Variable.Create(varToCreate.ToArray(), chunk ?? new SourceChunk());
             Val?.Add(variable);
         }
     }

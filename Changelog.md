@@ -4,7 +4,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-<br><br>*****************************************
+<span style="color:blue"><br><br>*****************************************</span>
+
+## [1.0.3-alpha] 06-11-2022
+### Unreleased
+- Exception handling is a must. When I do it, its gonna be the release `1.1.0-alpha`.
+- Also I gotta improve the standart libraries.
+
+### Added
+- `io/directory.ss` is completed, for now.
+
+### Changed
+- Just realized that i was developing on the master branch so switched to dev now.
+
+### Fixed
+- Indexers with clr variables didn't seem to be working. Now it seems.
+- Array initalization was still a problem. Now I think it's impossible to get an initialization fail.
+
+### Removed
+- The "Release" tag I accidentally craeted.
+
+<span style="color:blue"><br><br>*****************************************</span>
 
 ## [1.0.2-alpha] 06-11-2022
 ### Unreleased
@@ -25,7 +45,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Removed
 
-<br><br>*****************************************
+<span style="color:blue"><br><br>*****************************************</span>
 
 ## [1.0.1-alpha] 02-11-2022
 ### Unreleased
@@ -41,7 +61,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Removed
 
 
-<br><br>*****************************************
+<span style="color:blue"><br><br>*****************************************</span>
 
 ## [1.0.0-alpha] 30-10-2022
 ### Unreleased
