@@ -122,7 +122,7 @@ internal class PreProcessor
             switch (line[0])
             {
                 case "include":
-                    string fileName = $"{line[1].Replace("\"", string.Empty)}.ss";
+                    string fileName = $"{line[1].Replace("\"", string.Empty).Replace('.','/')}.ss";
                     string file = $"{Directory.GetCurrentDirectory()}\\{fileName}";
 
                     if (!File.Exists(file))

@@ -37,8 +37,17 @@ public class SourceChunk
 
     public SourceChunk(string sourceFile, SourceChunk? parent = null)
     {
+        _file = sourceFile;
+
+        Stack = new();
+        Parent = parent;
+
+        if (!File.Exists(sourceFile))
+            Error("Given file does not exists.", ExitCode.NoInputFile);
+
         var dirName = new FileInfo(sourceFile).DirectoryName ?? "./";
         Directory.SetCurrentDirectory(dirName);
+        sourceFile = Path.GetFileName(sourceFile);
 
         string[] source;
         if (Path.GetExtension(sourceFile) == ".csso")
@@ -50,11 +59,6 @@ public class SourceChunk
             source = File.ReadAllLines(
                 new FileInfo(Path.Combine(Directory.GetCurrentDirectory(), sourceFile)).Name
             );
-
-        _file = sourceFile;
-
-        Stack = new();
-        Parent = parent;
 
         var processedSource = PreProcessor.Process(source, this);
 

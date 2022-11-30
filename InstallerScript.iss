@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Slim Script"
-#define MyAppVersion "1.0"
+#define MyAppVersion "test"
 #define MyAppPublisher "The2ndSlimShady"
 #define MyAppURL "https://github.com/The2ndSlimShady/SlimScript"
 #define MyAppExeName "SlimScript.exe"                                                                                                    
