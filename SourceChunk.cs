@@ -9,7 +9,7 @@ public class SourceChunk
 
     public SourceChunk? Parent { get; set; }
 
-    internal List<List<Token>> Lines { get; set; }
+    public List<List<Token>> Lines { get; internal set; }
 
     internal Parser Parser { get; set; }
 

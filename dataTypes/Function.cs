@@ -62,5 +62,7 @@ public struct Function : IVariable
         return Run(vars.ToArray());
     }
 
-    public override string ToString() => (this as IVariable).GetString();
+    public override string ToString() => $"func {Name} -> {(Val.param.Length == 0 ? "void" : string.Join("->", Val.param))}";
+
+    public string GetString() => ToString();
 }

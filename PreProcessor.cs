@@ -13,7 +13,7 @@ internal class PreProcessor
         var processedSource = PreProcess(source, chunk);
 
 #if DEBUG
-        if (!Program.interactive && Program.Debug)
+        if (!Program.interactive && Program.Debug && (Path.GetFileNameWithoutExtension(chunk._file) != "???"))
         {
             StringBuilder b = new();
             bool first = true;

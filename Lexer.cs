@@ -31,7 +31,7 @@ internal class Lexer
                     continue;
                 }
 
-                Lines[_line - 1].Add(token);
+                Lines[_line -1].Add(token);
             }
 
             Lines = Lines.Where(line => line.Count != 0).ToList();
@@ -71,7 +71,7 @@ internal class Lexer
                     compressed?.AppendLine();
                 }
 
-                if (Program.Debug)
+                if (Program.Debug && (Path.GetFileNameWithoutExtension(chunk._file) != "???"))
                     File.WriteAllText(
                         $"{Path.GetFileNameWithoutExtension(chunk._file) ?? string.Empty}_l.sso",
                         sb?.ToString()
