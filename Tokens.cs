@@ -61,7 +61,7 @@ public struct Token
         Text = "null";
     }
 
-    public override string ToString() => $"<{Type}>";
+    public override string ToString() => $"<{Type}: {Text}>";
 
     public override int GetHashCode() => base.GetHashCode();
 

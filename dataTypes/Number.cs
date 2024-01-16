@@ -3,6 +3,7 @@ namespace SlimScript;
 public struct Number : IVariable
 {
     public Token Token { get; set; }
+    public TokenType Type { get; init; } = TokenType.Number;
 
     public double Val = 0;
 

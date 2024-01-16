@@ -5,6 +5,7 @@ namespace SlimScript;
 public struct Bool : IVariable
 {
     public Token Token { get; set; }
+    public TokenType Type { get; init; } = TokenType.Bool;
 
     public bool Val = false;
 

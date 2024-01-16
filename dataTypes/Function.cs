@@ -3,6 +3,7 @@ namespace SlimScript;
 public struct Function : IVariable
 {
     public Token Token { get; set; }
+    public TokenType Type { get; init; } = TokenType.Function;
 
     internal (SourceChunk Val, int begin, int count, string[] param) Val;
 

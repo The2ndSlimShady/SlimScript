@@ -11,6 +11,8 @@ public struct CLR : IVariable
 
     public Token Token { get; set; }
 
+    public TokenType Type { get; init; } = TokenType.CLR;
+
     public string Name
     {
         get => _name;
@@ -59,7 +61,7 @@ public struct CLR : IVariable
 
         str = typeName.Remove(0, 1).ToString();
 
-        Val = Type.GetType(str);
+        Val = System.Type.GetType(str);
 
         if (Val == null)
             chunk.Error($"Cannot create CLR RuntimeType from '{str}'.", ExitCode.RuntimeError);

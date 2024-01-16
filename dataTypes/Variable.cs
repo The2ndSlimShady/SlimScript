@@ -91,7 +91,7 @@ public class Variable
         );
     }
 
-    internal static IVariable Copy(IVariable variable, SourceChunk chunk)
+    internal static IVariable Copy(IVariable variable)
     {
         if (variable.GetType() == typeof(Array))
         {

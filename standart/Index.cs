@@ -23,7 +23,7 @@ internal class Index : Standart
             if (index.Val >= array.Val.Count)
                 chunk.Error($"Index was out of the bounds of array", ExitCode.RuntimeError);
 
-            return Variable.Copy(array.Val[(int)index.Val], chunk);
+            return Variable.Copy(array.Val[(int)index.Val]);
         }
         else if (arrayT.Token.Type == TokenType.Word)
         {

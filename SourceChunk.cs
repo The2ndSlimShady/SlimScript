@@ -113,7 +113,7 @@ public class SourceChunk
             if (Stack.Any(obj => obj.Name == name))
             {
                 var variable = Stack.Single(obj => obj.Name == name);
-                return Variable.Copy(variable, this);
+                return Variable.Copy(variable);
             }
             else
                 return Parent?.GetVar(name);
@@ -151,7 +151,14 @@ public class SourceChunk
         }
         else
         {
-            if (Stack.Any(v => v.Name == name))
+            if (GetVar(name)?.Type != variable.Type)
+            {
+                Error(
+                    $"Cannot set variable '{name}' to '{variable}'. Type '{GetVar(name)?.Type}' does not match '{variable.Type}'.",
+                    ExitCode.DisordantTokenError
+                );
+            }
+            else if (Stack.Any(v => v.Name == name))
             {
                 var tmp = Stack.Where(v => v.Name != name).ToList();
                 variable.Name = name;

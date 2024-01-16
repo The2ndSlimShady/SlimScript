@@ -9,6 +9,8 @@ public class Array : IVariable
 
     public Token Token { get; set; }
 
+    public TokenType Type { get; init; } = TokenType.Array;
+
     public string Name
     {
         get => _name;
