@@ -6,7 +6,7 @@ public struct Null : IVariable
 {
     public Token Token { get; set; }
 
-    public TokenType Type { get; init; } = TokenType.Null;
+    public TokenType Type { get; set; } = TokenType.Null;
 
     public string Name { get; set; } = "";
 

@@ -27,6 +27,7 @@ internal class Import : Standart
 		var chnk = new SourceChunk(source) {Parent = chunk};
 		chnk.Run();
 		chunk.Stack.AddRange(chnk.Stack);
+		
 
 		return Variable.ClrToVar(file);
 	}

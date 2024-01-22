@@ -27,7 +27,7 @@ internal class If : Standart
             if (condition.Token.Type != TokenType.Bool)
                 chunk.Error(
                     $"Cannot evaluate boolean comprasion on type '{condition}'.",
-                    ExitCode.DisordantTokenError
+                    ExitCode.GrammarError
                 );
 
             if (!(condition as Bool?)?.Val ?? false)

@@ -5,31 +5,39 @@ internal class Tobool : Standart
 {
     public override IVariable Run(List<Token> line, SourceChunk chunk)
     {
-        var var = Variable.Create(line.ToArray()[1..], chunk);
+        var variable = Variable.Create(line.ToArray()[1..], chunk);
 
         try
         {
-            switch (var.Token.Type)
+            switch (variable.Token.Type)
             {
                 case TokenType.Number:
-                    if ((double)var.Value == 0)
+                    if ((double)variable.Value == 0)
                         return new Bool(new("false"));
                     else
                         return new Bool(new("true"));
 
                 case TokenType.Bool:
-                    return var;
+                    return variable;
 
                 case TokenType.Word:
                     return new Bool()
                     {
-                        Token = new(var.Token.Text.ToLower()),
-                        Value = Convert.ToBoolean(var.Token.Text.Replace("\"", string.Empty))
+                        Token = new(variable.Token.Text.ToLower()),
+						Type = TokenType.Bool,
+                        Value = Convert.ToBoolean(variable.Token.Text.Replace("\"", string.Empty))
                     };
+					
+				case TokenType.Null:
+					return new Bool()
+					{
+						Token = new("false"),
+						Value = false
+					};
 
                 default:
                     chunk.Error(
-                        $"Cannot convert type {var.Token} to <Number>",
+                        $"Cannot convert type {variable.Token} to <Number>",
                         ExitCode.DisordantTokenError
                     );
                     break;
@@ -38,7 +46,7 @@ internal class Tobool : Standart
         catch (Exception e)
         {
             chunk.Error(
-                $"Cannot convert \"{var.GetString()}\" to Boolean. {e.Message}",
+                $"Cannot convert \"{variable.GetString()}\" to Boolean. {e.Message}",
                 ExitCode.RuntimeError
             );
             return new Null();

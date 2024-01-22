@@ -1,15 +1,44 @@
+
 # Changelog
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] 22-01-2024
 
-<span style="color:blue"><br><br>*****************************************</span>
+### Unreleased
+- Exception handling is still on plan.
+- nameof function
+- Adding arrays to arrays
+- range function
+- Standard library documentation
+- Standard library improvements
+
+### Added
+- Introductory documentation
+- Escape character for `"`.
+- Null check for `SourceChunk.SetVar` function.
+- Support for `SlimScript.Word` in `append` and `set index` functions.
+- Support for using existing variables in `for` loops.
+
+### Changed
+- `IVariable.Type`'s setter was `init`. Its now `set`.
+- Empty array constructor was calling standard array constructor with empty token list and null. Why did I do that, honestly I don't know. Now it directly initializes an empty array.
+
+### Fixed
+- Fixes in `tobool` function.
+- It was still possible to get an initialization fail, I promise its now impossible. I swear.
+- In `SlimScript.Bool` constructor, `IVariable.Type` was not set in most places. It caused type mismatches when using `SourceChunk.SetVal`. Its now fixed.
+- Fixed type mismatches in `thisSet` function.
+- `IVariable.Type` was not set when using `Variable.Copy`. It caused type mismatches. It works now.
+
+### Removed
 
 ## [1.0.3-alpha] 06-11-2022
+
 ### Unreleased
 - Exception handling is a must. When I do it, its gonna be the release `1.1.0-alpha`.
-- Also I gotta improve the standart libraries.
+- Also I gotta improve the standard libraries.
 
 ### Added
 - `io/directory.ss` is completed, for now.
@@ -24,9 +53,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Removed
 - The "Release" tag I accidentally craeted.
 
-<span style="color:blue"><br><br>*****************************************</span>
-
 ## [1.0.2-alpha] 06-11-2022
+
 ### Unreleased
 - Exception handling, maybe?
 - Perhaps some code refactoring, I admit that I wrote dirty (very dirty) code.
@@ -45,9 +73,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Removed
 
-<span style="color:blue"><br><br>*****************************************</span>
-
 ## [1.0.1-alpha] 02-11-2022
+
 ### Unreleased
 
 ### Added
@@ -60,10 +87,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Removed
 
-
-<span style="color:blue"><br><br>*****************************************</span>
-
 ## [1.0.0-alpha] 30-10-2022
+
 ### Unreleased
 
 ### Added

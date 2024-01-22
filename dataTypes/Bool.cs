@@ -5,7 +5,7 @@ namespace SlimScript;
 public struct Bool : IVariable
 {
     public Token Token { get; set; }
-    public TokenType Type { get; init; } = TokenType.Bool;
+    public TokenType Type { get; set; } = TokenType.Bool;
 
     public bool Val = false;
 
@@ -21,17 +21,20 @@ public struct Bool : IVariable
     {
         if (tokens[0].Type == TokenType.Bool)
         {
+			Type = TokenType.Bool;
             Val = Convert.ToBoolean(tokens[0].Text);
             Token = tokens[0];
         }
         else if (tokens[0].Type == TokenType.Identifier)
         {
-            Token = new Token();
+			Type = TokenType.Bool;
+            Token = new Token(){ Type = TokenType.Bool };
             Val = false;
             Name = "";
         }
         else
         {
+			Type = TokenType.Bool;
             var rule = Parser.IdentifyAndGet(tokens.ToList(), chunk);
 
             var obj = Variable.CreateType(rule);

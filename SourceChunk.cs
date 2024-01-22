@@ -151,7 +151,9 @@ public class SourceChunk
         }
         else
         {
-            if (GetVar(name)?.Type != variable.Type)
+			//Console.WriteLine(GetVar(name)?.Type);
+			
+            if (GetVar(name)?.Type != variable.Type && GetVar(name)?.Type != TokenType.Null)
             {
                 Error(
                     $"Cannot set variable '{name}' to '{variable}'. Type '{GetVar(name)?.Type}' does not match '{variable.Type}'.",

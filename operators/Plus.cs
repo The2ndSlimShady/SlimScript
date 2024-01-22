@@ -24,7 +24,7 @@ internal class Plus : Operator
 
         if (param1.Token.Type != param2.Token.Type)
             chunk.Error(
-                $"Cannot use plus operator on types '{realParams[0]}' and '{realParams[1]}'.",
+                $"Cannot use plus operator on types '{realParams[0].Type}' and '{realParams[1].Type}'.",
                 ExitCode.DisordantTokenError
             );
 

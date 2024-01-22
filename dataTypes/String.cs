@@ -6,7 +6,7 @@ namespace SlimScript;
 public struct Word : IVariable
 {
     public Token Token { get; set; } = new Token() { Type = TokenType.Unidentified };
-    public TokenType Type { get; init; } = TokenType.Word;
+    public TokenType Type { get; set; } = TokenType.Word;
 
     public string Val = "";
 

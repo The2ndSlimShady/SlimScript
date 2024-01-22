@@ -86,13 +86,23 @@ internal class For : Standart
     private static IVariable Create(SourceChunk parentChunk)
     {
         _line = _line?.Where(l => l.Count != 0).ToList();
-        IVariable result = new Word(new("\"null\""));
+        IVariable result = new Null();
         bool ret = false;
-
-        _loopData.name = _loopData.name.Prepend(new("define")).ToArray();
-
-        Variable.Create(_loopData.name, parentChunk);
-
+		bool inLoopVar = false;
+		_loopData.name = _loopData.name.Prepend(new("define")).ToArray();
+		
+		if (_loopData.name.Contains(new Token("as")))
+        {
+			inLoopVar = true;
+			Variable.Create(_loopData.name, parentChunk);
+		}
+		else if (!parentChunk.VarExists(_loopData.name[1].Text))
+			parentChunk.Error(
+				$"No variable named '{_loopData.name[1].Text}' found.", 
+				ExitCode.NullReferenceError
+			);
+		
+		
         var condt = Variable.Create(_loopData.condition, parentChunk);
 
         if (condt.Token.Type != TokenType.Bool)
@@ -139,8 +149,11 @@ internal class For : Standart
             condt = Variable.Create(_loopData.condition, parentChunk);
         }
 
-        _loopData.name = _loopData.name[1..].Prepend(new("delete")).ToArray();
-        Variable.Create(_loopData.name, parentChunk);
+        if (inLoopVar)
+		{
+			_loopData.name = _loopData.name.Skip(1).Take(1).Prepend(new("delete")).ToArray();
+			Variable.Create(_loopData.name, parentChunk);
+		}
 
         _line?.Clear();
         _line = null;

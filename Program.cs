@@ -20,9 +20,11 @@ internal class Program
     private static readonly Stopwatch watch = new();
 
     public static void Main(string[] args)
-    {
-        // try
-        // {
+    {	
+#if DEBUG	
+         try
+         {
+#endif
         if (args.Length != 0 && args[0] == "-i")
             RunInteractive();
         else if (args.Length != 0 && (args[0] == "-h" || args[0] == "--help"))
@@ -61,13 +63,11 @@ internal class Program
             catch (IndexOutOfRangeException)
             {
                 MainChunk.CreateVar("os.args", new Null());
-
                 MainChunk.CreateVar("os.argc", Variable.ClrToVar(0));
             }
             catch (ArgumentOutOfRangeException)
             {
                 MainChunk.CreateVar("os.args", new Null());
-
                 MainChunk.CreateVar("os.argc", Variable.ClrToVar(0));
             }
 
@@ -85,18 +85,20 @@ internal class Program
             Write.StandartOutput.WriteLine($"\nProgram Exited in {watch.ElapsedMilliseconds}ms");
             Exit(ExitCode.Normal);
         }
-        // }
-        // catch (Exception e)
-        // {
-        //     var line = MainChunk?.Lines[MainChunk.Parser.lineNumber - 1];
-        //     var message =
-        //         $"An Exception occured during runtime.\nMessage: {e.Message}\nFile: {Path.GetFileNameWithoutExtension(MainChunk?._file)}_p.sso\nLine: {MainChunk?.Parser.lineNumber}\nExpression: {string.Join(' ', line?.Select(t => t.Text) ?? new[] { "" })}";
+#if DEBUG
+        }
+        catch (Exception e)
+        {
+            var line = MainChunk?.Lines[MainChunk.Parser.lineNumber - 1];
+            var message =
+                $"An Exception in source code occured during runtime.\nMessage: {e.Message}\nSource:\n{e.StackTrace}\nFile: {Path.GetFileNameWithoutExtension(MainChunk?._file)}_p.sso\nLine: {MainChunk?.Parser.lineNumber}\nExpression: {string.Join(' ', line?.Select(t => t.Text) ?? new[] { "" })}";
 
-        //     Console.ForegroundColor = ConsoleColor.Red;
-        //     Write.StandartOutput.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Write.StandartOutput.WriteLine(message);
 
-        //     Exit(ExitCode.RuntimeError);
-        // }
+            Exit(ExitCode.RuntimeError);
+        }
+#endif
     }
 
     private static void PrintHelp()

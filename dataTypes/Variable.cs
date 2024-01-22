@@ -114,17 +114,19 @@ public class Variable
 
         returnVar.Value = variable.Value;
         returnVar.Name = variable.Name;
+		returnVar.Type = variable.Type;
         returnVar.Token = new()
         {
             Text = variable.Token.Text,
-            Type = Enum.Parse<TokenType>(variable.GetType().Name)
+            // Type = Enum.Parse<TokenType>(variable.GetType().Name)
+			Type = variable.Token.Type
         };
 
         return returnVar;
     }
 
     public static IVariable ClrToVar(object? clr)
-    {
+    {		
         if (clr?.GetType() == typeof(CLR))
             return ClrToVar((clr as CLR?)?.Value);
         else if (clr?.GetType().IsAssignableTo(typeof(IVariable)) ?? false)
@@ -134,14 +136,9 @@ public class Variable
         else if (double.TryParse(clr?.ToString() ?? "", out _))
             return new Number(new($"{clr}"));
         else if (clr?.GetType().IsAssignableTo(typeof(IEnumerable)) ?? false)
-        {
-            Array arr =
-                new()
-                {
-                    Token = new() { Type = TokenType.Array },
-                    Val = new()
-                };
-
+        {		
+            Array arr = new();
+				
             foreach (var item in (IEnumerable)clr)
                 arr.Val.Add(ClrToVar(item));
 
@@ -159,6 +156,7 @@ public class Variable
     {
         if (variable.Token.Type == TokenType.Array)
             return (variable as Array)?.Val.Select(v => v.Value).ToArray();
+			//return new System.Collections.ArrayList((variable as Array)?.Val.Select(v => v.Value).ToArray());
         else if (variable.Token.Type == TokenType.Bool)
             return (variable as Bool?)?.Val;
         else if (variable.Token.Type == TokenType.Null)
