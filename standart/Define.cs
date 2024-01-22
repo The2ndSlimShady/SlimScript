@@ -11,6 +11,7 @@ internal class Define : Standart
             chunk.Error($"Unexpected keyword. Expected 'as' got '{keyword.Text}'", ExitCode.DisordantTokenError);
 
         IVariable variable = Variable.Create(line.ToArray()[3..], chunk);
+		
         chunk.CreateVar(name.Text, variable);
 
         return chunk.GetVar(variable.Name) ?? new Null();

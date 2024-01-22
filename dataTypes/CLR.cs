@@ -11,6 +11,8 @@ public struct CLR : IVariable
 
     public Token Token { get; set; }
 
+    public TokenType Type { get; set; } = TokenType.CLR;
+
     public string Name
     {
         get => _name;
@@ -59,7 +61,7 @@ public struct CLR : IVariable
 
         str = typeName.Remove(0, 1).ToString();
 
-        Val = Type.GetType(str);
+        Val = System.Type.GetType(str);
 
         if (Val == null)
             chunk.Error($"Cannot create CLR RuntimeType from '{str}'.", ExitCode.RuntimeError);
@@ -299,11 +301,14 @@ public struct CLR : IVariable
                         else
                             tmpProp = theVal?.GetType().GetRuntimeProperty(expressions[i + 2]);
 
+						
+
                         if (tmpProp != null)
-                            (tmpProp as PropertyInfo)?.SetValue(
-                                theVal,
-                                Variable.VarToClr(Variable.Create(parameters[1..], chunk))
-                            );
+                        {
+							var newVal = Variable.VarToClr(Variable.Create(parameters[1..], chunk));
+							newVal = Convert.ChangeType(newVal, (tmpProp as PropertyInfo)?.PropertyType);
+							(tmpProp as PropertyInfo)?.SetValue(theVal, newVal);
+						}
                         else
                         {
                             if (theVal?.GetType() == typeof(string).GetType())

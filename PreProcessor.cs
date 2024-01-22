@@ -127,10 +127,10 @@ internal class PreProcessor
 
                     if (!File.Exists(file))
                     {
-#if !DEBUG
-                        file = GlobalSettings.GetPathToSystemFiles($"lib\\{fileName}");
-#else
+#if DEBUG
                         file = $"{Program.BasePath}\\lib\\{fileName}";
+#else
+						file = GlobalSettings.GetPathToSystemFiles($"lib\\{fileName}");
 #endif
                         if (!File.Exists(file))
                         {

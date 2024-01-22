@@ -90,5 +90,5 @@ end
 
 -- Writes given array as lines to file at given path
 func file.writeAllLines path lines begin
-    file_t->WriteAllLines path variable->VarToClr 
+    file_t->WriteAllLines path variable->VarToClr lines
 end

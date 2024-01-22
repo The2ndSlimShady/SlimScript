@@ -3,6 +3,7 @@ namespace SlimScript;
 public struct Function : IVariable
 {
     public Token Token { get; set; }
+    public TokenType Type { get; set; } = TokenType.Function;
 
     internal (SourceChunk Val, int begin, int count, string[] param) Val;
 
@@ -25,7 +26,7 @@ public struct Function : IVariable
         Val.Val = code;
         Val.begin = currentChunk.Parser.lineNumber - code.Lines.Count - 1;
 
-        Token token = new() { Type = TokenType.Function, Text = name, };
+        Token token = new() { Type = TokenType.Function, Text = name };
 
         Name = name;
 
@@ -62,7 +63,7 @@ public struct Function : IVariable
         return Run(vars.ToArray());
     }
 
-    public override string ToString() => $"func {Name} -> {(Val.param.Length == 0 ? "void" : string.Join("->", Val.param))}";
+    public override string ToString() => $"func {Name} -> {(Val.param.Length == 0 ? "no parameters" : string.Join("->", Val.param))}";
 
     public string GetString() => ToString();
 }

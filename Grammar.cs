@@ -56,6 +56,6 @@ internal class Grammar
         "`n", Environment.NewLine,
         "`b", "\b",
         "`t", "\t",
-        "`v", "\n\t"
+		"`q", "\""
     };
 }

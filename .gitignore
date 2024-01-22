@@ -1,11 +1,10 @@
-bin/
 .vscode/
+bin/
 obj/
 test/
 publish/
-docs/
 
-FodyWeavers.xml
-FodyWeavers.xsd
 *.txt
 *.log
+*.iss
+*.ps1

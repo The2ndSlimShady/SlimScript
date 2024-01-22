@@ -18,7 +18,7 @@ internal class Error : Standart
         else
         {
             msgT = line.GetRange(1, line.Count - 1);
-            codeT = new(){ new Token("\"\"")};
+            codeT = new(){ new Token("\"Not Provided\"")};
         }
 
         var message = Variable.Create(msgT.ToArray(), chunk);

@@ -9,6 +9,8 @@ public class Array : IVariable
 
     public Token Token { get; set; }
 
+    public TokenType Type { get; set; } = TokenType.Array;
+
     public string Name
     {
         get => _name;
@@ -79,12 +81,15 @@ public class Array : IVariable
                     continue;
                 }
             }
-
-            realItems[j].Add(new(text));
+			
+			realItems[j].Add(new(text));
         }
 
         for (int i = 0; i < realItems.Count; i++)
         {
+			if (realItems[i].Count == 0)
+				continue;
+			
             var varToCreate = realItems[i];
 
             var variable = Variable.Create(varToCreate.ToArray(), chunk ?? new SourceChunk());
@@ -99,7 +104,12 @@ public class Array : IVariable
         Name = array.Name;
     }
 
-    public Array() : this(System.Array.Empty<Token>(), null) { }
+    //public Array() : this(System.Array.Empty<Token>(), null) { }
+	public Array() 
+	{
+		Val = new();
+		Token = new() { Type = TokenType.Array };
+	}
 
     public string GetString() => $"[ {string.Join(", ", Val.Select(var => var.GetString()))} ]";
 

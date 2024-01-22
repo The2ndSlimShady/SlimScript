@@ -6,6 +6,7 @@ namespace SlimScript;
 public struct Word : IVariable
 {
     public Token Token { get; set; } = new Token() { Type = TokenType.Unidentified };
+    public TokenType Type { get; set; } = TokenType.Word;
 
     public string Val = "";
 
@@ -57,7 +58,7 @@ public struct Word : IVariable
         Token = new(ReplaceEscapes(token.Text));
     }
 
-    private string ReplaceEscapes(string value)
+    private static string ReplaceEscapes(string value)
     {
         for (int i = 0; i < Grammar.escape.Length - 1; i += 2)
             value = value.Replace(Grammar.escape[i], Grammar.escape[i + 1]);

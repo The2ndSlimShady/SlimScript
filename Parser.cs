@@ -62,18 +62,18 @@ internal class Parser
 
         // try
         // {
-        rule = IdentifyAndGet(line, Chunk ?? new());
+			rule = IdentifyAndGet(line, Chunk ?? new());
 
-        if (rule == "CLR")
-            return Variable.Create(line.ToArray(), Chunk ?? new());
+			if (rule == "CLR")
+				return Variable.Create(line.ToArray(), Chunk ?? new());
 
-        obj = Variable.CreateType(rule);
+			obj = Variable.CreateType(rule);
         // }
         // catch (Exception)
         // {
-        // Chunk?.Error($"Cannot execute command '{rule?.ToLower()}'.", ExitCode.RuntimeError);
+			// Chunk?.Error($"Cannot execute command '{rule?.ToLower()}'.", ExitCode.RuntimeError);
 
-        //     return new Null();
+			// return new Null();
         // }
 
         if (obj?.GetType().IsSubclassOf(typeof(Standart)) ?? false)

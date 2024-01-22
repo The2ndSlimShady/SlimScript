@@ -4,8 +4,8 @@
 
 define math_t as {System::Math}
 
-define math.E as 2.71828182845905
-define math.PI as 3.14159265358979
+define math.e as 2.71828182845905
+define math.pi as 3.14159265358979
 
 func math.absolute num begin
     return variable->ClrToVar math_t->Abs num
@@ -66,16 +66,16 @@ func math.ceiling num begin
     return variable->ClrToVar math_t->Ceiling num
 end
 
-func math.sin angle begin
-    return variable->ClrToVar math_t->Sin angle
+func math.sin rads begin
+    return variable->ClrToVar math_t->Sin rads
 end
 
-func math.tan angle begin
-    return variable->ClrToVar math_t->Tan angle
+func math.tan rads begin
+    return variable->ClrToVar math_t->Tan rads
 end
 
-func math.cos angle begin
-    return variable->ClrToVar math_t->Cos angle
+func math.cos rads begin
+    return variable->ClrToVar math_t->Cos rads
 end
 
 func math.round num begin

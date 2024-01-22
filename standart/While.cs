@@ -63,7 +63,7 @@ internal class While : Standart
     private static IVariable Create(SourceChunk parentChunk)
     {
         _line = _line?.Where(l => l.Count != 0).ToList();
-        IVariable result = new Word(new("\"null\""));
+        IVariable result = new Null();
         bool ret = false;
 
         while (true)
