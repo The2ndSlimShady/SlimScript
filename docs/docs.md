@@ -920,6 +920,7 @@ The others are simple so no need of sub-heading for them. But there are some fun
 |set|Yes. Another known face. It changes the values of variables.|
 |index|Returns an index. Tho it has some complicated features as well.|
 |append|Appends something to an array or a word.|
+|do|Executes given function with given parameters.|
 
 ### define
 
@@ -950,6 +951,12 @@ With `append <value> to index <idx> of <var>` you can insert elements to indexes
 `append <value> to index <idx> of <var>`
 
 You can append or insert elements to arrays and strings with this function-ish.
+
+### do
+
+`do <function> <parameters>`
+
+It does a function. Yeah.
 
 ## Appendices
 
