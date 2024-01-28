@@ -1,3 +1,4 @@
+
 # SlimScript Documentation
 
 (This documentation is heavily inspired by [documentation of V lang](https://github.com/vlang/v/blob/master/doc/docs.md))
@@ -70,6 +71,8 @@ Just go to the [Releases](https://github.com/The2ndSlimShady/SlimScript/releases
 * [Appendices](#appendices)
 	* [Keywords](#keywords)
 	* [Operators](#operators)
+* [Using CLI](#using-cli)
+	* [The Flag `-C`](#the-flag--c)
 	
 ## Hello World
 
@@ -523,7 +526,7 @@ import module "Lib.ss"
 do testFunc
 ```
 
-The import function takes everything to its left, gets their string representation then imports the corresponding module if it exists.
+The import function takes everything to its left, gets their string representation then imports the corresponding module if it exists. Notice that when runtime importing, file extension is written manually.
 
 Let's run the code with input `test`:
 
@@ -920,7 +923,6 @@ The others are simple so no need of sub-heading for them. But there are some fun
 |set|Yes. Another known face. It changes the values of variables.|
 |index|Returns an index. Tho it has some complicated features as well.|
 |append|Appends something to an array or a word.|
-|do|Executes given function with given parameters.|
 
 ### define
 
@@ -951,12 +953,6 @@ With `append <value> to index <idx> of <var>` you can insert elements to indexes
 `append <value> to index <idx> of <var>`
 
 You can append or insert elements to arrays and strings with this function-ish.
-
-### do
-
-`do <function> <parameters>`
-
-It does a function. Yeah.
 
 ## Appendices
 
@@ -1011,3 +1007,66 @@ There are only 11 operators in SlimScript:
 ```
 
 Also since operators are treated like functions, there is no precedence among them.
+
+## Using CLI
+
+```
+>>> SlimScript -h
+
+Name: SlimScript
+Description: Small Embeddable Scripting Language for .NET
+Version: 1.0.5
+Contributors:
+        The2ndSlimShady - github.com/The2ndSlimShady/
+
+Usage:
+        SlimScript <file>
+        SlimScript <file> <flags>
+        SlimScript <file> <flags> %p <arguments>
+        SlimScript -i
+        SlimScript -h --help
+
+Available Flags:
+        -D              Run With Debug Mode. Generates lexer output (for curious ones). (SlimScript <file> -D)
+        -C              Generates Compressed Standalone Script File That Has No
+                        Dependencies On Any Other File.                                 (SlimScript <file> -C)
+        -i              Run Interactive Mode                                            (SlimScript -i)
+        -h --help       Show This Output.                                               (SlimScript -h --help)
+
+        Passing Arguments:
+                        SlimScript <file> <flags> %p <arguments>       Arguments are passed to main function as an array.
+```
+
+SlimScript has three special flags in its CLI. The flag `-D` generates lexer output, the flag `-i` runs the interactive mode, `-h` or `--help` writes the output above to the standard output and `-C` generates compressed standalone files. All the flags except `-C` seems to be understandable. So let us explain it.
+
+### The Flag `-C`
+
+SlimScript does not generate preprocessed files, meaning there are no such file containing your code with included modules. But sometimes we might want to have a single file containing everything it needs to be executed (a standalone file). But that standalone file of ours might be too big because of included modules. To solve both of those problems SlimScript has a `compress standalone mode`.
+
+For example this little code below:
+
+```
+-- main.ss
+
+@include system
+@include io
+@include array
+@include math
+@include string
+
+func main args argc begin
+	write args
+end
+```
+
+What a little harmless piece of code isn't it? **Wrong**. In debug mode (not the debug mode with `-D` flag. the debug mode of SlimScript's codebase) it generates a file with **324** lines, approximately 9KB in size. But we need to make it standalone and small. What do we do? Let's run our file with mode `-C`.
+
+```
+>>> SlimScript main.ss -C
+
+Successfully created and compressed standalone script file main.csso
+
+Exit Code: 0 <Normal>
+```
+
+Now we have a little file named `main.csso`, which can be executed with `SlimScript main.csso`. It's only 2KB's in size and it runs faster than `main.ss`. It's because when executing `*.csso` files, preprocessor skip everything, since everything has been preprocessed before. Be aware that runtime importing is still made in runtime, therefore you can't create standalone files when importing at runtime.

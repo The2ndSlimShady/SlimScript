@@ -1,4 +1,5 @@
 using System.Text;
+using System.IO;
 
 namespace SlimScript;
 
@@ -11,7 +12,13 @@ internal class Import : Standart
 		string file = string.Concat(args.Select(arg => arg.GetString()));
 
 		if (!File.Exists(file))
-			chunk.Error("Given file does not exists.", ExitCode.NoInputFile);
+		{
+			file = Path.Combine(GlobalSettings.SystemFilesPath, $"lib\\{file}");
+			
+			if (!File.Exists(file))
+				chunk.Error("Given file does not exists.", ExitCode.NoInputFile);
+		}
+		
 
 		string[] source;
 		if (Path.GetExtension(file) == ".csso")

@@ -115,7 +115,6 @@ internal class PreProcessor
             if (!item.StartsWith('@'))
             {
                 preProcessed.AddRange(ProcessLine(item, chunk));
-
                 continue;
             }
 
