@@ -651,7 +651,7 @@ end
 
 ## Treating Functions as Variables
 
-It was mentioned before that functions were treated like variables in SlimScript. Meaning you can add functions to arrays, pass functions to function and return functions!
+It was mentioned before that functions were treated like variables in SlimScript. Meaning you can add functions to arrays, pass functions to functions and return functions!
 
 Let's go step by step.
 
