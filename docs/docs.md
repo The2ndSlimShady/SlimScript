@@ -309,6 +309,8 @@ No doubles, no floats, no i32, i64, byte or anything. One number type to rule th
 
 An array in SlimScript is dynamic. So it can hold any type of value EXCEPT another array. I have plans to add that feature too but for now, it can't hold another array.
 
+By saying it can't hold another array, I mean in the definition. you cant give `[5, [3, 2]]` as initial value to an array but you can give `[5, otherArr]`.
+
 ```mizar
 define arr as [5, 4, "Value"]
 
@@ -338,6 +340,8 @@ append [5,2] to nums
 > Error: Arrays cannot be appended to anything.
 > 
 > Exit Code: 8 < GrammarError>
+
+But just as before you can do `append otherArr to nums`.
 
 #### Array Initialization
 
@@ -526,7 +530,7 @@ import module "Lib.ss"
 do testFunc
 ```
 
-The import function takes everything to its left, gets their string representation then imports the corresponding module if it exists. Notice that when runtime importing, file extension is written manually.
+The import function takes everything to its right, gets their string representation then imports the corresponding module if it exists. Notice that when runtime importing, file extension is written manually.
 
 Let's run the code with input `test`:
 
