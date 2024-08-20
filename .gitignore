@@ -1,0 +1,10 @@
+.vscode/
+bin/
+obj/
+test/
+publish/
+
+*.txt
+*.log
+*.iss
+*.ps1
