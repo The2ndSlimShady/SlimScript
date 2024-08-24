@@ -7,7 +7,7 @@ namespace SlimScript;
 public class GlobalSettings
 {
     public static readonly string SystemFilesPath =
-        $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SlimScript\\";
+        Path.Combine($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}", "SlimScript");
 
     public static string GetPathToSystemFiles(string path) => Path.Combine(SystemFilesPath, path);
 

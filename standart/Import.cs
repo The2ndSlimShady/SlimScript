@@ -13,7 +13,7 @@ internal class Import : Standart
 
 		if (!File.Exists(file))
 		{
-			file = Path.Combine(GlobalSettings.SystemFilesPath, $"lib\\{file}");
+			file = Path.Combine(GlobalSettings.SystemFilesPath, $"lib/{file}");
 			
 			if (!File.Exists(file))
 				chunk.Error("Given file does not exists.", ExitCode.NoInputFile);

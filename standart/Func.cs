@@ -31,7 +31,13 @@ internal class Func : Standart
             chunk.Parser.block = (chunk.Parser.block.level + 1, "Func");
             _currentLevel = chunk.Parser.block.level;
 
-            _params = line.ToArray()[2..line.IndexOf(new("begin"))].Select(t => t.Text).ToArray();
+            _params = line
+                        .ToArray()[2..line.IndexOf(new("begin"))]
+                        .Select(t => t.Text)
+                        .ToArray();
+
+            if (_params.Length != _params.Distinct().Count())
+                chunk.Error($"Duplicate parameters in function definition", ExitCode.GrammarError);
 
             i = line.IndexOf(new("begin")) + 1;
         }

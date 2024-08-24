@@ -42,7 +42,6 @@ internal class Program
                 Debug = args.Contains("-D");
                 CompressStandalone = args.Contains("-C");
 
-                watch.Start();
                 MainChunk = new(args[0]);
 
                 Directory.SetCurrentDirectory(BasePath);
@@ -69,6 +68,7 @@ internal class Program
                     MainChunk.CreateVar("os.argc", Variable.ClrToVar(0));
                 }
 
+                watch.Start();
                 MainChunk.Run();
 
                 if (MainChunk.VarExists("main"))
@@ -86,9 +86,16 @@ internal class Program
         }
         catch (Exception e)
         {
+            Exception GetInnerMost(Exception e) {
+                if (e.InnerException != null)
+                    return GetInnerMost(e.InnerException);
+                
+                return e;
+            }
+
             var line = MainChunk?.Lines[MainChunk.Parser.lineNumber - 1];
             var message =
-                $"An Exception in source code occured during runtime.\nMessage: {e.Message}\nSource:\n{e.StackTrace}\nFile: {Path.GetFileNameWithoutExtension(MainChunk?._file)}_p.sso\nLine: {MainChunk?.Parser.lineNumber}\nExpression: {string.Join(' ', line?.Select(t => t.Text) ?? new[] { "" })}";
+                $"An Exception [{GetInnerMost(e).GetType().Name}] in source code occured during runtime.\nMessage: {e.Message}\nSource:\n{e.StackTrace}\nFile: {Path.GetFileNameWithoutExtension(MainChunk?._file)}_p.sso\nLine: {MainChunk?.Parser.lineNumber}\nExpression: {string.Join(' ', line?.Select(t => t.Text) ?? new[] { "" })}";
 
             Console.ForegroundColor = ConsoleColor.Red;
             Write.StandartOutput.WriteLine(message);

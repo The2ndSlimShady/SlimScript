@@ -6,39 +6,39 @@ define array_t as {System::Collections::ArrayList}
 define enumerable as {System::Linq::Enumerable,System::Linq}
 
 func array.addRange arr range begin
-    set arr to array_t->new arr
+    define tmpArr as array_t->new arr
     
-    arr->AddRange range
+    tmpArr->AddRange range
 
     return variable->ClrToVar arr
 end
 
 func array.copy arr begin
-    set arr to array_t->new arr
+    define tmpArr as array_t->new arr
 
-    set arr to arr->Clone
+    define tmpArr as tmpArr->Clone
 
     return variable->ClrToVar arr
 end
 
 func array.reverse arr begin
-    set arr to array_t->new arr
+    define tmpArr as array_t->new arr
 
-    arr->Reverse
+    tmpArr->Reverse
 
     return variable->ClrToVar arr
 end
 
 func array.indexOf arr val begin
-    set arr to array_t->new arr
+    define tmpArr as array_t->new arr
 
-    return variable->ClrToVar arr->IndexOf val
+    return variable->ClrToVar tmpArr->IndexOf val
 end
 
 func array.lastIndexOf arr val begin
-    set arr to array_t->new arr
+    define tmpArr as array_t->new arr
 
-    return variable->ClrToVar arr->LastIndexOf val
+    return variable->ClrToVar tmpArr->LastIndexOf val
 end
 
 func array.length arr begin
@@ -49,15 +49,15 @@ func array.length arr begin
 end
 
 func array.takeRange arr startIndex count begin
-    set arr to array_t->new arr
+    define tmpArr as array_t->new arr
 
-    return variable->ClrToVar arr->GetRange startIndex count
+    return variable->ClrToVar tmpArr->GetRange startIndex count
 end
 
 func array.removeRange arr startIndex count begin
-    set arr to array_t->new arr
+    define tmpArr as array_t->new arr
 
-    return variable->ClrToVar arr->RemoveRange startIndex count
+    return variable->ClrToVar tmpArr->RemoveRange startIndex count
 end
 
 func array.createRange startNum count begin
