@@ -21,71 +21,68 @@ internal class Program
 
     public static void Main(string[] args)
     {	
-#if DEBUG	
          try
          {
-#endif
-        if (args.Length != 0 && args[0] == "-i")
-            RunInteractive();
-        else if (args.Length != 0 && (args[0] == "-h" || args[0] == "--help"))
-            PrintHelp();
-        else
-        {
-            if (args.Length == 0 || !File.Exists(args[0]))
+            if (args.Length != 0 && args[0] == "-i")
+                RunInteractive();
+            else if (args.Length != 0 && (args[0] == "-h" || args[0] == "--help"))
+                PrintHelp();
+            else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Write.StandartOutput.WriteLine("No Input File...");
+                if (args.Length == 0 || !File.Exists(args[0]))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Write.StandartOutput.WriteLine("No Input File...");
 
-                Exit(ExitCode.NoInputFile);
+                    Exit(ExitCode.NoInputFile);
+                }
+
+                BasePath = Directory.GetCurrentDirectory();
+
+                Debug = args.Contains("-D");
+                CompressStandalone = args.Contains("-C");
+
+                watch.Start();
+                MainChunk = new(args[0]);
+
+                Directory.SetCurrentDirectory(BasePath);
+
+                var indexOfArgsBegin = System.Array.IndexOf(args, "%p");
+                indexOfArgsBegin = indexOfArgsBegin == -1 ? -2 : indexOfArgsBegin;
+
+                try
+                {
+                    MainChunk.CreateVar("os.args", Variable.ClrToVar(args[(indexOfArgsBegin + 1)..]));
+                    MainChunk.CreateVar(
+                        "os.argc",
+                        Variable.ClrToVar(args.Length - (indexOfArgsBegin + 1))
+                    );
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    MainChunk.CreateVar("os.args", new Null());
+                    MainChunk.CreateVar("os.argc", Variable.ClrToVar(0));
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    MainChunk.CreateVar("os.args", new Null());
+                    MainChunk.CreateVar("os.argc", Variable.ClrToVar(0));
+                }
+
+                MainChunk.Run();
+
+                if (MainChunk.VarExists("main"))
+                {
+                    ((Function?)MainChunk.GetVar("main"))?.Run(
+                        MainChunk.GetVar("os.args") ?? new Null(),
+                        MainChunk.GetVar("os.argc") ?? Variable.ClrToVar(0)
+                    );
+                }
+
+                watch.Stop();
+                Write.StandartOutput.WriteLine($"\nProgram Exited in {watch.ElapsedMilliseconds}ms");
+                Exit(ExitCode.Normal);
             }
-
-            BasePath = Directory.GetCurrentDirectory();
-
-            Debug = args.Contains("-D");
-            CompressStandalone = args.Contains("-C");
-
-            watch.Start();
-            MainChunk = new(args[0]);
-
-            Directory.SetCurrentDirectory(BasePath);
-
-            var indexOfArgsBegin = System.Array.IndexOf(args, "%p");
-            indexOfArgsBegin = indexOfArgsBegin == -1 ? -2 : indexOfArgsBegin;
-
-            try
-            {
-                MainChunk.CreateVar("os.args", Variable.ClrToVar(args[(indexOfArgsBegin + 1)..]));
-                MainChunk.CreateVar(
-                    "os.argc",
-                    Variable.ClrToVar(args.Length - (indexOfArgsBegin + 1))
-                );
-            }
-            catch (IndexOutOfRangeException)
-            {
-                MainChunk.CreateVar("os.args", new Null());
-                MainChunk.CreateVar("os.argc", Variable.ClrToVar(0));
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                MainChunk.CreateVar("os.args", new Null());
-                MainChunk.CreateVar("os.argc", Variable.ClrToVar(0));
-            }
-
-            MainChunk.Run();
-
-            if (MainChunk.VarExists("main"))
-            {
-                ((Function?)MainChunk.GetVar("main"))?.Run(
-                    MainChunk.GetVar("os.args") ?? new Null(),
-                    MainChunk.GetVar("os.argc") ?? Variable.ClrToVar(0)
-                );
-            }
-
-            watch.Stop();
-            Write.StandartOutput.WriteLine($"\nProgram Exited in {watch.ElapsedMilliseconds}ms");
-            Exit(ExitCode.Normal);
-        }
-#if DEBUG
         }
         catch (Exception e)
         {
@@ -98,7 +95,6 @@ internal class Program
 
             Exit(ExitCode.RuntimeError);
         }
-#endif
     }
 
     private static void PrintHelp()
