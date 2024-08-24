@@ -60,21 +60,21 @@ internal class Parser
         string? rule = null;
         object? obj;
 
-        // try
-        // {
+        try
+        {
 			rule = IdentifyAndGet(line, Chunk ?? new());
 
 			if (rule == "CLR")
 				return Variable.Create(line.ToArray(), Chunk ?? new());
 
 			obj = Variable.CreateType(rule);
-        // }
-        // catch (Exception)
-        // {
-			// Chunk?.Error($"Cannot execute command '{rule?.ToLower()}'.", ExitCode.RuntimeError);
+        }
+        catch (Exception)
+        {
+			Chunk?.Error($"Cannot execute command '{rule?.ToLower()}'.", ExitCode.RuntimeError);
 
-			// return new Null();
-        // }
+			return new Null();
+        }
 
         if (obj?.GetType().IsSubclassOf(typeof(Standart)) ?? false)
             return (obj as Standart)?.Run(line, Chunk ?? new()) ?? new Null();
@@ -104,8 +104,17 @@ internal class Parser
                 return $"{expression[0].ToString().ToUpper(CultureInfo.GetCultureInfoByIetfLanguageTag("en-us"))}{expression[1..]}";
             else if (expression.Contains("->") || expression.Contains(':'))
                 return "CLR";
-            else
+            else if (Grammar.operators.ContainsKey(expression))
                 return Grammar.operators[expression];
+            else
+            {
+               chunk.Error(
+                    $"Cannot find grammar rule of expression '{expression}'.",
+                    ExitCode.GrammarError
+                );
+
+                return "";
+            }
         }
         catch (Exception)
         {
