@@ -29,6 +29,10 @@ You can build the project by yourself, copy the `appinfo.json` and `lib/` to `%A
 >   I previously had a repo, which I had created when I started this project, but due to some complications, I had to delete it and recreate the repo, resulting in this
 >   blank commit history. A part of the changelog is still available tho. 
 
+> !!! ANNOUNCEMENT !!!
+>   As of 27.08.2024, I'm happy to announce that I've tested SlimScript on a Linux machine (with Debian 12). There was some problems at first but
+>   After making a couple little changes (mostly because of path delimiters), it runs smoothly now.
+
 ## Table of Contents
 
 - [SlimScript Documentation](#slimscript-documentation)
@@ -99,7 +103,7 @@ func main args argc begin
 end
 ```
 
-Save this to a file with extension `.ss`. Then do a `SlimScript <your_file>.ss`
+Save this to a file with extension `.sscript`. Then do a `SlimScript <your_file>.sscript`
 
 > Assuming you have SlimScript in your environment variables.
 > If you do not then write the path to SlimScript manually.
@@ -116,7 +120,7 @@ You probably recognized the parameters `args` and `argc`. These are exactly what
 
 You can pass parameters by using `%p` in command line.
 
-`SlimScript main.ss %p Some Args Here And Here`
+`SlimScript main.sscript %p Some Args Here And Here`
 
 Now you can use this in your main function, or you can use `os.args` and `os.argc` in `system` module.
 
@@ -391,10 +395,10 @@ There is an array library in SlimScript standard library. I plan to create separ
 
 Modules are script files containing scripts that meant to be reused. Every module is a file, but every file is not a module. But what does that exactly mean? First let's see how we can create modules.
 
-Let's assume we need a module named `operations`. We first create a file named `operations.ss`.
+Let's assume we need a module named `operations`. We first create a file named `operations.sscript`.
 
 ```mizar
--- operations.ss
+-- operations.sscript
 
 func libFunc begin
 	write "My First Module!"
@@ -410,7 +414,7 @@ Now technically you can import this to another script using `@include operations
 We simply put `@module <module_name>` at the beginning of our script.
 
 ```mizar
--- operations.ss
+-- operations.sscript
 
 @module operations
 
@@ -424,7 +428,7 @@ Be aware that we use the file name when adding our `header guard`. That's not a 
 Now in another file, we simply do
 
 ```mizar
--- anotherFile.ss
+-- anotherFile.sscript
 
 @include operations
 
@@ -459,12 +463,12 @@ Let's assume that we have a folder structure that looks like this:
 * base
 	* lib
 		* thirdParty
-			* tpLib.ss
-		* lib1.ss
-	* main.ss
-	* file.ss
+			* tpLib.sscript
+		* lib1.sscript
+	* main.sscript
+	* file.sscript
 
-In `main.ss` you can include those modules
+In `main.sscript` you can include those modules
 
 ```mizar
 @include lib.thirdParty.tpLib
@@ -484,9 +488,9 @@ Sadly, there is no such thing in SlimScript. But standard libraries are splitted
 
 * lib
 	* io
-		* file.ss
-		* directory.ss
-	* io.ss
+		* file.sscript
+		* directory.sscript
+	* io.sscript
 
 This way you can use
 
@@ -513,12 +517,12 @@ It might come in handy in a lot of situations. I don't have a specific example i
 Let's say we have a folder structure that looks like this:
 
 - base
-	- main.ss
-	- testLib.ss
-	- otherLib.ss
+	- main.sscript
+	- testLib.sscript
+	- otherLib.sscript
 
 ```mizar
--- testLib.ss
+-- testLib.sscript
 
 @module testLib
 
@@ -528,7 +532,7 @@ end
 ```
 
 ```mizar
--- otherLib.ss
+-- otherLib.sscript
 
 @module otherLib
 
@@ -538,11 +542,11 @@ end
 ```
 
 ```mizar
--- main.ss
+-- main.sscript
 
 define module as input "Enter Library Mode : "
 
-import module "Lib.ss"
+import module "Lib.sscript"
 
 do testFunc
 ```
@@ -1067,7 +1071,7 @@ SlimScript does not generate preprocessed files, meaning there are no such file 
 For example this little code below:
 
 ```
--- main.ss
+-- main.sscript
 
 @include system
 @include io
@@ -1083,11 +1087,11 @@ end
 What a little harmless piece of code isn't it? **Wrong**. In debug mode (not the debug mode with `-D` flag. the debug mode of SlimScript's codebase) it generates a file with **324** lines, approximately 9KB in size. But we need to make it standalone and small. What do we do? Let's run our file with mode `-C`.
 
 ```
->>> SlimScript main.ss -C
+>>> SlimScript main.sscript -C
 
 Successfully created and compressed standalone script file main.csso
 
 Exit Code: 0 <Normal>
 ```
 
-Now we have a little file named `main.csso`, which can be executed with `SlimScript main.csso`. It's only 2KB's in size and it runs faster than `main.ss`. It's because when executing `*.csso` files, preprocessor skip everything, since everything has been preprocessed before. Be aware that runtime importing is still made in runtime, therefore you can't create standalone files when importing at runtime.
+Now we have a little file named `main.csso`, which can be executed with `SlimScript main.csso`. It's only 2KB's in size and it runs faster than `main.sscript`. It's because when executing `*.csso` files, preprocessor skip everything, since everything has been preprocessed before. Be aware that runtime importing is still made in runtime, therefore you can't create standalone files when importing at runtime.

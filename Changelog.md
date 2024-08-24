@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.6] 25-08-2024
+
+### Unreleased
+- Exception handling is still on plan.
+- nameof function
+- Adding arrays to arrays
+- range function
+- Standard library documentation
+- Standard library improvements
+- proper `@module`ing
+
+### Added
+- Nothing at all.
+
+### Changed
+- Turns out `.ss` was `Scheme`'s file format. Now we use `.sscript`.
+- The error messages are a bit (a tiny bit) better now.
+
+### Fixed
+- `array` module used `set` on the parameters, but it was from a time where SlimScript was dynamic. So I changed them and introduced a local variable.
+- Path delimiters removed. I replaced every hand-coded path to `Path.Combine`. So now paths are working on Linux as well.
+
+### Detected Bugs
+- Nested `for` and `foreach` loops are causing problems. When you nest `for` with `foreach`, its okay but `for` with `for`... Oh boy...
+
+### Removed
+
 ## [1.0.4] 22-01-2024
 
 ### Unreleased

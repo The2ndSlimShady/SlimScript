@@ -53,7 +53,7 @@ func directory.delete path begin
     end
 end
 
--- Returns an array of names of children of the directory at given path
+-- Returns an array of names of directories in the directory at given path
 func directory.getDirectories path begin
     if do directory.empty path then
         return []
@@ -109,6 +109,7 @@ func directory.empty path begin
     foreach d in dirs begin 
         return false
     end
+
     foreach f in files begin 
         return false
     end

@@ -121,15 +121,15 @@ internal class PreProcessor
             switch (line[0])
             {
                 case "include":
-                    string fileName = $"{line[1].Replace("\"", string.Empty).Replace('.','/')}.ss";
-                    string file = $"{Directory.GetCurrentDirectory()}\\{fileName}";
+                    string fileName = $"{line[1].Replace("\"", string.Empty).Replace('.','/')}.sscript";
+                    string file = Path.Combine($"{Directory.GetCurrentDirectory()}", "{fileName}");
 
                     if (!File.Exists(file))
                     {
 #if DEBUG
-                        file = $"{Program.BasePath}\\lib\\{fileName}";
+                        file = Path.Combine($"{Program.BasePath}", "lib", $"{fileName}");
 #else
-						file = GlobalSettings.GetPathToSystemFiles($"lib\\{fileName}");
+						file = GlobalSettings.GetPathToSystemFiles($"lib/{fileName}");
 #endif
                         if (!File.Exists(file))
                         {

@@ -69,9 +69,9 @@ internal class Parser
 
 			obj = Variable.CreateType(rule);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-			Chunk?.Error($"Cannot execute command '{rule?.ToLower()}'.", ExitCode.RuntimeError);
+            Chunk?.Error($"Couldn't execute command '{rule?.ToLower()}.\n\tProvided Information: {e.Message}'", ExitCode.RuntimeError);
 
 			return new Null();
         }
@@ -85,12 +85,15 @@ internal class Parser
                 ExitCode.GrammarError
             );
 
-            return new Number(new Token("-1"));
+            return new Null();
         }
     }
 
     public static string IdentifyAndGet(List<Token> line, SourceChunk chunk)
     {
+        if (line.Count() == 0)
+            chunk.Error($"Can't find grammar rule on empty line.", ExitCode.GrammarError);
+
         var rule = line[0].Text;
 
         return IdentifyAndGet(rule, chunk);

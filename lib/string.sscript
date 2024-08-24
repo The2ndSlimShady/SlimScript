@@ -12,6 +12,12 @@ func string.length str begin
     return variable->ClrToVar builder:Length
 end
 
+func string.replace str old new begin
+    define builder as sbuilder_t->new str
+    builder->Replace old new
+    return variable->ClrToVar builder->ToString
+end
+
 func string.indexOf str val begin
     define builder as sbuilder_t->new str
     define clrStr as builder->ToString

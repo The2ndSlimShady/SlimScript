@@ -92,3 +92,32 @@ end
 func file.writeAllLines path lines begin
     file_t->WriteAllLines path variable->VarToClr lines
 end
+
+-- Moves a file to a destination. Overwrites the destination if it
+-- exists AND force is true. Returns true if everything goes ok.
+func file.move src dest force begin
+    if not do file.exists src then
+        define errMsg as + "Cannot move a non existent file '" + src "'"
+        error errMsg 
+    end
+
+    file_t->Move src dest force
+    return true
+end
+
+-- Copies a file to a destination. Overwrites the destination if it
+-- exists AND force is true. Returns true if everything goes ok.
+func file.copy src dest force begin
+    if not do file.exists old then
+        define errMsg as + "Cannot copy a non existent file '" + src "'"
+        error errMsg 
+    end
+
+    file_t->Copy src dest force
+    return true
+end
+
+-- Renames the given file to its new name.
+func file.rename old new begin
+    do file.move old new true
+end
