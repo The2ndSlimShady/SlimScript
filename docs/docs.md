@@ -30,7 +30,7 @@ You can build the project by yourself, copy the `appinfo.json` and `lib/` to `%A
 >   blank commit history. A part of the changelog is still available tho. 
 
 > !!! ANNOUNCEMENT !!!
->   As of 27.08.2024, I'm happy to announce that I've tested SlimScript on a Linux machine (with Debian 12). There was some problems at first but
+>   As of 25.08.2024, I'm happy to announce that I've tested SlimScript on a Linux machine (with Debian 12). There was some problems at first but
 >   After making a couple little changes (mostly because of path delimiters), it runs smoothly now.
 
 ## Table of Contents
