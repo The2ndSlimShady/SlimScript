@@ -3,7 +3,7 @@
         "MajorVersion": 1,
         "MinorVersion": 0,
         "PatchVersion": 6,
-        "Label": ""
+        "Label": "fixed"
     },
     "Name": "SlimScript",
     "Description": "Small Embeddable Scripting Language for .NET",
